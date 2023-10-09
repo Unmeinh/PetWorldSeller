@@ -204,7 +204,6 @@ export default function RegisterTab(route) {
                 </TouchableHighlight>
 
             </View>
-            <ToastLayout />
         </Pressable>
     );
 }

@@ -107,11 +107,11 @@ export default function SplashScreen() {
         }
       } else {
         storageMMKV.setValue('login.token', "");
-        navigation.navigate('OrboadScreen');
+        navigation.navigate('LoginScreen');
       }
     } else {
       storageMMKV.setValue('login.token', "");
-      navigation.navigate('OrboadScreen');
+      navigation.navigate('LoginScreen');
     }
   }
 
@@ -139,7 +139,7 @@ export default function SplashScreen() {
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
-      // autoNavigate();
+      autoNavigate();
       return () => {
         unsub.remove();
       };
@@ -173,14 +173,13 @@ export default function SplashScreen() {
           />
         </Animatable.View>
       )}
-      
-      <Foundation name='paw' size={25} color={"#000"}/>
       {dauchanPositions.map((position, index) => (
         <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
           <Foundation name='paw' size={25} color={"#000"} style={{
             bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
             height: 25,
             width: 25,
+            transform: [{rotate: '90deg'}],
           }} />
         </View>
       ))}
