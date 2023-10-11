@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, Animated, Easing } from 'react-native';
+import { View, StyleSheet, Dimensions, Image, Animated, Easing, Text } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
+import { onNavigate } from '../../navigation/rootNavigation';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -15,65 +17,65 @@ export default function SplashScreen() {
   const bottomPosition = screenHeight * 0.6 - logoSize / 2;
   const bottomPosition1 = screenHeight * 0.33 - logoSize / 2;
   const bottomPosition2 = screenHeight * 0.3 - logoSize / 2;
-  const nameBottomPosition = screenHeight * 0.4;
+  const nameBottomPosition = screenHeight * 0.35;
 
   const nameImageWidth = screenWidth * 0.7;
   const nameImageHeight = (nameImageWidth * logoSize) / logoSize;
 
-  const dauchanContainerWidth = 25;
-  const stepDistance = 3.5; // Khoảng cách giữa các bước chân
-  const totalSteps = Math.ceil(screenWidth / (dauchanContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
+  const pawContainerWidth = 25;
+  const stepDistance = 3.5;
+  const totalSteps = Math.ceil(screenWidth / (pawContainerWidth + stepDistance)); // Tổng số bước chân cần di chuyển
 
   const stepAnimation = new Animated.Value(0);
-  const [dauchanPositions, setDauchanPositions] = useState([]);
+  const [pawPositions, setPawPositions] = useState([]);
   const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
-  const [isRunningAnimated, setisRunningAnimated] = useState(true);
+  const [isFinishedOneTime, setisFinishedOneTime] = useState(false);
+  const [nextScreen, setnextScreen] = useState('');
 
   useEffect(() => {
-    if (isRunningAnimated) {
-      const moveDauchan = () => {
-        Animated.timing(stepAnimation, {
-          toValue: totalSteps,
-          duration: 200,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }).start(({ finished }) => {
-          if (finished) {
-            setDauchanPositions([...dauchanPositions, dauchanPositions.length]);
-          }
-        });
-      };
+    const movePaw = () => {
+      Animated.timing(stepAnimation, {
+        toValue: totalSteps,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          setPawPositions([...pawPositions, pawPositions.length]);
+        }
+      });
+    };
 
-      const hideLogo = () => {
-        setTimeout(() => {
-          setLogoVisible(false);
-          showName();
-        }, 2000);
-      };
+    const hideLogo = () => {
+      setTimeout(() => {
+        setLogoVisible(false);
+        showName();
+      }, 2000);
+    };
 
-      const showName = () => {
-        setTimeout(() => {
-          setNameVisible(true);
-        }, 300); // Hiển thị phần nameImageContainer sau khi logo biến mất 0.5 giây
-      };
+    const showName = () => {
+      setTimeout(() => {
+        setNameVisible(true);
+      }, 300);
+    };
 
-      moveDauchan();
-      hideLogo();
-
-    }
-  }, [dauchanPositions]);
+    movePaw();
+    hideLogo();
+  }, [pawPositions]);
 
   function onLayoutPaw(event) {
     const { x, y, height, width } = event.nativeEvent.layout;
     if (x >= Dimensions.get('window').width) {
-      // setisRunningAnimated(false);
+      if (!isFinishedOneTime) {
+        setisFinishedOneTime(true);
+      }
       stepAnimation.setValue(0);
-      setDauchanPositions([]);
+      setPawPositions([]);
     }
   }
 
-  async function autoNavigate() {
+  async function getNavigate() {
     if (storageMMKV.checkKey('login.isFirstTime')) {
       if (!storageMMKV.getBoolean('login.isFirstTime')) {
         if (storageMMKV.checkKey('login.isLogin')) {
@@ -83,63 +85,47 @@ export default function SplashScreen() {
                 let res = await onAxiosGet('/user/autoLogin')
                 if (res) {
                   if (res.success) {
-                    navigation.navigate('NaviTabScreen');
+                    setnextScreen('HomeScreen');
                   } else {
                     storageMMKV.setValue('login.token', "");
-                    navigation.navigate('LoginScreen');
+                    setnextScreen('LoginScreen');
                   }
                 }
               } else {
                 storageMMKV.setValue('login.token', "");
-                navigation.navigate('LoginScreen');
+                setnextScreen('LoginScreen');
               }
             } else {
               storageMMKV.setValue('login.token', "");
-              navigation.navigate('LoginScreen');
+              setnextScreen('LoginScreen');
             }
           } else {
             storageMMKV.setValue('login.token', "");
-            navigation.navigate('LoginScreen');
+            setnextScreen('LoginScreen');
           }
         } else {
           storageMMKV.setValue('login.token', "");
-          navigation.navigate('LoginScreen');
+          setnextScreen('LoginScreen');
         }
       } else {
         storageMMKV.setValue('login.token', "");
-        navigation.navigate('LoginScreen');
+        setnextScreen('LoginScreen');
       }
     } else {
       storageMMKV.setValue('login.token', "");
-      navigation.navigate('LoginScreen');
+      setnextScreen('LoginScreen');
     }
   }
 
-  const dauchanContainerStyles = {
-    position: 'absolute',
-    bottom: screenHeight * 0.4,
-    transform: [
-      {
-        rotate: '90deg',
-      },
-      {
-        translateX: stepAnimation.interpolate({
-          inputRange: [0, totalSteps],
-          outputRange: [0, totalSteps * (dauchanContainerWidth + stepDistance)],
-        }),
-      },
-      {
-        scaleX: stepAnimation.interpolate({
-          inputRange: [0, totalSteps],
-          outputRange: [1, -1], // Thay đổi tỷ lệ kích thước theo chiều ngang để tạo hiệu ứng đối xứng
-        }),
-      },
-    ],
-  };
+  React.useEffect(() => {
+    if (isFinishedOneTime && nextScreen != '') {
+      onNavigate(nextScreen);
+    }
+  }, [isFinishedOneTime, nextScreen]);
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
-      autoNavigate();
+      getNavigate();
       return () => {
         unsub.remove();
       };
@@ -165,21 +151,33 @@ export default function SplashScreen() {
         />
       )}
       {nameVisible && (
-        <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { bottom: nameBottomPosition }]}>
-          <Image
+        <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { top: nameBottomPosition }]}>
+          {/* <Image
             source={require('../../assets/images/gifs/catWaiting.gif')}
             style={{ width: nameImageWidth, height: nameImageHeight }}
             resizeMode="contain"
-          />
+          /> */}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {/* <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>PETW</Text> */}
+            <View style={{ borderRadius: 50, borderColor: '#001858', borderWidth: 3, width: 50, height: 50, alignItems: 'center', padding: 5 }}>
+              <View style={{ width: 40, height: 45 }}>
+                <FontAwesome6 name='dog' size={35} color={'#001858'}
+                  style={{}} />
+                <FontAwesome6 name='cat' size={20} color={'#8BD3DD'}
+                  style={{ position: 'absolute', bottom: 10, left: 6 }} />
+              </View>
+            </View>
+            <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>URPET</Text>
+          </View>
         </Animatable.View>
       )}
-      {dauchanPositions.map((position, index) => (
-        <View onLayout={onLayoutPaw} key={position} style={[styles.dauchanContainer, { left: position * (dauchanContainerWidth + stepDistance) }]}>
+      {pawPositions.map((position, index) => (
+        <View onLayout={onLayoutPaw} key={position} style={[styles.pawContainer, { left: position * (pawContainerWidth + stepDistance) }]}>
           <Foundation name='paw' size={25} color={"#000"} style={{
             bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
             height: 25,
             width: 25,
-            transform: [{rotate: '90deg'}],
+            transform: [{ rotate: '90deg' }],
           }} />
         </View>
       ))}
@@ -200,11 +198,11 @@ const styles = StyleSheet.create({
   nameImageContainer: {
     position: 'absolute',
   },
-  dauchanContainer: {
+  pawContainer: {
     position: 'absolute',
     bottom: 0,
   },
-  dauchanImage: {
+  pawImage: {
     width: 24,
     height: 24,
   },

@@ -4,6 +4,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {navigationRef} from './rootNavigation';
 import SplashScreen from '../views/splash/SplashScreen';
 import LoginScreen from '../views/form/LoginScreen';
+import ConfirmOTP from '../views/form/ConfirmOTP';
+import ChangePassword from '../views/form/ChangePassword';
+import RegisterShop from '../views/form/RegisterShop';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -28,6 +31,9 @@ export default function StackScreen() {
         initialRouteName="SplashScreen">
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="RegisterShop" component={RegisterShop} />
       </Stack.Navigator>
     </NavigationContainer>
   );

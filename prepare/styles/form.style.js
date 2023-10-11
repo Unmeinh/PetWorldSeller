@@ -51,27 +51,27 @@ export default StyleSheet.create({
 
     textLeftGreetingLI: {
         color: pinkLotus,
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         fontFamily: 'ProductSans',
     },
 
     textLeftGreetingSI: {
         color: '#00A4BB',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         fontFamily: 'ProductSans',
     },
 
     textRightGreeting: {
         color: 'rgba(0, 24, 88, 0.80)',
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '500',
         fontFamily: 'ProductSans',
     },
 
     titleInput: {
-        fontSize: 15,
+        fontSize: 14,
         fontFamily: 'ProductSans',
         marginTop: 15
     },
@@ -241,11 +241,18 @@ export default StyleSheet.create({
     },
 
     titleLarge: {
-        fontSize: 27,
+        fontSize: 22,
         fontWeight: '700',
         color: darkBlue,
         fontFamily: 'ProductSans',
         marginTop: 5
+    },
+
+    titleDetailFull: {
+        fontSize: 17,
+        color: darkBlue,
+        fontFamily: 'ProductSans',
+        marginTop: 10
     },
 
     textDetail: {

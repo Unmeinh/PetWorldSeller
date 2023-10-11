@@ -10,14 +10,14 @@ import PhoneSelect from '../../components/modals/PhoneSelect';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { onSendOTPbyPhoneNumber } from '../../function/functionOTP';
 import Toast from 'react-native-toast-message';
-import { axiosJSON } from '../../api/axios.config';
 import { useNavigation } from '@react-navigation/native';
+import { onAxiosPost } from '../../api/axios.function';
 
 export default function RegisterTab(route) {
     const navigation = useNavigation();
     const [inputPhoneCountry, setinputPhoneCountry] = useState('+84');
     const [inputUsername, setinputUsername] = useState(route.user);
-    const [inputFullName, setinputFullName] = useState("");
+    const [inputNameShop, setinputNameShop] = useState("");
     const [inputPhoneNumber, setinputPhoneNumber] = useState("");
     const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
     const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
@@ -29,7 +29,7 @@ export default function RegisterTab(route) {
 
     function checkValidate() {
         var regPhone = /^(\+\d{9,})$/;
-        if (inputUsername == "") {
+        if (inputUsername.trim() == "") {
             Toast.show({
                 type: 'error',
                 position: 'top',
@@ -38,11 +38,11 @@ export default function RegisterTab(route) {
             return false;
         }
 
-        if (inputFullName == "") {
+        if (inputNameShop.trim() == "") {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: 'Họ và tên không được trống!'
+                text1: 'Tên shop không được trống!'
             });
             return false;
         }
@@ -73,46 +73,27 @@ export default function RegisterTab(route) {
         });
 
         var phoneCountry = inputPhoneCountry.replace(/\D/g, '');
-        var newUser = {
+        var newShop = {
             userName: inputUsername,
-            fullName: inputFullName,
-            phoneNumber: phoneCountry + inputPhoneNumber,
+            nameShop: inputNameShop,
+            hotline: phoneCountry + inputPhoneNumber,
         }
 
-        var res = await axiosJSON.post('/user/checkPhoneNumber', { phoneNumber: newUser.phoneNumber })
-            .catch((e) => {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(e.response.data.message),
-                    bottomOffset: 20
-                });
-                setisDisableRequest(false);
-                return;
-            });
-        if (res != undefined) {
-            var data = res.data;
-            if (res.status == 200) {
-                if (data.success) {
-                    const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-                    if (response != undefined && response.success) {
-                        setTimeout(() => {
-                            navigation.navigate('ConfirmOTP', { navigate: "RegisterPassword", objUser: newUser, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
-                        }, 500)
-                    } else {
-                        setisDisableRequest(false);
-                    }
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-                    setisDisableRequest(false);
-                    return;
-                }
-            }
+        var res = await onAxiosPost('/shop/checkPhoneNumber', { hotline: newShop.hotline }, 'json', true);
+        if (res) {
+            // const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
+            // if (response != undefined && response.success) {
+            //     setTimeout(() => {
+            //         navigation.navigate('ConfirmOTP', { navigate: "RegisterShop", objShop: newShop, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+            //     }, 500)
+            //     setisDisableRequest(false);
+            // } else {
+            //     setisDisableRequest(false);
+            // }
+            navigation.navigate('RegisterShop', { objShop: newShop });
+            setisDisableRequest(false);
+        } else {
+            setisDisableRequest(false);
         }
     }
 
@@ -153,8 +134,8 @@ export default function RegisterTab(route) {
                 </View>
 
                 <View style={{ flexDirection: 'row', marginLeft: 20, marginTop: 5 }}>
-                    <Text style={styles.textLeftGreetingSI}>Hãy tham gia</Text>
-                    <Text style={styles.textRightGreeting}> cùng chúng tôi!</Text>
+                    <Text style={styles.textLeftGreetingSI}>Bắt đầu</Text>
+                    <Text style={styles.textRightGreeting}> hoạt động của bạn!</Text>
                 </View>
             </View>
 
@@ -169,9 +150,9 @@ export default function RegisterTab(route) {
                 <View>
                     <Text style={[{
                         color: 'rgba(0, 24, 88, 0.80)',
-                    }, styles.titleInput]}>Họ và tên</Text>
-                    <TextInput style={styles.textInput} value={inputFullName}
-                        onChangeText={(input) => { setinputFullName(input) }} />
+                    }, styles.titleInput]}>Tên shop</Text>
+                    <TextInput style={styles.textInput} value={inputNameShop}
+                        onChangeText={(input) => { setinputNameShop(input) }} />
                 </View>
                 <Text style={[{
                     color: 'rgba(0, 24, 88, 0.80)',

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
-const apiURL = "https://bb8d-2402-800-61c4-5f0c-cd22-fe05-47c8-f556.ngrok-free.app/api";
+const apiURL = "https://1e01-2402-800-61c4-5f0c-7599-faff-aa35-652a.ngrok-free.app/api";
 
 // axiosAPi.defaults.withCredentials = true;
 let axiosAPi = axios.create();

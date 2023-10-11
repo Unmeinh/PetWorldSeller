@@ -190,31 +190,6 @@ export default function LoginTab(route) {
                         <Text style={styles.textButtonConfirm}>Đăng nhập</Text>
                     </TouchableHighlight>
 
-                    <View style={styles.viewContinue}>
-                        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['rgba(46, 93, 220, 0)', 'rgba(115, 117, 124, 0.7)', '#001858']} style={styles.barContinue}>
-                            <Text>.</Text>
-                        </LinearGradient>
-                        <Text style={styles.textContinue}>Hoặc tiếp tục với</Text>
-                        <LinearGradient start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} colors={['rgba(46, 93, 220, 0)', 'rgba(115, 117, 124, 0.7)', '#001858']} style={styles.barContinue}>
-                            <Text>.</Text>
-                        </LinearGradient>
-                    </View>
-
-                    <View style={{ width: '100%', marginTop: 25, alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/images/form/google.png')} style={{ height: 30, width: 30 }} />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={[styles.borderIcon, { marginLeft: 15, marginRight: 15 }]}>
-                                <Image source={require('../../assets/images/form/facebook.png')} style={{ height: 30, width: 30 }} />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.borderIcon}>
-                                <Image source={require('../../assets/images/form/twitter.png')} style={{ height: 30, width: 30 }} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
                 </View>
             </View>
         </View>
