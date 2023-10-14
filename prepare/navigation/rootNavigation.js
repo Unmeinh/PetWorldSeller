@@ -9,7 +9,7 @@ export function onNavigate(name, params) {
 }
 
 export function onGoBack() {
-    if (navigationRef.isReady()) {
-      navigationRef.goBack();
-    }
+  if (navigationRef.isReady()) {
+    navigationRef.goBack();
   }
+}

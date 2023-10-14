@@ -100,7 +100,7 @@ export default function ConfirmOTP({ route }) {
                     bottomOffset: 20
                 });
                 setTimeout(() => {
-                    if (route.params.navigate == "RegisterPassword") {
+                    if (route.params.navigate == "RegisterShop") {
                         navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
                         navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
@@ -119,7 +119,7 @@ export default function ConfirmOTP({ route }) {
             var response = await onVerifyOTPbyEmail(inputValueVerify, inputOTP);
             if (response) {
                 setTimeout(() => {
-                    if (route.params.navigate == "RegisterPassword") {
+                    if (route.params.navigate == "RegisterShop") {
                         navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
                         navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
@@ -227,7 +227,7 @@ export default function ConfirmOTP({ route }) {
                         route.params.function();
                     }
                     if (route.params.navigate) {
-                        if (route.params.navigate == "RegisterPassword") {
+                        if (route.params.navigate == "RegisterShop") {
                             navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                         } else {
                             navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });

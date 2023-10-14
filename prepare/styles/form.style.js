@@ -240,6 +240,26 @@ export default StyleSheet.create({
         borderRadius: 30,
     },
 
+    viewInfoShop: {
+        backgroundColor: "#fff",
+        marginTop: 15,
+        marginBottom: 10,
+        paddingTop: 5,
+        paddingBottom: 15, 
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        borderWidth: 0.5,
+        borderColor: '#000',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+
     titleLarge: {
         fontSize: 22,
         fontWeight: '700',

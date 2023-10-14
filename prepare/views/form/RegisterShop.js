@@ -16,19 +16,29 @@ import Toast from 'react-native-toast-message';
 import { ToastLayout } from '../../components/layout/ToastLayout';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
+import { onAxiosPost } from '../../api/axios.function';
+import { onNavigate } from '../../navigation/rootNavigation';
 
 export default function RegisterShop({ route }) {
   const navigation = useNavigation();
+  let objShop = route.params.objShop;
   const [passToggle, setpassToggle] = useState(true);
   const [confirmPassToggle, setconfirmPassToggle] = useState(true);
+  const [cdSendAgain, setcdSendAgain] = useState(0);
+  const [inputEmail, setinputEmail] = useState("");
+  const [inputOTP, setinputOTP] = useState("");
+  const [isVerified, setisVerified] = useState(false);
+  const [inputLocation, setinputLocation] = useState("");
   const [inputNewPassword, setinputNewPassword] = useState('');
   const [inputConfirmPassword, setinputConfirmPassword] = useState('');
   const [numberCard, setnumberCard] = useState("");
   const [fullNameCard, setfullNameCard] = useState("");
   const [birthCard, setbirthCard] = useState("");
   const [pickedAvatar, setpickedAvatar] = useState(null);
-  const [pickedFrontCart, setpickedFrontCart] = useState(null);
-  const [pickedBehindCart, setpickedBehindCart] = useState(null);
+  const [pickedFrontCard, setpickedFrontCard] = useState(null);
+  const [pickedBehindCard, setpickedBehindCard] = useState(null);
+  const [isOKFrontCard, setisOKFrontCard] = useState(false);
+  const [isOKBehindCard, setisOKBehindCard] = useState(false);
 
   async function onAvatarPicked() {
     try {
@@ -55,8 +65,9 @@ export default function RegisterShop({ route }) {
         isCrop: true,
         singleSelectedMode: true
       });
-      setpickedFrontCart(response);
+      setpickedFrontCard(response);
       const result = await TextRecognition.recognize(response.path);
+      let checkResult = 0;
       let iNumber = result.text.indexOf('No.');
       let iFullName1 = result.text.indexOf('Họ và tên');
       let iFullName2 = result.text.indexOf('Full name:');
@@ -67,31 +78,49 @@ export default function RegisterShop({ route }) {
         let num = result.text.substring((iNumber + + String('No.').length), iFullName1).trim();
         setnumberCard(num);
       } else {
+        setnumberCard("");
         Toast.show({
           type: 'error',
-          text1: 'Ảnh tải lên không hợp lệ!',
+          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
           position: 'top'
         })
+        if (isOKFrontCard) {
+          setisOKFrontCard(false);
+        }
+        checkResult = 1;
       }
       if (iFullName2 > -1 && iBirth1 > -1) {
         let name = result.text.substring((iFullName2 + String('Full name:').length), iBirth1).trim();
         setfullNameCard(name);
       } else {
+        setfullNameCard("");
         Toast.show({
           type: 'error',
-          text1: 'Ảnh tải lên không hợp lệ!',
+          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
           position: 'top'
         })
+        if (isOKFrontCard) {
+          setisOKFrontCard(false);
+        }
+        checkResult = 1;
       }
       if (iBirth2 > -1 && iGender > -1) {
         let birth = result.text.substring((iBirth2 + String('Date of birth:').length), iGender).trim();
         setbirthCard(birth);
       } else {
+        setbirthCard("");
         Toast.show({
           type: 'error',
-          text1: 'Ảnh tải lên không hợp lệ!',
+          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
           position: 'top'
         })
+        if (isOKFrontCard) {
+          setisOKFrontCard(false);
+        }
+        checkResult = 1;
+      }
+      if (checkResult == 0) {
+        setisOKFrontCard(true);
       }
     } catch (error) {
       console.log(error);
@@ -107,11 +136,255 @@ export default function RegisterShop({ route }) {
         isCrop: true,
         singleSelectedMode: true
       });
-      setpickedBehindCart(response);
+      setpickedBehindCard(response);
       const result = await TextRecognition.recognize(response.path);
+      console.log(result.text);
+      console.log(result.text.indexOf(numberCard + '<'));
+      let checkResult = 0;
+      let iCode = result.text.indexOf(numberCard + '<');
+      if (iCode == -1) {
+        Toast.show({
+          type: 'error',
+          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
+          position: 'top'
+        })
+        if (isOKBehindCard) {
+          setisOKBehindCard(false);
+        }
+        checkResult = 1;
+      }
+
+      if (checkResult == 0) {
+        setisOKBehindCard(true);
+      }
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function onSendVerify() {
+    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    if (!inputEmail.match(regEmail)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Email cần đúng định dạng: abc@def.xyz!',
+        position: 'top'
+      })
+      return;
+    }
+    if (!isVerified) {
+      setcdSendAgain(30);
+      await onAxiosPost('shop/sendVerifyCodeEmail', { email: inputEmail }, 'json', true);
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Email đã được xác minh.',
+        position: 'top'
+      })
+    }
+  }
+
+  async function onVerifyCode() {
+    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    if (!inputEmail.match(regEmail)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Email cần đúng định dạng: abc@def.xyz!',
+        position: 'top'
+      })
+      return;
+    }
+
+    if (inputOTP.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Mã xác minh không được để trống!',
+        position: 'top'
+      })
+      return;
+    }
+
+    if (inputOTP.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: 'Mã xác minh cần dài 6 số!',
+        position: 'top'
+      })
+      return;
+    }
+
+    if (isNaN(inputOTP)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Mã xác minh cần là 6 số!',
+        position: 'top'
+      })
+      return;
+    }
+
+    if (!isVerified) {
+      let res = await onAxiosPost('shop/verifyCodeEmail', { email: inputEmail, otp: inputOTP }, 'json', true);
+      if (res) {
+        setisVerified(true);
+      } else {
+        setisVerified(false);
+      }
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Email đã được xác minh.',
+        position: 'top'
+      })
+    }
+  }
+
+  function checkValidate() {
+    let regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
+    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+
+    if (pickedAvatar == null) {
+      Toast.show({
+        type: 'error',
+        text1: 'Cần có ảnh đại diện cho cửa hàng!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (!isOKFrontCard) {
+      Toast.show({
+        type: 'error',
+        text1: 'Cần có ảnh thẻ căn cước!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (!isOKBehindCard) {
+      Toast.show({
+        type: 'error',
+        text1: 'Cần có ảnh thẻ căn cước!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (fullNameCard.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Họ và tên không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (numberCard.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Số thẻ căn cước không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (birthCard.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Ngày sinh không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (!inputEmail.match(regEmail)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Email cần đúng định dạng: abc@def.xyz!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (inputLocation.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Địa chỉ cửa hàng không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (!inputNewPassword.match(regPass)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa!',
+        position: 'top',
+        props: {
+          isTextLong: true
+        }
+      })
+      return false;
+    }
+
+    if (inputNewPassword != inputConfirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: 'Mật khẩu nhập lại không chính xác!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (!isVerified) {
+      Toast.show({
+        type: 'error',
+        text1: 'Email chưa được xác minh!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    return true;
+  }
+
+  async function onContinue() {
+    if (checkValidate() == false) {
+      return;
+    }
+
+    var formData = new FormData();
+    formData.append("nameShop", objShop.nameShop);
+    formData.append("email", inputEmail);
+    formData.append("locationShop", inputEmail);
+    formData.append("userName", objShop.userName);
+    formData.append("passWord", inputNewPassword);
+    formData.append("hotline", objShop.hotline);
+    formData.append("nameIdentity", fullNameCard);
+    formData.append("numberIdentity", numberCard);
+    formData.append("dateIdentity", birthCard);
+
+    let arr_Image = [pickedAvatar, pickedFrontCard, pickedBehindCard]
+    if (arr_Image.length > 0) {
+      for (let i = 0; i < arr_Image.length; i++) {
+        var dataImage = {
+          uri: Platform.OS === "android" ? arr_Image[i].path : arr_Image[i].path.replace("file://", ""),
+          name: arr_Image[i].fileName,
+          type: "multipart/form-data"
+        };
+        formData.append('imageUploaded', dataImage);
+      }
+    }
+
+    onNavigate('ConfirmRegister', {
+      formData: formData,
+      objShop: {
+        nameShop: objShop.nameShop,
+        hotline: objShop.hotline,
+        fullName: fullNameCard,
+        numberCard: numberCard,
+        dateBirth: birthCard,
+      }
+    })
   }
 
   function onChangePassToggle() {
@@ -130,82 +403,14 @@ export default function RegisterShop({ route }) {
     }
   }
 
-  function checkValidate() {
-    var regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
-
-    if (!inputNewPassword.match(regPass)) {
-      ToastAndroid.show('Mật khẩu chưa đúng định dạng!', ToastAndroid.SHORT);
-      ToastAndroid.show('Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa và ký tự đặc biệt!', ToastAndroid.LONG);
-      return false;
+  React.useEffect(() => {
+    if (cdSendAgain > 0) {
+      setTimeout(() => {
+        var cd = cdSendAgain - 1;
+        setcdSendAgain(cd);
+      }, 1000)
     }
-
-    if (inputNewPassword != inputConfirmPassword) {
-      ToastAndroid.show('Mật khẩu nhập lại không trùng!', ToastAndroid.SHORT);
-      return false;
-    }
-
-    return true;
-  }
-
-  async function onChangePass() {
-    if (checkValidate() == false) {
-      return;
-    }
-
-    let objData = {};
-    objData = route.params.objShop;
-    objData.passWord = inputNewPassword;
-
-    Toast.show({
-      type: 'loading',
-      position: 'top',
-      text1: "Đang đăng ký tài khoản...",
-      bottomOffset: 20,
-      autoHide: false
-    });
-
-    var response = await axiosJSON.post('/user/register', objData)
-      .catch((e) => {
-        Toast.show({
-          type: 'error',
-          position: 'top',
-          text1: String(e.response.data.message),
-          bottomOffset: 20
-        });
-
-      });
-    if (response != undefined) {
-      if (response.status == 201) {
-        var data = response.data;
-        try {
-          if (data.success) {
-            Toast.show({
-              type: 'success',
-              position: 'top',
-              text1: String(data.message),
-              bottomOffset: 20
-            });
-            setTimeout(() =>
-              navigation.navigate('LoginScreen'), 1000)
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        var data = response.data;
-        try {
-          Toast.show({
-            type: 'error',
-            position: 'top',
-            text1: String(data.message),
-            bottomOffset: 20
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-  }
+  }, [cdSendAgain]);
 
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
@@ -247,9 +452,9 @@ export default function RegisterShop({ route }) {
               <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, marginHorizontal: 10, overflow: 'hidden' }}
                 onPress={onFrontCardPicked}>
                 {
-                  (pickedFrontCart != null)
+                  (pickedFrontCard != null)
                     ?
-                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedFrontCart.path) }} />
+                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedFrontCard.path) }} />
                     :
                     <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
                       <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
@@ -260,9 +465,9 @@ export default function RegisterShop({ route }) {
               <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }}
                 onPress={onBehindCardPicked}>
                 {
-                  (pickedBehindCart != null)
+                  (pickedBehindCard != null)
                     ?
-                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedBehindCart.path) }} />
+                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedBehindCard.path) }} />
                     :
                     <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
                       <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
@@ -276,7 +481,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 5
               }]}>Họ và tên</Text>
               <View>
-                <TextInput style={styles.textInputPass} value={fullNameCard}
+                <TextInput style={styles.textInput} value={fullNameCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -285,7 +490,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Số thẻ căn cước</Text>
               <View>
-                <TextInput style={styles.textInputPass} value={numberCard}
+                <TextInput style={styles.textInput} value={numberCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -294,7 +499,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Ngày sinh</Text>
               <View>
-                <TextInput style={styles.textInputPass} value={birthCard}
+                <TextInput style={styles.textInput} value={birthCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -310,8 +515,8 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Số điện thoại</Text>
               <View>
-                <TextInput style={[styles.textInputPass, { color: 'rgba(0, 24, 88, 0.80)' }]}
-                  value={(route.params.objShop.hotline) ? route.params.objShop.hotline : ""}
+                <TextInput style={[styles.textInput, { color: 'rgba(0, 24, 88, 0.80)' }]}
+                  value={(objShop.hotline != undefined) ? "+" + objShop.hotline : ""}
                   editable={false} />
               </View>
             </View>
@@ -320,18 +525,30 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ email</Text>
               <View>
-                <TextInput style={styles.textInputPass}
-                  onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                <TextInput style={styles.textInput} value={inputEmail}
+                  onChangeText={(input) => { setinputEmail(input) }} />
               </View>
             </View>
             <View>
               <Text style={[styles.titleInput, {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
-              }]}>Mã xác nhận</Text>
-              <View>
-                <TextInput style={styles.textInputPass}
-                  onChangeText={(input) => { setinputConfirmPassword(input) }} />
+              }]}>Mã xác minh</Text>
+              <View style={{ marginBottom: 25 }}>
+                <TextInput style={styles.textInput} value={inputOTP}
+                  maxLength={6} keyboardType='numeric'
+                  onChangeText={(input) => { setinputOTP(input) }} />
+                <TouchableOpacity onPress={onSendVerify} disabled={(cdSendAgain == 0) ? false : true}
+                  style={{ position: 'absolute', right: 5, top: '20%' }}>
+                  <Text style={[styles.textDetailRed, { fontSize: 15, color: '#4285F4' }]}>
+                    Gửi mã? {(cdSendAgain == 0) ? "" : "(" + cdSendAgain + ")"}
+                  </Text>
+                </TouchableOpacity>
               </View>
+              <TouchableHighlight style={{ backgroundColor: '#4285F4', position: 'absolute', right: 5, bottom: -10, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}
+                activeOpacity={0.5} underlayColor="#3677E3"
+                onPress={onVerifyCode}>
+                <Text style={{ fontSize: 15, color: '#FEF6E4', fontFamily: 'ProductSans' }}>Xác minh</Text>
+              </TouchableHighlight>
             </View>
           </View>
 
@@ -342,8 +559,8 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ cửa hàng</Text>
               <View>
-                <TextInput style={styles.textInputPass}
-                />
+                <TextInput style={styles.textInput} value={inputLocation}
+                  onChangeText={(input) => { setinputLocation(input) }} />
               </View>
             </View>
           </View>
@@ -402,8 +619,8 @@ export default function RegisterShop({ route }) {
 
           <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 35, marginBottom: 25 }]}
             activeOpacity={0.5} underlayColor="#DC749C"
-            onPress={onChangePass}>
-            <Text style={styles.textButtonConfirm}>Đăng ký</Text>
+            onPress={onContinue}>
+            <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
           </TouchableHighlight>
         </View>
       </ScrollView>

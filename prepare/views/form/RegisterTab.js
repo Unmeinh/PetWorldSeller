@@ -81,17 +81,15 @@ export default function RegisterTab(route) {
 
         var res = await onAxiosPost('/shop/checkPhoneNumber', { hotline: newShop.hotline }, 'json', true);
         if (res) {
-            // const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
-            // if (response != undefined && response.success) {
-            //     setTimeout(() => {
-            //         navigation.navigate('ConfirmOTP', { navigate: "RegisterShop", objShop: newShop, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
-            //     }, 500)
-            //     setisDisableRequest(false);
-            // } else {
-            //     setisDisableRequest(false);
-            // }
-            navigation.navigate('RegisterShop', { objShop: newShop });
-            setisDisableRequest(false);
+            const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
+            if (response != undefined && response.success) {
+                setTimeout(() => {
+                    navigation.navigate('ConfirmOTP', { navigate: "RegisterShop", objShop: newShop, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+                }, 500)
+                setisDisableRequest(false);
+            } else {
+                setisDisableRequest(false);
+            }
         } else {
             setisDisableRequest(false);
         }
