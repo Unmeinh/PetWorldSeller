@@ -10,43 +10,34 @@ let pinkLotus = '#F582AE';
 let darkBlue = '#001858';
 
 export default StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: yellowWhite,
+    formContainer: {
         paddingHorizontal: 30,
         paddingTop: 15
     },
 
     pawBottomLeft: {
-        position: 'absolute',
         top: WindowHeight - 87
     },
 
     pawBottomRight: {
-        position: 'absolute',
         top: WindowHeight - 107,
         right: 0
     },
 
     slash: {
-        color: darkBlue,
         fontSize: 40,
-        fontFamily: 'ProductSans',
         marginLeft: 3, marginRight: 3
     },
 
     textEnable: {
-        color: darkBlue,
         fontSize: 27,
         fontWeight: 'bold',
-        fontFamily: 'ProductSans',
     },
 
-    textDisable: {
+    textDisableLogin: {
         color: 'rgba(0, 24, 88, 0.35)',
         fontSize: 27,
         fontWeight: 'bold',
-        fontFamily: 'ProductSans',
     },
 
     textLeftGreetingLI: {
@@ -60,14 +51,12 @@ export default StyleSheet.create({
         color: '#00A4BB',
         fontSize: 18,
         fontWeight: 'bold',
-        fontFamily: 'ProductSans',
     },
 
     textRightGreeting: {
         color: 'rgba(0, 24, 88, 0.80)',
         fontSize: 18,
         fontWeight: '500',
-        fontFamily: 'ProductSans',
     },
 
     titleInput: {
@@ -76,17 +65,14 @@ export default StyleSheet.create({
         marginTop: 15
     },
 
-    dropdownSelect: {
+    dropdownSelectPhone: {
         position: 'absolute',
         top: '35%', left: 5
     },
 
-    textInput: {
+    textInputLogin: {
         marginTop: 7,
-        color: darkBlue,
         fontSize: 17,
-        fontFamily: 'ProductSans',
-        backgroundColor: lightBrown,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
@@ -102,11 +88,9 @@ export default StyleSheet.create({
         elevation: 5,
     },
 
-    viewInputSelect: {
-        flexDirection: 'row',
+    viewInputSelectPhone: {
         marginLeft: 15,
         marginTop: 7,
-        backgroundColor: lightBrown,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
@@ -122,10 +106,7 @@ export default StyleSheet.create({
     },
 
     textInputPhoneCountry: {
-        color: darkBlue,
         fontSize: 17,
-        fontFamily: 'ProductSans',
-        backgroundColor: lightBrown,
         width: 68,
         paddingLeft: 15,
         paddingHorizontal: 0,
@@ -135,10 +116,7 @@ export default StyleSheet.create({
     },
 
     textInputPhoneNumber: {
-        color: darkBlue,
         fontSize: 17,
-        fontFamily: 'ProductSans',
-        backgroundColor: lightBrown,
         width: (WindowWidth - 118) - 53,
         paddingRight: 15,
         paddingVertical: 9
@@ -148,10 +126,7 @@ export default StyleSheet.create({
         marginTop: 7,
         marginLeft: 15,
         width: WindowWidth - 100,
-        color: darkBlue,
         fontSize: 17,
-        fontFamily: 'ProductSans',
-        backgroundColor: lightBrown,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
@@ -169,10 +144,7 @@ export default StyleSheet.create({
 
     textInputPass: {
         marginTop: 7,
-        color: darkBlue,
         fontSize: 17,
-        fontFamily: 'ProductSans',
-        backgroundColor: lightBrown,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.50)',
@@ -197,50 +169,21 @@ export default StyleSheet.create({
         marginTop: 15, marginRight: 5
     },
 
-    buttonConfirm: {
+    buttonConfirmFullPink: {
         marginTop: 25,
         width: '100%',
         borderRadius: 10,
-        backgroundColor: pinkLotus,
-        alignItems: 'center',
         padding: 12,
         elevation: 10,
         shadowColor: "#000000",
     },
 
-    textButtonConfirm: {
-        color: yellowWhite,
+    textButtonConfirmFullPink: {
         fontSize: 23,
         fontWeight: 'bold',
-        fontFamily: 'ProductSans',
     },
 
-    viewContinue: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 40
-    },
-
-    textContinue: {
-        fontSize: 18,
-        color: darkBlue,
-        fontFamily: 'ProductSans',
-    },
-
-    barContinue: {
-        width: '27%',
-        height: 3,
-    },
-
-    borderIcon: {
-        padding: 9,
-        borderColor: lighBlue,
-        borderWidth: 1,
-        borderRadius: 30,
-    },
-
-    viewInfoShop: {
+    viewInfoShopConfirm: {
         backgroundColor: "#fff",
         marginTop: 15,
         marginBottom: 10,
@@ -260,29 +203,25 @@ export default StyleSheet.create({
         elevation: 5,
     },
 
-    titleLarge: {
+    titleLargeForm: {
         fontSize: 22,
         fontWeight: '700',
-        color: darkBlue,
-        fontFamily: 'ProductSans',
         marginTop: 5
     },
 
-    titleDetailFull: {
+    titleDetailForm: {
         fontSize: 17,
-        color: darkBlue,
-        fontFamily: 'ProductSans',
         marginTop: 10
     },
 
-    textDetail: {
+    textDetailForm: {
         fontSize: 17,
         color: 'rgba(0, 24, 88, 0.69)',
         fontFamily: 'ProductSans',
         margin: 10
     },
 
-    textDetailRed: {
+    textDetailFormRed: {
         fontSize: 17,
         fontFamily: 'ProductSans',
         margin: 10,
@@ -298,8 +237,6 @@ export default StyleSheet.create({
 
     inputOTP: {
         fontSize: 30,
-        fontFamily: 'ProductSans',
-        color: darkBlue,
         fontWeight: '700',
         // letterSpacing: 35,
         // width: '95%',

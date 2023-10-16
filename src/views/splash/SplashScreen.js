@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions, Image, Animated, Easing, Text } from 'rea
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
@@ -82,14 +83,16 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                let res = await onAxiosGet('/user/autoLogin')
+                let res = await onAxiosGet('/shop/autoLogin')
                 if (res) {
-                  if (res.success) {
-                    setnextScreen('HomeScreen');
+                  if (res.data == 1) {
+                    setnextScreen('NaviTabScreen');
                   } else {
-                    storageMMKV.setValue('login.token', "");
-                    setnextScreen('LoginScreen');
+                    setnextScreen('ConfirmedShop');
                   }
+                } else {
+                  storageMMKV.setValue('login.token', "");
+                  setnextScreen('LoginScreen');
                 }
               } else {
                 storageMMKV.setValue('login.token', "");
@@ -120,6 +123,7 @@ export default function SplashScreen() {
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
       onNavigate(nextScreen);
+      storageMMKV.setValue('login.isFirstTime', false);
     }
   }, [isFinishedOneTime, nextScreen]);
 
@@ -135,7 +139,7 @@ export default function SplashScreen() {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.justifyCenter, styles.itemsCenter]}>
       {logoVisible && (
         <Animatable.Image
           animation={{
@@ -145,13 +149,13 @@ export default function SplashScreen() {
           duration={3000}
           source={require('../../assets/images/gifs/catWaiting.gif')}
           style={[
-            styles.logo,
+            styles.positionAbsolute,
             { width: logoSize, height: logoSize, bottom: bottomPosition },
           ]}
         />
       )}
       {nameVisible && (
-        <Animatable.View animation="fadeIn" duration={1000} style={[styles.nameImageContainer, { top: nameBottomPosition }]}>
+        <Animatable.View animation="fadeIn" duration={1000} style={[styles.positionAbsolute, { top: nameBottomPosition }]}>
           {/* <Image
             source={require('../../assets/images/gifs/catWaiting.gif')}
             style={{ width: nameImageWidth, height: nameImageHeight }}
@@ -172,7 +176,7 @@ export default function SplashScreen() {
         </Animatable.View>
       )}
       {pawPositions.map((position, index) => (
-        <View onLayout={onLayoutPaw} key={position} style={[styles.pawContainer, { left: position * (pawContainerWidth + stepDistance) }]}>
+        <View onLayout={onLayoutPaw} key={position} style={[styles.positionAbsolute, { left: position * (pawContainerWidth + stepDistance), bottom: 0 }]}>
           <Foundation name='paw' size={25} color={"#000"} style={{
             bottom: index % 2 === 0 ? bottomPosition1 : bottomPosition2,
             height: 25,
@@ -184,26 +188,3 @@ export default function SplashScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FEF6E4',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    position: 'absolute',
-  },
-  nameImageContainer: {
-    position: 'absolute',
-  },
-  pawContainer: {
-    position: 'absolute',
-    bottom: 0,
-  },
-  pawImage: {
-    width: 24,
-    height: 24,
-  },
-});

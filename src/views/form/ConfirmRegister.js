@@ -3,7 +3,7 @@ import {
     TouchableHighlight,
 } from 'react-native'
 import React, { useState } from 'react'
-import styles from '../../styles/form.style';
+import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -31,13 +31,13 @@ export default function ConfirmRegister({ route }) {
     return (
         <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
             <HeaderTitle nav={navigation} titleHeader={'Xác nhận đăng ký'} colorHeader={'#FEF6E4'} />
-            <View style={styles.container}>
-                <Text style={[styles.titleDetailFull, { fontWeight: 'bold', marginBottom: 15, marginTop: 0 }]}>
+            <View style={[styles.container, styles.formContainer]}>
+                <Text style={[styles.titleDetailForm, styles.textDarkBlue, { fontWeight: 'bold', marginBottom: 15, marginTop: 0 }]}>
                     Hãy đọc kỹ các thông tin dưới đây. Bạn sẽ không thể sửa đổi chúng sau khi đăng ký cửa hàng!
                 </Text>
 
-                <View style={styles.viewInfoShop}>
-                    <Text style={styles.titleDetailFull}>
+                <View style={styles.viewInfoShopConfirm}>
+                    <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
                         Thông tin cửa hàng
                     </Text>
                     <Text style={[styles.titleInput, {
@@ -54,8 +54,8 @@ export default function ConfirmRegister({ route }) {
                     }]}>+{objShop.hotline}</Text>
                 </View>
 
-                <View style={styles.viewInfoShop}>
-                    <Text style={styles.titleDetailFull}>
+                <View style={styles.viewInfoShopConfirm}>
+                    <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
                         Thông tin chủ cửa hàng
                     </Text>
                     <Text style={[styles.titleInput, {
@@ -78,10 +78,10 @@ export default function ConfirmRegister({ route }) {
                     }]}>{objShop.dateBirth}</Text>
                 </View>
 
-                <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 35 }]}
+                <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 35 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
                     onPress={onRegister}>
-                    <Text style={styles.textButtonConfirm}>Xác nhận</Text>
+                    <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Xác nhận</Text>
                 </TouchableHighlight>
             </View>
         </View>

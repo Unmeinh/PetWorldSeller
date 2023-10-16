@@ -9,6 +9,7 @@ import ChangePassword from '../views/form/ChangePassword';
 import RegisterShop from '../views/form/RegisterShop';
 import ConfirmRegister from '../views/form/ConfirmRegister';
 import ConfirmedShop from '../views/form/ConfirmedShop';
+import NaviTabScreen from '../views/home/NaviTabScreen';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -38,6 +39,7 @@ export default function StackScreen() {
         <Stack.Screen name="RegisterShop" component={RegisterShop} />
         <Stack.Screen name="ConfirmRegister" component={ConfirmRegister} />
         <Stack.Screen name="ConfirmedShop" component={ConfirmedShop} />
+        <Stack.Screen name="NaviTabScreen" component={NaviTabScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useState, useRef, memo } from "react";
 import Modal from 'react-native-modal';
-import styles from "../../styles/form.style";
+import styles from "../../styles/all.style";
 import arr_country from '../../data/country';
 
 const PhoneSelect = ({ callBack, isShow, width }) => {

@@ -6,7 +6,7 @@ import {
     ToastAndroid
 } from 'react-native';
 import React, { useState } from 'react';
-import styles from '../../styles/form.style';
+import styles from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -67,7 +67,7 @@ export default function LoginTab(route) {
     }
 
     async function onSignIn() {
-        var newUser = {
+        var newShop = {
             userName: inputUsername,
             passWord: inputPassword
         }
@@ -86,7 +86,7 @@ export default function LoginTab(route) {
             autoHide: false
         });
 
-        const response = await onAxiosPost('user/login', newUser, "Json");
+        const response = await onAxiosPost('shop/login', newShop, "Json", true);
         if (response) {
             storageMMKV.setValue('login.token', String(response.token));
             if (rememberMe) {
@@ -96,7 +96,11 @@ export default function LoginTab(route) {
             }
             if (storageMMKV.getString('login.token') == String(response.token)) {
                 Toast.hide();
-                navigation.navigate('NaviTabScreen');
+                if (response.data.shopStatus == 0) {
+                    navigation.navigate('ConfirmedShop');
+                } else {
+                    navigation.navigate('NaviTabScreen');
+                }
             }
         } else {
             setisDisableRequest(false);
@@ -104,25 +108,25 @@ export default function LoginTab(route) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, styles.formContainer]}>
             <Image style={{ position: 'absolute', right: 0 }}
                 source={require('../../assets/images/form/topRightPaw.png')} />
-            <Image style={styles.pawBottomLeft}
+            <Image style={[styles.pawBottomLeft, styles.positionAbsolute]}
                 source={require('../../assets/images/form/bottomLeftPaw.png')} />
             <View style={{ marginTop: 75 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.textEnable}>Đăng nhập</Text>
-                    <Text style={styles.slash}>/</Text>
+                    <Text style={[styles.textDarkBlue, styles.textEnable]}>Đăng nhập</Text>
+                    <Text style={[styles.slash, styles.textDarkBlue]}>/</Text>
                     <TouchableHighlight
                         activeOpacity={0.5} underlayColor="#F3D2C1"
                         onPress={onChangeTab}>
-                        <Text style={styles.textDisable}>Đăng ký</Text>
+                        <Text style={[styles.textDarkBlue, styles.textDisableLogin]}>Đăng ký</Text>
                     </TouchableHighlight>
                 </View>
 
                 <View style={{ flexDirection: 'row', marginLeft: 20, marginTop: 5 }}>
-                    <Text style={styles.textLeftGreetingLI}>Chào mừng</Text>
-                    <Text style={styles.textRightGreeting}> bạn trở lại!</Text>
+                    <Text style={[styles.textDarkBlue, styles.textLeftGreetingLI]}>Chào mừng</Text>
+                    <Text style={[styles.textDarkBlue, styles.textRightGreeting]}> bạn trở lại!</Text>
                 </View>
 
                 <View style={{ marginTop: 30 }}>
@@ -130,7 +134,7 @@ export default function LoginTab(route) {
                         <Text style={[{
                             color: 'rgba(0, 24, 88, 0.80)',
                         }, styles.titleInput]}>Tên đăng nhập</Text>
-                        <TextInput style={styles.textInput} value={inputUsername}
+                        <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputUsername}
                             onChangeText={(input) => { setinputUsername(input) }} />
                     </View>
                     <View>
@@ -138,7 +142,7 @@ export default function LoginTab(route) {
                             color: 'rgba(0, 24, 88, 0.80)',
                         }, styles.titleInput]}>Mật khẩu</Text>
                         <View>
-                            <TextInput style={styles.textInputPass}
+                            <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                                 secureTextEntry={passToggle} value={inputPassword}
                                 onChangeText={(input) => { setinputPassword(input) }} />
                             {
@@ -184,10 +188,10 @@ export default function LoginTab(route) {
                         </TouchableHighlight>
                     </View>
 
-                    <TouchableHighlight style={styles.buttonConfirm}
+                    <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 45 }]}
                         activeOpacity={0.5} underlayColor="#DC749C"
                         onPress={onSignIn} disabled={isDisableRequest}>
-                        <Text style={styles.textButtonConfirm}>Đăng nhập</Text>
+                        <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Đăng nhập</Text>
                     </TouchableHighlight>
 
                 </View>

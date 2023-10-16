@@ -6,13 +6,12 @@ import {
   ToastAndroid
 } from 'react-native'
 import React, { useState } from 'react'
-import styles from '../../styles/form.style';
+import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../components/layout/ToastLayout';
 
 export default function ChangePassword({ route }) {
   const navigation = useNavigation();
@@ -121,11 +120,11 @@ export default function ChangePassword({ route }) {
   return (
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
       <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
-      <View style={styles.container}>
-        <Text style={styles.titleLarge}>
+      <View style={[styles.container, styles.formContainer]}>
+        <Text style={[styles.titleLargeForm, styles.textDarkBlue]}>
           Thiết lập mật khẩu mới
         </Text>
-        <Text style={styles.textDetail}>
+        <Text style={styles.textDetailForm}>
           Hãy nhập mật khẩu mới của bạn.{'\n'}
           Mật khẩu cần dài ít nhất 8 ký tự. {'\n'}
           Bao gồm tối thiểu 1 chữ hoa,{'\n'}
@@ -137,7 +136,7 @@ export default function ChangePassword({ route }) {
             color: 'rgba(0, 24, 88, 0.80)',
           }, styles.titleInput]}>Mật khẩu mới</Text>
           <View>
-            <TextInput style={styles.textInputPass}
+            <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
               secureTextEntry={passToggle} value={inputNewPassword}
               onChangeText={(input) => { setinputNewPassword(input) }} />
             {
@@ -161,7 +160,7 @@ export default function ChangePassword({ route }) {
             color: 'rgba(0, 24, 88, 0.80)',
           }, styles.titleInput]}>Nhập lại mật khẩu mới</Text>
           <View>
-            <TextInput style={styles.textInputPass}
+            <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
               secureTextEntry={confirmPassToggle} value={inputConfirmPassword}
               onChangeText={(input) => { setinputConfirmPassword(input) }} />
             {
@@ -180,13 +179,12 @@ export default function ChangePassword({ route }) {
           </View>
         </View>
 
-        <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
+        <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 75 }]}
           activeOpacity={0.5} underlayColor="#DC749C"
           onPress={onChangePass}>
-          <Text style={styles.textButtonConfirm}>Xác nhận</Text>
+          <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Xác nhận</Text>
         </TouchableHighlight>
       </View>
-      <ToastLayout/>
     </View>
   )
 }

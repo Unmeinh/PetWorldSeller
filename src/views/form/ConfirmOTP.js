@@ -6,15 +6,14 @@ import {
     TextInput
 } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
-import styles from '../../styles/form.style';
+import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import OTPTextInput from 'react-native-otp-textinput';
 import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../components/layout/ToastLayout';
 import auth from '@react-native-firebase/auth';
 import { startOtpListener } from 'react-native-otp-verify';
 import { useNavigation } from '@react-navigation/native';
-import { onSendOTPbyPhoneNumber, onSendOTPbyEmail, onVerifyOTPbyEmail } from '../../function/functionOTP';
+import { onSendOTPbyPhoneNumber, onSendOTPbyEmail, onVerifyOTPbyEmail } from '../../utils/functionSupport';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
@@ -244,25 +243,25 @@ export default function ConfirmOTP({ route }) {
     return (
         <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
             <HeaderTitle nav={navigation} titleHeader={'Nhập mã xác minh'} colorHeader={'#FEF6E4'} />
-            <View style={styles.container}>
-                <Text style={styles.titleLarge}>
+            <View style={[styles.container, styles.formContainer]}>
+                <Text style={[styles.titleLargeForm, styles.textDarkBlue]}>
                     Nhập mã xác minh
                 </Text>
                 {
                     (inputTypeVerify != 'email')
-                        ? <Text style={styles.textDetail}>
+                        ? <Text style={styles.textDetailForm}>
                             Hãy nhập mã xác minh 6 số đã được{'\n'}gửi về số {phoneNumberDisplay} của bạn.
                         </Text>
-                        : <Text style={styles.textDetail}>
+                        : <Text style={styles.textDetailForm}>
                             Hãy nhập mã xác minh 6 số đã được{'\n'}gửi về email {emailDisplay} của bạn.
                         </Text>
                 }
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.textDetail}>
+                    <Text style={styles.textDetailForm}>
                         Chưa nhận được mã?
                     </Text>
                     <TouchableOpacity onPress={onSendAgain} disabled={(cdSendAgain == 0) ? false : true}>
-                        <Text style={[styles.textDetailRed]}>
+                        <Text style={[styles.textDetailFormRed]}>
                             Gửi lại! {(cdSendAgain == 0) ? "" : "(" + cdSendAgain + ")"}
                         </Text>
                     </TouchableOpacity>
@@ -272,17 +271,16 @@ export default function ConfirmOTP({ route }) {
                     <OTPTextInput ref={e => (otpRef = e)} handleTextChange={(input) => onChangeOTPInput(input)}
                         inputCount={6} defaultValue=''
                         tintColor={'#8BD3DD'}
-                        textInputStyle={styles.inputOTP}
+                        textInputStyle={[styles.inputOTP, styles.textDarkBlue]}
                     />
                 </View>
 
-                <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 75 }]}
+                <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 75 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
                     onPress={onContinue} disabled={isDisableRequest}>
-                    <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
+                    <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Tiếp tục</Text>
                 </TouchableHighlight>
             </View>
-            <ToastLayout />
         </View>
     )
 }

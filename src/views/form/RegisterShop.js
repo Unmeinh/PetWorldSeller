@@ -7,13 +7,12 @@ import {
   ScrollView
 } from 'react-native'
 import React, { useState } from 'react'
-import styles from '../../styles/form.style';
+import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
-import { ToastLayout } from '../../components/layout/ToastLayout';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import { onAxiosPost } from '../../api/axios.function';
@@ -355,7 +354,7 @@ export default function RegisterShop({ route }) {
     var formData = new FormData();
     formData.append("nameShop", objShop.nameShop);
     formData.append("email", inputEmail);
-    formData.append("locationShop", inputEmail);
+    formData.append("locationShop", inputLocation);
     formData.append("userName", objShop.userName);
     formData.append("passWord", inputNewPassword);
     formData.append("hotline", objShop.hotline);
@@ -416,8 +415,8 @@ export default function RegisterShop({ route }) {
     <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
       <HeaderTitle nav={navigation} titleHeader={'Đăng ký thông tin'} colorHeader={'#FEF6E4'} />
       <ScrollView>
-        <View style={styles.container}>
-          <Text style={[styles.titleDetailFull, { fontWeight: 'bold', marginBottom: 15, marginTop: 0 }]}>
+        <View style={[styles.container, styles.formContainer]}>
+          <Text style={[styles.titleDetailForm, styles.textDarkBlue, { fontWeight: 'bold', marginBottom: 15, marginTop: 0 }]}>
             Hãy bắt đầu tạo cửa hàng của bạn
           </Text>
 
@@ -441,7 +440,7 @@ export default function RegisterShop({ route }) {
 
           <View>
             <View style={{ backgroundColor: '#C7C5C5', height: 1.5, width: '100%', }}></View>
-            <Text style={styles.titleDetailFull}>
+            <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
               Thông tin chủ cửa hàng
             </Text>
             <Text style={[{
@@ -481,7 +480,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 5
               }]}>Họ và tên</Text>
               <View>
-                <TextInput style={styles.textInput} value={fullNameCard}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={fullNameCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -490,7 +489,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Số thẻ căn cước</Text>
               <View>
-                <TextInput style={styles.textInput} value={numberCard}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={numberCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -499,7 +498,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Ngày sinh</Text>
               <View>
-                <TextInput style={styles.textInput} value={birthCard}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={birthCard}
                   onChangeText={(input) => { setinputConfirmPassword(input) }} />
               </View>
             </View>
@@ -507,7 +506,7 @@ export default function RegisterShop({ route }) {
 
           <View>
             <View style={{ backgroundColor: '#C7C5C5', height: 1.5, width: '100%', marginTop: 20 }}></View>
-            <Text style={styles.titleDetailFull}>
+            <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
               Thông tin liên hệ
             </Text>
             <View>
@@ -515,7 +514,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Số điện thoại</Text>
               <View>
-                <TextInput style={[styles.textInput, { color: 'rgba(0, 24, 88, 0.80)' }]}
+                <TextInput style={[[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown], { color: 'rgba(0, 24, 88, 0.80)' }]}
                   value={(objShop.hotline != undefined) ? "+" + objShop.hotline : ""}
                   editable={false} />
               </View>
@@ -525,7 +524,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ email</Text>
               <View>
-                <TextInput style={styles.textInput} value={inputEmail}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputEmail}
                   onChangeText={(input) => { setinputEmail(input) }} />
               </View>
             </View>
@@ -534,12 +533,12 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Mã xác minh</Text>
               <View style={{ marginBottom: 25 }}>
-                <TextInput style={styles.textInput} value={inputOTP}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputOTP}
                   maxLength={6} keyboardType='numeric'
                   onChangeText={(input) => { setinputOTP(input) }} />
                 <TouchableOpacity onPress={onSendVerify} disabled={(cdSendAgain == 0) ? false : true}
                   style={{ position: 'absolute', right: 5, top: '20%' }}>
-                  <Text style={[styles.textDetailRed, { fontSize: 15, color: '#4285F4' }]}>
+                  <Text style={[styles.textDetailFormRed, { fontSize: 15, color: '#4285F4' }]}>
                     Gửi mã? {(cdSendAgain == 0) ? "" : "(" + cdSendAgain + ")"}
                   </Text>
                 </TouchableOpacity>
@@ -559,7 +558,7 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ cửa hàng</Text>
               <View>
-                <TextInput style={styles.textInput} value={inputLocation}
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputLocation}
                   onChangeText={(input) => { setinputLocation(input) }} />
               </View>
             </View>
@@ -567,14 +566,14 @@ export default function RegisterShop({ route }) {
 
           <View>
             <View style={{ backgroundColor: '#C7C5C5', height: 1.5, width: '100%', marginTop: 20 }}></View>
-            <Text style={styles.titleDetailFull}>
+            <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
               Mật khẩu tài khoản
             </Text>
             <Text style={[{
               color: 'rgba(0, 24, 88, 0.80)',
             }, styles.titleInput]}>Mật khẩu mới</Text>
             <View>
-              <TextInput style={styles.textInputPass}
+              <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={passToggle} value={inputNewPassword}
                 onChangeText={(input) => { setinputNewPassword(input) }} />
               {
@@ -598,7 +597,7 @@ export default function RegisterShop({ route }) {
               color: 'rgba(0, 24, 88, 0.80)',
             }, styles.titleInput]}>Nhập lại mật khẩu mới</Text>
             <View>
-              <TextInput style={styles.textInputPass}
+              <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={confirmPassToggle} value={inputConfirmPassword}
                 onChangeText={(input) => { setinputConfirmPassword(input) }} />
               {
@@ -617,14 +616,13 @@ export default function RegisterShop({ route }) {
             </View>
           </View>
 
-          <TouchableHighlight style={[styles.buttonConfirm, { marginTop: 35, marginBottom: 25 }]}
+          <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 35, marginBottom: 25 }]}
             activeOpacity={0.5} underlayColor="#DC749C"
             onPress={onContinue}>
-            <Text style={styles.textButtonConfirm}>Tiếp tục</Text>
+            <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Tiếp tục</Text>
           </TouchableHighlight>
         </View>
       </ScrollView>
-      <ToastLayout />
     </View>
   )
 }
