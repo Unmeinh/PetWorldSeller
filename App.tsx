@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from './prepare/redux/store';
-import StackScreen from './prepare/navigation/StackScreen';
-import { ToastLayout } from './prepare/components/layout/ToastLayout';
+import store from './src/redux/store';
+import StackScreen from './src/navigation/StackScreen';
+import { ToastLayout } from './src/components/layout/ToastLayout';
 // import {useAppState} from '@react-native-community/hooks'
 
 // const currentAppState = useAppState()
