@@ -1,10 +1,30 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import api from '../../../api/axios.config';
+import { onAxiosGet } from '../../../api/axios.function';
 
 const listProductSlice = createSlice({
   name: 'listProduct',
   initialState: { status: 'idle', data: [], message: '' },
-  reducers: {},
+  reducers: {
+    addProduct: (state, action) => {
+      state.data.unshift(action.payload)
+    },
+    updateProduct: (state, action) => {
+      if (state.data.length > 0) {
+        let i = state.data.findIndex((product) => String(product._id) == action.payload[0]);
+        if (i > -1) {
+          state.data.splice(i, 1, action.payload[1])
+        }
+      }
+    },
+    removeProduct: (state, action) => {
+      if (state.data.length > 0) {
+        let i = state.data.findIndex((product) => String(product._id) == action.payload);
+        if (i > -1) {
+          state.data.splice(i, 1)
+        }
+      }
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchProducts.pending, (state, action) => {
@@ -22,10 +42,11 @@ const listProductSlice = createSlice({
 });
 
 export const fetchProducts = createAsyncThunk(
-  'products/fetchProducts', async () => {
-    const res = await api.get(`/pet/list/all?page=${page}`);
-    return res.data;
+  'shop/fetchProducts', async () => {
+    const res = await onAxiosGet('shop/list/product');
+    return res;
   },
 );
 
+export const { addProduct, updateProduct, removeProduct } = listProductSlice.actions;
 export default listProductSlice.reducer;

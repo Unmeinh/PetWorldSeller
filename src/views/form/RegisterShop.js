@@ -49,7 +49,8 @@ export default function RegisterShop({ route }) {
         isCropCircle: true,
         singleSelectedMode: true
       });
-      setpickedAvatar(response);
+      response.crop.path = "file://" + response.crop.path;
+      setpickedAvatar([response.crop]);
     } catch (error) {
       console.log(error);
     }
@@ -61,7 +62,6 @@ export default function RegisterShop({ route }) {
         mediaType: 'image',
         selectedAssets: 'Images',
         doneTitle: 'Xong',
-        isCrop: true,
         singleSelectedMode: true
       });
       setpickedFrontCard(response);
@@ -132,7 +132,6 @@ export default function RegisterShop({ route }) {
         mediaType: 'image',
         selectedAssets: 'Images',
         doneTitle: 'Xong',
-        isCrop: true,
         singleSelectedMode: true
       });
       setpickedBehindCard(response);

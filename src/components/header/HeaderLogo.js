@@ -10,7 +10,7 @@ export default function HeaderLogo({ colorHeader }) {
             paddingBottom: 10,
             marginBottom: 3,
             shadowColor: '#000',
-            elevation: 5,
+            // elevation: 5,
         }}>
             <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

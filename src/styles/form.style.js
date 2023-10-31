@@ -15,6 +15,27 @@ export default StyleSheet.create({
         paddingTop: 15
     },
 
+    viewChartContainer: {
+        backgroundColor: "#fff",
+        marginTop: 15,
+        marginBottom: 10,
+        paddingVertical: 10,
+        marginHorizontal: 5,
+        paddingTop: 20,
+        overflow: 'hidden',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        borderColor: '#000',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+
     pawBottomLeft: {
         top: WindowHeight - 87
     },

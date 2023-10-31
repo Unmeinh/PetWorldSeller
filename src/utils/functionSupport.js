@@ -78,6 +78,11 @@ export function getTimeDefault(inputDate) {
     return "Lúc " + date.format("HH:mm A");
 }
 
+export function getDateTimeDefault(inputDate) {
+    let date = Moment(inputDate);
+    return date.format("DD/MM/YYYY HH:mm A");
+}
+
 export function getMonthVietnamese(inputDate) {
     let date = new Date();
     if (date.getMonth() == new Date(inputDate).getMonth()) {
@@ -102,6 +107,22 @@ export function getMonthVietnamese(inputDate) {
 function toDateUpperCase(date) {
     let upcaseHead = date.substring(0, 1).toLocaleUpperCase();
     return upcaseHead + date.substring(1);
+}
+
+export function getPreviosMonth(nMonth) {
+    const months = [];
+    const endDate = new Date();
+    const lastnMonth = new Date(endDate.getFullYear(), endDate.getMonth() - (nMonth - 1), 1);
+    let currentDate = new Date(lastnMonth);
+
+    while (currentDate <= endDate) {
+        let previusDate = currentDate.toISOString();
+        let nowDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1).toISOString();
+        let date = currentDate.toLocaleString('en', { month: 'numeric', year: 'numeric' });
+        months.push(date);
+        currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+    return months;
 }
 
 //OTP
@@ -242,13 +263,51 @@ export async function onSharingBlog(blogId) {
 //Hash
 export function encodeToAscii(inputString) {
     return inputString.split("")
-    .map(c => c.charCodeAt(0).toString(16).padStart(2, "0"))
-    .join("");
+        .map(c => c.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join("");
 }
 
 export function decodeFromAscii(inputString) {
     return inputString.split(/(\w\w)/g)
-    .filter(p => !!p)
-    .map(c => String.fromCharCode(parseInt(c, 16)))
-    .join("")
+        .filter(p => !!p)
+        .map(c => String.fromCharCode(parseInt(c, 16)))
+        .join("")
+}
+
+//Number
+export function convertInputToFloat(inputValue, integerLength, surplusLength, inputType) {
+    if (inputValue.indexOf(',') > -1) {
+        let intValue = inputValue.substring(0, inputValue.indexOf(','));
+        let surplus = inputValue.substring(inputValue.indexOf(',') + 1).replace(/\D/g, '');
+        let value = intValue + "," + surplus;
+        if (intValue.length > integerLength) {
+            Toast.show({
+                type: 'error',
+                text1: 'Phần số nguyên không dài quá 3 số!',
+                position: 'top'
+            });
+            return false;
+        } 
+        if (surplus.length > surplusLength) {
+            Toast.show({
+                type: 'error',
+                text1: 'Phần số dư không dài quá 2 số!',
+                position: 'top'
+            });
+            return false;
+        } 
+        return value;
+    } else {
+        let value = inputValue.replace(/\D/g, '');
+        if (value.length > integerLength) {
+            Toast.show({
+                type: 'error',
+                text1: (inputType) ? inputType + ' không dài quá 3 số!' : 'Số nhập không dài quá 3 số!',
+                position: 'top'
+            });
+            return false;
+        } else {
+            return value;
+        }
+    }
 }

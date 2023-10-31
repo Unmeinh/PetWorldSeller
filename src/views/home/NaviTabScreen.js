@@ -13,10 +13,10 @@ import NotifyScreen from '../notify/NotifyScreen';
 import AccountScreen from '../account/AccountScreen';
 
 const TabArr = [
-    { route: 'Home', label: 'Home', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Product', label: 'Product', icon: 'boxes', component: ProductScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Notify', label: 'Notify', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
-    { route: 'Account', label: 'Account', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Home', label: 'Trang chủ', icon: 'home', component: HomeScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Product', label: 'Quản lý', icon: 'boxes', component: ProductScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Notify', label: 'Thông báo', icon: 'bell', component: NotifyScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
+    { route: 'Account', label: 'Tài khoản', icon: 'id-badge', component: AccountScreen, color: '#8BD3DD', alphaClr: '#F3D2C1' },
 ];
 
 const Tab = createBottomTabNavigator();

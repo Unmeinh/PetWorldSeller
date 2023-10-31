@@ -90,9 +90,6 @@ export default function SplashScreen() {
                   } else {
                     setnextScreen('ConfirmedShop');
                   }
-                } else {
-                  storageMMKV.setValue('login.token', "");
-                  setnextScreen('LoginScreen');
                 }
               } else {
                 storageMMKV.setValue('login.token', "");
@@ -172,6 +169,10 @@ export default function SplashScreen() {
               </View>
             </View>
             <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>URPET</Text>
+              <Text style={{
+                fontSize: 25, color: '#001858',
+                position: 'absolute'
+              }}>Seller</Text>
           </View>
         </Animatable.View>
       )}

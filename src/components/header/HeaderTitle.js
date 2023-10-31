@@ -1,8 +1,9 @@
 import {TouchableOpacity, Text, View} from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { onGoBack } from '../../navigation/rootNavigation';
 
-export default function HeaderTitle({nav, titleHeader, colorHeader, callback}) {
+export default function HeaderTitle({titleHeader, colorHeader, callback}) {
   return (
     <View
       style={{
@@ -20,7 +21,7 @@ export default function HeaderTitle({nav, titleHeader, colorHeader, callback}) {
           if (callback) {
             callback();
           }else {
-            nav.goBack();
+            onGoBack();
           }
 
         }}>

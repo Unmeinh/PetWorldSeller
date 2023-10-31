@@ -1,6 +1,9 @@
 import { StyleSheet, StatusBar, Dimensions } from 'react-native';
 import formStyle from './form.style';
 import toastStyle from './toast.style';
+import productStyle from './product.style';
+import accountStyle from './account.style';
+import appointmentStyle from './appointment.style';
 export let WindowWidth = Dimensions.get("window").width;
 export let WindowHeight = Dimensions.get("window").height;
 export let StatusHeight = StatusBar.currentHeight;
@@ -119,5 +122,8 @@ export default StyleSheet.create({
     },
 
     ...formStyle,
-    ...toastStyle
+    ...toastStyle,
+    ...productStyle,
+    ...accountStyle,
+    ...appointmentStyle
 });
