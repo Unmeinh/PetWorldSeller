@@ -11,7 +11,6 @@ import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
-import { axiosJSON } from '../../api/axios.config';
 import Toast from 'react-native-toast-message';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
@@ -315,7 +314,7 @@ export default function RegisterShop({ route }) {
     if (!inputNewPassword.match(regPass)) {
       Toast.show({
         type: 'error',
-        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, chữ cái viết thường, chữ viết hoa!',
+        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, một chữ viết thường, chữ viết hoa!',
         position: 'top',
         props: {
           isTextLong: true

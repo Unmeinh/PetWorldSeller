@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 import * as Progress from 'react-native-progress';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { WindowHeight, WindowWidth } from '../../styles/all.style';
 
 export function ToastLayout() {
 
@@ -67,9 +68,9 @@ export function ToastLayout() {
                 </View>
                 <View style={{
                     zIndex: 150,
-                    backgroundColor: "#0000001A",
-                    height: Dimensions.get('screen').height * 2,
-                    width: Dimensions.get('window').width,
+                    backgroundColor: "#00000033",
+                    height: WindowHeight * 10,
+                    width: WindowWidth,
                     position: 'absolute',
                     top: -200
                 }} />

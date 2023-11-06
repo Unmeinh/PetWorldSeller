@@ -18,29 +18,6 @@ import Toast from 'react-native-toast-message';
 import { onAxiosDelete } from '../../api/axios.function';
 
 const PetTab = () => {
-    // const [pets, setpets] = useState([
-    //     {
-    //         namePet: "Hina cat cute sexy peeing public 😭",
-    //         pricePet: 999999999,
-    //         amountPet: 1,
-    //         createdAt: new Date(),
-    //         imagesPet: ["https://cdn.donmai.us/original/9b/5c/__hina_blue_archive_drawn_by_fukiko_can_of_miso__9b5c660c71549f6ddc9a19efa8117615.jpg"]
-    //     },
-    //     {
-    //         namePet: "Shiroko cute sexy pussy peeing 😭",
-    //         pricePet: 999999999,
-    //         amountPet: 1,
-    //         createdAt: new Date('2023-10-17'),
-    //         imagesPet: ["https://cdn.donmai.us/original/eb/2c/__shiroko_and_shiroko_blue_archive_drawn_by_toritora__eb2cf245c89c6eebfd5c4fc1997b7c3c.jpg"]
-    //     },
-    //     {
-    //         namePet: "Fubuki cat in heat sexy peeing 😭",
-    //         pricePet: 999999999,
-    //         amountPet: 1,
-    //         createdAt: new Date('2023-10-14'),
-    //         imagesPet: ["https://cdn.donmai.us/original/62/f0/__shirakami_fubuki_and_shirakami_fubuki_hololive_drawn_by_sinasimu4746__62f06e87adffc5ef7bd8bdd12cd1452d.png"]
-    //     },
-    // ])
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const pets = useSelector(listPetSelector);

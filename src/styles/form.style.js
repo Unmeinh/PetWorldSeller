@@ -140,13 +140,14 @@ export default StyleSheet.create({
         fontSize: 17,
         width: (WindowWidth - 118) - 53,
         paddingRight: 15,
-        paddingVertical: 9
+        paddingVertical: 9,
     },
 
     textInputSelect: {
         marginTop: 7,
         marginLeft: 15,
         width: WindowWidth - 100,
+        height: 48,
         fontSize: 17,
         borderRadius: 10,
         borderWidth: 1,

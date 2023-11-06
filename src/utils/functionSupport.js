@@ -1,7 +1,7 @@
 import Moment from 'moment';
 import "moment/locale/vi";
 import Toast from 'react-native-toast-message';
-import { axiosJSON } from '../api/axios.config';
+import { onAxiosPost } from '../api/axios.function';
 import auth from '@react-native-firebase/auth';
 import { Share } from 'react-native';
 
@@ -155,88 +155,20 @@ export async function onSendOTPbyEmail(email) {
         bottomOffset: 20,
         autoHide: false
     });
-    var response = await axiosJSON.post('user/sendResetPasswordEmail', { email: email })
-        .catch((e) => {
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: String(e.response.data.message),
-                bottomOffset: 20
-            });
-            return false;
-        });
-    if (response != undefined) {
-        if (response.status == 200) {
-            var data = response.data;
-            try {
-                if (data.success) {
-                    Toast.show({
-                        type: 'success',
-                        position: 'top',
-                        text1: String(data.message),
-                        bottomOffset: 20
-                    });
-
-                    return true;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            var data = response.data;
-            try {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
-            } catch (error) {
-                console.log(error);
-            }
-            return false;
-        }
+    var response = await onAxiosPost('shop/sendResetPasswordEmail', { email: email }, 'json', true);
+    if (response && response.success) {
+        return true;
+    } else {
+        return false;
     }
 }
 
 export async function onVerifyOTPbyEmail(email, otp) {
-    var response = await axiosJSON.post('user/verifyResetPasswordCode', { email: email, otp: otp })
-        .catch((e) => {
-            // var data = response.data;
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: String(e.response.data.message),
-                bottomOffset: 20
-            });
-            return false;
-        });
-    if (response != undefined) {
-        if (response.status == 200) {
-            var data = response.data;
-            if (data.success) {
-                Toast.show({
-                    type: 'success',
-                    position: 'top',
-                    text1: 'Thành công',
-                    bottomOffset: 20
-                });
-                return true;
-            }
-        } else {
-            var data = response.data;
-            try {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: String(data.message),
-                    bottomOffset: 20
-                });
-            } catch (error) {
-                console.log(error);
-            }
-            return false;
-        }
+    var response = await onAxiosPost('user/verifyResetPasswordCode', { email: email, otp: otp }, 'json', true);
+    if (response && response.success) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -287,7 +219,7 @@ export function convertInputToFloat(inputValue, integerLength, surplusLength, in
                 position: 'top'
             });
             return false;
-        } 
+        }
         if (surplus.length > surplusLength) {
             Toast.show({
                 type: 'error',
@@ -295,7 +227,7 @@ export function convertInputToFloat(inputValue, integerLength, surplusLength, in
                 position: 'top'
             });
             return false;
-        } 
+        }
         return value;
     } else {
         let value = inputValue.replace(/\D/g, '');

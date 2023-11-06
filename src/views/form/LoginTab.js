@@ -76,7 +76,7 @@ export default function LoginTab(route) {
             return;
         }
 
-        setisDisableRequest(true);
+        // setisDisableRequest(true);
 
         Toast.show({
             type: 'loading',

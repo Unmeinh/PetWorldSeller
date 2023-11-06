@@ -18,29 +18,6 @@ import Toast from 'react-native-toast-message';
 import { onAxiosDelete } from '../../api/axios.function';
 
 const ProductTab = () => {
-    // const [products, setproducts] = useState([
-    //     {
-    //         nameProduct: "Delicious milk from big breast in cup 😋",
-    //         priceProduct: 999999999,
-    //         amountProduct: 1,
-    //         createdAt: new Date(),
-    //         arrProduct: ["https://cdn.donmai.us/original/aa/b6/__alpaca_suri_kemono_friends_drawn_by_tyamame589__aab6f29848d40a053eec9e899455a415.jpg"]
-    //     },
-    //     {
-    //         nameProduct: "Seia's holy water 😋",
-    //         priceProduct: 999999999,
-    //         amountProduct: 1,
-    //         createdAt: new Date('2023-10-16'),
-    //         arrProduct: ["https://cdn.donmai.us/original/18/56/__seia_blue_archive_drawn_by_mitsumine_raimu__1856ca8480fa0373659e4151c5066c2d.jpg"]
-    //     },
-    //     {
-    //         nameProduct: "Mari's holy water 😋",
-    //         priceProduct: 999999999,
-    //         amountProduct: 1,
-    //         createdAt: new Date('2023-10-15'),
-    //         arrProduct: ["https://cdn.donmai.us/original/67/0a/__mari_and_mari_blue_archive_drawn_by_shimokirin__670ac259c5efa88e63b0baa0d427deef.jpg"]
-    //     },
-    // ])
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const products = useSelector(listProductSelector);

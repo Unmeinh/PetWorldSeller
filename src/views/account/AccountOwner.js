@@ -3,29 +3,21 @@ import {
     Text, View,
     Image, TouchableOpacity
 } from 'react-native';
-import styles, { WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { yellowWhite } from '../../styles/all.style';
 import { memo } from 'react';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import { getDateTimeDefault } from '../../utils/functionSupport';
 import { onAxiosGet } from '../../api/axios.function';
+import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
+import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 
 const AccountOwner = ({ route }) => {
     let idShop = route?.params?.idShop;
-    const [owner, setowner] = useState({
-        nameIdentity: "V* ***** ***** ***h",
-        numberIdentity: "03********87",
-        dateIdentity: "25/10/2003",
-        imageIdentity: ["https://i.ebayimg.com/images/g/b4oAAOSwrqlZgldr/s-l1200.webp", "https://product-images.tcgplayer.com/fit-in/437x437/113956.jpg"],
-        nameCard: "V* ***** ***** ***H",
-        numberCard: "**** **** **** *278",
-        nameBank: "MBBank",
-        expirationDate: "**/**",
-        createdAt: new Date('2023-10-25').toISOString()
-    });
-    const [srcFrontCard, setsrcFrontCard] = useState(require('../../assets/images/loading.png'))
-    const [srcBehindCard, setsrcBehindCard] = useState(require('../../assets/images/loading.png'))
+    const navigation = useNavigation();
+    const [owner, setowner] = useState({});
+    const [isLoading, setisLoading] = useState(true);
     const [isShowFrontCard, setisShowFrontCard] = useState(false);
     const [isShowBehindCard, setisShowBehindCard] = useState(false);
 
@@ -93,7 +85,8 @@ const AccountOwner = ({ route }) => {
     }, [idShop])
 
     React.useEffect(() => {
-        if (owner != undefined) {
+        if (owner != undefined && Object.keys(owner).length > 0) {
+            setisLoading(false);
             if (owner.imageIdentity != undefined) {
                 if (owner.imageIdentity.length > 0 && owner.imageIdentity[0] != undefined) {
                     setsrcFrontCard({ uri: String(owner.imageIdentity[0]) });
@@ -104,6 +97,17 @@ const AccountOwner = ({ route }) => {
             }
         }
     }, [owner])
+
+    React.useEffect(() => {
+        const unsub = navigation.addListener('focus', () => {
+            fetchDetailOwner();
+            return () => {
+                unsub.remove();
+            };
+        });
+
+        return unsub;
+    }, [navigation]);
 
     return (
         <View style={styles.container}>
@@ -117,25 +121,41 @@ const AccountOwner = ({ route }) => {
                     <View style={[styles.flexRow, styles.justifyBetween]}>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Họ và tên: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.nameIdentity != undefined) ? owner?.nameIdentity : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.nameIdentity != undefined) ? owner?.nameIdentity : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Ngày sinh: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.dateIdentity != undefined) ? owner?.dateIdentity : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.dateIdentity != undefined) ? owner?.dateIdentity : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                     </View>
                 </View>
@@ -143,70 +163,40 @@ const AccountOwner = ({ route }) => {
                     <View style={[styles.flexRow, styles.justifyBetween]}>
                         <View style={{ width: "47%", }}>
                             <Text style={styles.titleDetail}>Số căn cước: </Text>
-                            <Text
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {owner?.numberIdentity ? owner?.numberIdentity : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {owner?.numberIdentity ? owner?.numberIdentity : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Ngày tham gia: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.createdAt != undefined) ? getDateTimeDefault(owner?.createdAt) : "Lỗi dữ liệu"}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={{ paddingBottom: 20 }}>
-                    <View style={[styles.flexRow, styles.justifyBetween]}>
-                        <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Mặt trước: </Text>
-                            <TouchableOpacity style={{ width: '100%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }}
-                            onPress={() => onAlertShowCard("FrontCard")}>
-                                {
-                                    (isShowFrontCard)
-                                        ? <Image blurRadius={20}
-                                            source={srcFrontCard} onError={() => setErrorImage("FrontCard")}
-                                            style={{ width: "100%", height: "100%", borderRadius: 10 }} />
-                                        : <>
-                                            <Image blurRadius={15}
-                                                source={srcFrontCard} onError={() => setErrorImage("FrontCard")}
-                                                style={{ width: "100%", height: "100%", borderRadius: 10 }} />
-                                            <View style={[styles.positionAbsolute, styles.itemsCenter, { top: '30%', left: '36%' }]}>
-                                                <MaterialCommunityIcons name='eye' color={'#fff'} size={25} />
-                                                <Text style={{ color: '#fff' }}>Hiển thị</Text>
-                                            </View>
-                                        </>
-                                }
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Mặt sau: </Text>
-                            <TouchableOpacity style={{ width: '100%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }}
-                            onPress={() => onAlertShowCard("BehindCard")}>
-                                {
-                                    (isShowBehindCard)
-                                        ? <Image blurRadius={0}
-                                            source={srcBehindCard} onError={() => setErrorImage("BehindCard")}
-                                            style={{ width: "100%", height: "100%", borderRadius: 10 }} />
-                                        : <>
-                                            <Image blurRadius={15}
-                                                source={srcBehindCard} onError={() => setErrorImage("BehindCard")}
-                                                style={{ width: "100%", height: "100%", borderRadius: 10 }} />
-                                            <View style={[styles.positionAbsolute, styles.itemsCenter, { top: '30%', left: '36%' }]}>
-                                                <MaterialCommunityIcons name='eye' color={'#fff'} size={25} />
-                                                <Text style={{ color: '#fff' }}>Hiển thị</Text>
-                                            </View>
-                                        </>
-                                }
-                            </TouchableOpacity>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.createdAt != undefined) ? owner?.createdAt : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                     </View>
                 </View>
@@ -218,25 +208,41 @@ const AccountOwner = ({ route }) => {
                     <View style={[styles.flexRow, styles.justifyBetween]}>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Tên trên thẻ: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.nameCard != undefined) ? owner?.nameCard : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.nameCard != undefined) ? owner?.nameCard : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Số thẻ: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.numberCard != undefined) ? owner?.numberCard : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.numberCard != undefined) ? owner?.numberCard : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                     </View>
                 </View>
@@ -244,25 +250,41 @@ const AccountOwner = ({ route }) => {
                     <View style={[styles.flexRow, styles.justifyBetween]}>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Tên ngân hàng: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.nameBank != undefined) ? owner?.nameBank : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.nameBank != undefined) ? owner?.nameBank : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                         <View style={{ width: '47%', }}>
                             <Text style={styles.titleDetail}>Ngày hết hạn: </Text>
-                            <Text
-                                numberOfLines={2}
-                                style={[styles.textDarkBlue, {
-                                    fontSize: 16, fontWeight: 'bold',
-                                    width: '100%',
-                                }]}>
-                                {(owner?.expirationDate != undefined) ? owner?.expirationDate : "Lỗi dữ liệu"}
-                            </Text>
+                            {
+                                (isLoading)
+                                    ? <ShimmerPlaceHolder
+                                        shimmerStyle={[styles.textDarkBlue, {
+                                            height: 20, borderRadius: 5,
+                                            width: '70%', marginTop: 3
+                                        }]} />
+                                    : <Text
+                                        numberOfLines={2}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                            width: '100%',
+                                        }]}>
+                                        {(owner?.expirationDate != undefined) ? owner?.expirationDate : "Lỗi dữ liệu"}
+                                    </Text>
+                            }
                         </View>
                     </View>
                 </View>

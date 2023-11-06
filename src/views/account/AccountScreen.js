@@ -21,26 +21,6 @@ const AccountScreen = () => {
     const [srcAvatar, setsrcAvatar] = useState(require("../../assets/images/loading.png"))
     const [isShowRevenue, setisShowRevenue] = useState(false);
     const accountShop = useSelector(listShopSelector);
-    // const [accountShop, setaccountShop] = useState({
-    //     nameShop: "Thế giới mều của Deadpool, đây không phải là một cái tên dài cho một cửa hàng đâu nhé ;)",
-    //     email: "khongphaihoanglinh@gmail.com",
-    //     locationShop: "khongphaihoanglinh@gmail.com",
-    //     userName: "Catworld",
-    //     passWord: "$2b$10$MzZeRUyCbqj1kJOb0GbcveEM1Kc/AQvySBDa.Fa6KVDeYPXnL5AlC",
-    //     description: "1",
-    //     status: 1,
-    //     followers: 0,
-    //     revenue: 1000000,
-    //     hotline: 84382148685,
-    //     createdAt: {
-    //         "$date": "2023-10-13T15:37:40.171Z"
-    //     },
-    //     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTI5NjQ0NDUwZWFkMGNiMmM1YjhhMTQiLCJ1c2VyTmFtZSI6IkNhdHdvcmxkIiwiaWF0IjoxNjk3MjExNDYwfQ.aXNls5pvcEyqhKFfH2_HBxVKNoVtDL7qiLNpHotZNQk",
-    //     avatarShop: "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697211461/images/upload/shop/ACb0CnHfWZ.jpg",
-    //     ownerIdentity: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTI5NjQ0NDUwZWFkMGNiMmM1YjhhMTQiLCJvd25lcklkZW50aXR5IjoiN2IyMjZlNjE2ZDY1NDk2NDY1NmU3NDY5NzQ3OTIyM2EyMjMwMzgzMDMxMzAzMTM4MzQ2NjMwMzQzMjM2NjYzOTMzMzQ2MzYxNjQzNjYyMzgzMDM3NjMzNDY1MzE2NDMwMzgzYTM2NjYzNDM5MzkzMjMzNjY2MzY0MzE2MTMwMzAzMjM5NjY2NTM4MzI2NTYzMzczNjY0NjQ2MTM1MzczMjMyMzEzMzY1NjQ2MjMzMzgzODM1NjMzMTM3NjQzOTM5MzEzMTMyMzMzMDM1MzgzNTMwNjM2MjY0MzAzNDY1MzQ2NTM5MjIyYzIyNmU3NTZkNjI2NTcyNDk2NDY1NmU3NDY5NzQ3OTIyM2EyMjMwMzIzNTYyNjQ2MzMyMzEzMzMwMzgzMzM3MzgzNzY1NjE2MTM4MzYzMDM2Mzk2NDYyNjQ2NDM0MzAzODMyNjUzYTY0NjQzNjM2MzMzNjM3MzEzMTMwMzU2NjYzMzEzNTMzNjI2MzY0MzAzMDMxMzIzMjMyNjU2MzYzNjE2MTM2MzAyMjJjMjI2NDYxNzQ2NTQ5NjQ2NTZlNzQ2OTc0NzkyMjNhMjI2NDY0MzMzMDYzMzI2MjM0MzA2NDMxNjY2NjYzMzM2NDM2NjY2NTM2NjQzNjYxMzY2NjMyNjU2NTY1MzgzMTMzM2EzMTM5MzY2MTMyMzU2NTMyMzI2MzY2MzYzMTMyMzYzNjMwMzc2NTMzNjYzNDY1NjIzODYyMzczODM5MzAzNTY2MjIyYzIyNjk2ZDYxNjc2NTQ5NjQ2NTZlNzQ2OTc0NzkyMjNhNWIyMjM0NjEzODMzMzkzMTM3Mzg2NTM3MzUzOTMxMzkzODMzNjIzODM2MzU2MTYxMzYzNjY1NjQ2MjMwMzIzMjM4MzIzYTMyNjEzOTYyNjYzNjM3MzkzMTMxMzU2NjM4NjQzNjM0Mzc2MzM5MzQ2MTM1MzkzNzMzMzkzOTM1MzE2MjY2NjQzNjYyNjMzMjY1NjEzODYzMzc2NDYxNjIzMDY0MzQzMDM2MzQzNjY1MzU2MTM0Mzg2MTYzMzY2NTY1MzUzNDMxMzgzMjM0MzAzNjY2NjIzODM5MzgzMzM0NjIzODM3MzIzODY1MzEzMjYyNjM2NDMzMzg2NDMwNjYzMTYxNjIzMTMxMzIzODM2NjMzMTM0NjQzOTM1NjQzMjY1NjU2NjM5MzQzMjMzNjY2NDY1MzIzOTMxMzMzNjYyNjU2NjMwMzkzNDM0MzE2MjM2MzUzNDM4MzI2NjYzMzYzMTY2NjU2MzM2MzkzNjY0NjM2MTM4MzQzMjMxMzA2MTMyMzg2MjYyMzQzMTYyNjM2NjYzNjU2NTM5NjMzNzYxMzAzNjM4MzUzODY0MzUzMDY0NjIzMDYyMzE2NDM1NjYzMDM1MzYzODIyMmMyMjMxMzQzNjM5MzEzNzM4MzIzNzM2NjIzODM5MzU2MjMxMzYzNjM4MzkzNjY0NjIzNTYzNjEzODYzMzgzODY2MzMzYTMwMzU2MzM5MzIzMDYxNjU2MzM1MzYzNjMzMzA2NTMxMzMzNjMyMzI2MzM5MzI2NDYyMzI2MjY1NjU2MTMwNjYzMjMxMzQ2NTM4MzUzMDYzMzM2NTM5NjE2NjYxMzgzNzM2MzYzNjMwMzQ2MjM5NjI2MjY0NjU2NjMwNjYzNDYyMzY2NDMwMzYzNDM4MzYzODYxMzc2NDYyNjMzOTM4NjI2NDY1MzEzMzMzNjY2MzM5MzI2NDYxMzU2MjM5MzczMzM3MzA2NDM5NjEzMjMyMzEzNjM1MzczMjM2NjUzNzM5MzQ2MTYxNjU2MTM0MzEzMjMzMzE2NjM4MzkzMjMyMzAzMTMwMzA2NTM3MzkzMTMxMzAzMzMzMzQ2MTY0NjM2MTM0NjQ2NDMwMzc2MTYzNjQzNDY0NjEzMjYzNjY2MjM2MzkzNDM0Mzc2NDM1NjI2NTY1Mzk2MjM2Mzc2MzY1MzAzMDM2MzMzOTM2MzUzMTY0NjYzODM1MzQ2MjM0MzkzMjIyNWQ3ZCIsImlhdCI6MTY5NzIxMTQ2N30._dT_SnBlL6ZdBi-KTdG9mRdcBe7ODQ_7_HWdnQmJpyo",
-    //     __v: 0,
-    //     online: 0
-    // });
 
     function onShowRevenue() {
         if (!isShowRevenue) {
@@ -62,6 +42,26 @@ const AccountScreen = () => {
         }
     }
 
+    function onOpenAllBillScreen() {
+        onNavigate('BillScreen', {selectedTab: 0});
+    }
+
+    function onOpenProcessingBillScreen() {
+        onNavigate('BillScreen', {selectedTab: 1});
+    }
+
+    function onOpenDeliveringBillScreen() {
+        onNavigate('BillScreen', {selectedTab: 2});
+    }
+
+    function onOpenDeliveredBillScreen() {
+        onNavigate('BillScreen', {selectedTab: 3});
+    }
+
+    function onOpenEvaluatedBillScreen() {
+        onNavigate('BillScreen', {selectedTab: 4});
+    }
+
     function onOpenAppointmentScreen() {
         onNavigate('AppointmentScreen');
     }
@@ -81,7 +81,7 @@ const AccountScreen = () => {
     function onLogout() {
         storageMMKV.setValue('login.isLogin', false);
         storageMMKV.setValue('login.token', "");
-        onNavigate('LoginScreen');
+        navigation.push('LoginScreen')
     }
 
     React.useEffect(() => {
@@ -92,7 +92,7 @@ const AccountScreen = () => {
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            if (accountShop.nameShop == undefined) {
+            if (Object.keys(accountShop).length == 0) {
                 dispatch(fetchMyShops());
             }
             // setisLoader(true);
@@ -108,9 +108,6 @@ const AccountScreen = () => {
 
     return (
         <View style={styles.container}>
-            {/* <View style={[styles.bgHeaderAccount, styles.bgLighBlue, styles.positionAbsolute]} >
-                <View style={[styles.bgLighBlue, { backgroundColor: '#ACE1E840', height: '30%', width: '50%', }]} />
-            </View> */}
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                 colors={['#ace1e8', '#f582aecc']} locations={[0.6, 1]} useAngle={true} angle={0}
                 style={[styles.bgHeaderAccount, styles.bgLighBlue, styles.positionAbsolute]}>
@@ -150,45 +147,46 @@ const AccountScreen = () => {
                         <Text style={{ color: 'rgba(0, 24, 88, 0.65)', fontSize: 13 }}>Người theo dõi</Text>
                         <Text style={[styles.textDarkBlue]}>{accountShop?.followers} người</Text>
                     </View>
-                    {/* <View style={[styles.viewDetailHeaderAccount]}>
-                        <Text style={{color: 'rgba(0, 24, 88, 0.65)', fontSize: 13}}>Hotline</Text>
-                        <Text style={[styles.textDarkBlue]}>+{accountShop?.hotline}</Text>
-                    </View> */}
                 </View>
             </View>
             <View style={styles.viewContainerAccount}>
                 <View style={{ marginBottom: 20 }}>
-                    <View style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', marginBottom: 10 }]}>
+                    <TouchableOpacity style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', marginBottom: 10 }]}
+                        onPress={onOpenAllBillScreen}>
                         <Text style={[{ fontSize: 17 }, styles.textDarkBlue]}>Quản lý đơn hàng</Text>
                         <MaterialCommunityIcons name='chevron-right' size={25} color={darkBlue} />
-                    </View>
+                    </TouchableOpacity>
                     <View style={[styles.flexRow, styles.justifyBetween, { width: '100%', }]}>
                         <View style={{ width: '19%', alignItems: 'center' }}>
-                            <View style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}>
+                            <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
+                                onPress={onOpenProcessingBillScreen}>
                                 <FontAwesome6 name='boxes-packing'
                                     color={pinkLotus} size={25} />
-                            </View>
-                            <Text style={styles.textDarkBlue}>Đang xử lý</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.textDarkBlue}>Chờ xử lý</Text>
                         </View>
                         <View style={{ width: '19%', alignItems: 'center' }}>
-                            <View style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}>
+                            <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
+                                onPress={onOpenDeliveringBillScreen}>
                                 <FontAwesome6 name='truck-fast'
                                     color={pinkLotus} size={25} />
-                            </View>
+                            </TouchableOpacity>
                             <Text style={styles.textDarkBlue}>Đang giao</Text>
                         </View>
                         <View style={{ width: '19%', alignItems: 'center' }}>
-                            <View style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}>
+                            <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
+                                onPress={onOpenDeliveredBillScreen}>
                                 <FontAwesome6 name='check-to-slot'
                                     color={pinkLotus} size={25} />
-                            </View>
+                            </TouchableOpacity>
                             <Text style={styles.textDarkBlue}>Đã giao</Text>
                         </View>
                         <View style={{ width: '19%', alignItems: 'center' }}>
-                            <View style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}>
+                            <TouchableOpacity style={[styles.viewItemBill, styles.justifyCenter, styles.itemsCenter]}
+                                onPress={onOpenEvaluatedBillScreen}>
                                 <FontAwesome6 name='ranking-star'
                                     color={pinkLotus} size={25} />
-                            </View>
+                            </TouchableOpacity>
                             <Text style={styles.textDarkBlue}>Đánh giá</Text>
                         </View>
                     </View>

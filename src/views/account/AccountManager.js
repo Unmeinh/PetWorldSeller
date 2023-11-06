@@ -37,15 +37,15 @@ const AccountManager = () => {
                 singleSelectedMode: true
 
             });
-            if (response.crop ) {
+            if (response.crop) {
                 let cropPath = "file://" + response.crop.path;
                 response.crop.path = cropPath;
                 response.crop.fileName = response.fileName;
                 setpickedImage(response.crop);
-                setsrcAvatar({uri: cropPath});
+                setsrcAvatar({ uri: cropPath });
             } else {
                 setpickedImage(response);
-                setsrcAvatar({uri: "file://" + response.path});
+                setsrcAvatar({ uri: "file://" + response.path });
             }
         } catch (error) {
             console.log(error);
@@ -130,6 +130,15 @@ const AccountManager = () => {
 
         return unsub;
     }, [navigation]);
+
+    React.useEffect(() => {
+        // console.log(styles);
+        console.log(
+            Object.keys(styles).length,
+            Object.values(styles).length,
+            Object.entries(styles).length
+        )
+    }, [styles]);
 
     return (
         <View style={styles.container}>
