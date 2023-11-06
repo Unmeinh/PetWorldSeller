@@ -1,0 +1,102 @@
+[{
+  "_id": {
+    "$oid": "651d8134d37b8ab0635713cd"
+  },
+  "arrProduct": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696432439/images/upload/product/PrHgokJxSu.png",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696432441/images/upload/product/UeXoFaytXi.png",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696432443/images/upload/product/JlRfiaSq1S.png"
+  ],
+  "nameProduct": "Bánh cho chó",
+  "priceProduct": 10000,
+  "discount": 10,
+  "idCategoryPr": {
+    "$oid": "651d96496685f07e09bb5b49"
+  },
+  "amountProduct": 5,
+  "detailProduct": "Bánh dành cho chó siêu ngon luôn !!!",
+  "quantitySold": 55,
+  "rate": 0,
+  "type": 1,
+  "createdAt": "2023-10-04T15:13:56.953Z",
+  "__v": 0,
+  "idShop": {
+    "$oid": "651d07d42859e89d0590c73c"
+  }
+},{
+  "_id": {
+    "$oid": "651d9cc460fe311f70a410ca"
+  },
+  "arrProduct": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696439493/images/upload/product/aQWBPrpHUM.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696439494/images/upload/product/Gp7wAyqDye.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696439496/images/upload/product/h3UYiQnTMc.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696439498/images/upload/product/gd2pZt8hRl.jpg"
+  ],
+  "nameProduct": "Bánh cho mèo",
+  "priceProduct": 10000,
+  "discount": 10,
+  "idCategoryPr": {
+    "$oid": "651d96496685f07e09bb5b49"
+  },
+  "amountProduct": -2,
+  "detailProduct": "Bánh dành cho mèo siêu ngon luôn !!!",
+  "quantitySold": 75,
+  "rate": 0,
+  "type": 1,
+  "createdAt": "2023-10-04T17:11:32.147Z",
+  "__v": 0,
+  "idShop": {
+    "$oid": "651d07d42859e89d0590c73c"
+  }
+},{
+  "_id": {
+    "$oid": "651da1d960fe311f70a4111f"
+  },
+  "arrProduct": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696440794/images/upload/product/qUYW2lQu3Z.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696440796/images/upload/product/atNGvLm2p6.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696440797/images/upload/product/nXNUMQc8n4.jpg"
+  ],
+  "nameProduct": "Pate cho mèo",
+  "priceProduct": 40000,
+  "discount": 10,
+  "idCategoryPr": {
+    "$oid": "651d96496685f07e09bb5b49"
+  },
+  "amountProduct": 99,
+  "detailProduct": "Các công thức được tạo ra với sự cân bằng tối ưu giữa các protein, chất béo và carbohydrate để hỗ trợ sự ngon miệng, bổ sung dinh dưỡng hoàn hảo.\nHỗ trợ mèo mẹ đang mang thai và cho con bú\nHỗ trợ sức khỏe hệ thống miễn dịch\n100% dinh dưỡng cân bằng\nBảo đảm 100% đạt mức độ hài lòng\nDành cho mèo mẹ đang mang thai, giai đoạn cho con bú và mèo con đến 12 tháng tuổi.\nLợi ích\n*Hỗ trợ phát triển: Được xây dựng để tạo một nguồn dinh dưỡng phù hợp tối ưu theo bản năng ưa thích của mèo con trong giai đoạn phát triển và mèo đang mang thai.\n*Dễ nhai: Với hạt nhỏ trong thạch giúp mèo con dễ dàng nhai hơn.\n*Tăng cường miễn dịch: Giúp hỗ trợ tăng cường hệ miễn dịch thông qua hệ dưỡng chất cân đối.\nTHÀNH PHẦN\nNguyên liệu: Thịt và các chất dẫn xuất động vật, chiết xuất protein thực vật, khoáng chất, sữa và các chất dẫn xuất sữa, các chất dẫn xuất có nguồn gốc thực vật, dầu và chất béo, nấm men, các loại đường khác nhau.",
+  "quantitySold": 1,
+  "rate": 0,
+  "type": 1,
+  "createdAt": "2023-10-04T17:33:13.739Z",
+  "__v": 0,
+  "idShop": {
+    "$oid": "651d07832859e89d0590c704"
+  }
+},{
+  "_id": {
+    "$oid": "65328be993d8460a80edd34c"
+  },
+  "arrProduct": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697811438/images/upload/product/heBVBPrgvI.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697811442/images/upload/product/dlA6bierH8.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697811446/images/upload/product/kQd8LC4axM.jpg"
+  ],
+  "nameProduct": "Cỏ mèo",
+  "priceProduct": 30000,
+  "discount": 50,
+  "idCategoryPr": {
+    "$oid": "651d9b856685f07e09bb5b6e"
+  },
+  "idShop": {
+    "$oid": "6529644450ead0cb2c5b8a14"
+  },
+  "amountProduct": 30,
+  "detailProduct": "Cỏ mèo chất lượng cao, đưa hoàng thượng của bạn vào những cuộc phê pha không lối về. 🐱🌿",
+  "quantitySold": 0,
+  "rate": 0,
+  "type": 1,
+  "createdAt": "2023-10-20T14:17:26.290Z",
+  "__v": 0
+}]

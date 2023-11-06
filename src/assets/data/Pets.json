@@ -1,0 +1,112 @@
+[{
+  "_id": {
+    "$oid": "651d23ad2859e89d0590c7e4"
+  },
+  "imagesPet": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514421/images/upload/pet/XRTpkETgVf.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514422/images/upload/pet/mBp5RT0fGL.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514425/images/upload/pet/TqdSbQycyG.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514426/images/upload/pet/0Zy7qtZ8gX.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514429/images/upload/pet/PTTa0P4QKE.jpg"
+  ],
+  "namePet": "Chó Alaska",
+  "weightPet": 45,
+  "heightPet": 65,
+  "sizePet": "Medium",
+  "idCategoryP": {
+    "$oid": "64daf73cee102adfe1115d5f"
+  },
+  "pricePet": 3000000,
+  "amountPet": 10,
+  "detailPet": "Chó Alaska là loài chó được ưa thích bởi tính trung thành với chủ, thông minh, hiếu động nhưng rất thân thiện và gần gũi với con người.",
+  "idShop": {
+    "$oid": "651d00382859e89d0590c6cc"
+  },
+  "type": 0,
+  "createdAt": "2023-10-04T08:34:53.299Z",
+  "rate": 0,
+  "__v": 0,
+  "discount": 20
+},{
+  "_id": {
+    "$oid": "651d6716b2fd11a11fb7ff15"
+  },
+  "imagesPet": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514527/images/upload/pet/fWHREeM0sE.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514528/images/upload/pet/RhhNFinqj5.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514530/images/upload/pet/rkFgK9TgsU.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514532/images/upload/pet/zB0Z17dueC.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1696514533/images/upload/pet/As4Qo4lt3p.jpg"
+  ],
+  "namePet": "Chó Corgi",
+  "weightPet": 12,
+  "heightPet": 28,
+  "sizePet": "Small",
+  "idCategoryP": {
+    "$oid": "64daf73cee102adfe1115d5f"
+  },
+  "pricePet": 8000000,
+  "amountPet": 10,
+  "detailPet": "Nếu bạn đang muốn sở hữu một em cún thì Corgi chính là lựa chọn rất xứng đáng. Em cún có ngoại hình xinh xắn mà tính cách cũng vô cùng đáng yêu. Thế nhưng để tìm một em Corgi thuần chủng và khỏe mạnh thì khó khăn hơn khi hiện nay có rất nhiều cơ sở kinh doanh chó nên dễ gây hoang mang cho khách hàng. Bài viết dưới đây sẽ cung cấp cho bạn những thông tin cơ bản quan trọng về Corgi để có thể cân nhắc rước ngay một em về nhà.",
+  "idShop": {
+    "$oid": "651d07632859e89d0590c6e8"
+  },
+  "type": 0,
+  "createdAt": "2023-10-04T13:22:30.065Z",
+  "rate": 0,
+  "__v": 0,
+  "discount": 30
+},{
+  "_id": {
+    "$oid": "653266cb53089712f9f05e0b"
+  },
+  "imagesPet": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697801936/images/upload/pet/rU9RtuibiY.jpg"
+  ],
+  "namePet": "Kurokami Fubuki",
+  "weightPet": 39.5,
+  "heightPet": 155,
+  "idCategoryP": {
+    "nameCategory": "Mèo"
+  },
+  "pricePet": 999999999999,
+  "discount": 0,
+  "quantitySold": 0,
+  "amountPet": 1,
+  "detailPet": "Kurokami is Fubuki's alter persona, appeared at some point in February of 2019. She formally made her debut in September 07th 2019. She has a more aggressive and harsh nature in contrast to the shy and calm Fubuki everyone knows, often not having any tact, coming off verbally trong to people, pushes her work to the other people and absolutely hate doing embarrassing things. ",
+  "idShop": {
+    "$oid": "6529644450ead0cb2c5b8a14"
+  },
+  "type": 0,
+  "rate": 0,
+  "sizePet": "Small",
+  "createdAt": "2023-10-20T11:38:56.876Z",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6532696c53089712f9f05e1f"
+  },
+  "imagesPet": [
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697802609/images/upload/pet/BEhMQJaW4y.jpg",
+    "https://res.cloudinary.com/dcf7f43rh/image/upload/v1697802612/images/upload/pet/n6akDMpUMR.jpg"
+  ],
+  "namePet": "Tingyun",
+  "weightPet": 45,
+  "heightPet": 160,
+  "idCategoryP": {
+    "nameCategory": "Hồ ly"
+  },
+  "pricePet": 999999,
+  "discount": 35,
+  "quantitySold": 0,
+  "amountPet": 1,
+  "detailPet": "She was a young Foxian and amicassador of the Sky-Faring Commission of The Xianzhou Loufu. She was revealed to be the vessel of Lord Ravager Phantylia in Trailblazer Mission Desolate Depths of Despair, and is assumed decreased as of Obsequies Performed, A Long Road Ahead. ",
+  "idShop": {
+    "$oid": "6529644450ead0cb2c5b8a14"
+  },
+  "type": 0,
+  "rate": 0,
+  "sizePet": "Small",
+  "createdAt": "2023-10-20T11:50:12.438Z",
+  "__v": 0
+}]
