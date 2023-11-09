@@ -37,6 +37,7 @@ const AllBillTab = (route) => {
 
     React.useEffect(() => {
         if (route?.tabIndex == 0) {
+            setisLoading(true);
             if (bills.length <= 0) {
                 setisLoading(true);
             }
@@ -74,7 +75,7 @@ const AllBillTab = (route) => {
                                     extraData={extraBills}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
-                                            index={index} />}
+                                            index={index} fetchBills={onGetBills}/>}
                                     showsVerticalScrollIndicator={false}
                                     keyExtractor={(item, index) => index.toString()} />
                                 : <View style={styles.viewOther}>

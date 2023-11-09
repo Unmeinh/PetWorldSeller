@@ -165,7 +165,7 @@ export default StyleSheet.create({
         marginLeft: 10,
         marginTop: 13,
         shadowColor: "#000",
-        elevation: 9,
+        elevation: 5,
         alignItems: 'center',
     },
 

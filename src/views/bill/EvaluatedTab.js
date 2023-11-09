@@ -74,7 +74,7 @@ const EvaluatedTab = (route) => {
                                     extraData={extraBills}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
-                                            index={index} />}
+                                            index={index} fetchBills={onGetBills}/>}
                                     showsVerticalScrollIndicator={false}
                                     keyExtractor={(item, index) => index.toString()} />
                                 : <View style={styles.viewOther}>

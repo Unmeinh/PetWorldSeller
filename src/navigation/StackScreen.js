@@ -29,6 +29,7 @@ import AppointmentScreen from '../views/appointment/AppointmentScreen';
 import DetailAppointment from '../views/appointment/DetailAppointment';
 //Bill
 import BillScreen from '../views/bill/BillScreen';
+import DetailBill from '../views/bill/DetailBill';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -78,6 +79,7 @@ export default function StackScreen() {
         <Stack.Screen name='DetailAppointment' component={DetailAppointment} />
         {/* Bill */}
         <Stack.Screen name='BillScreen' component={BillScreen} />
+        <Stack.Screen name='DetailBill' component={DetailBill} />
       </Stack.Navigator>
     </NavigationContainer>
   );

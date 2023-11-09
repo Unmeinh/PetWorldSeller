@@ -8,20 +8,20 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchDeliveringBills } from '../../redux/reducers/bill/billReducer';
-import { selectDeliveringBills } from '../../redux/selectors/selector';
+import { fetchBills } from '../../redux/reducers/bill/billReducer';
+import { selectAllBills } from '../../redux/selectors/selector';
 import ItemBill from '../../components/items/ItemBill';
 import ItemBillLoading from '../../components/items/ItemBillLoading';
 
-const DeliveringTab = (route) => {
+const AllBillTab = (route) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const bills = useSelector(selectDeliveringBills);
+    const bills = useSelector(selectAllBills);
     const [extraBills, setextraBills] = useState([]);
     const [isLoading, setisLoading] = useState(true);
 
     async function onGetBills() {
-        dispatch(fetchDeliveringBills());
+        dispatch(fetchBills());
     }
 
     React.useEffect(() => {
@@ -36,7 +36,7 @@ const DeliveringTab = (route) => {
     }, [bills]);
 
     React.useEffect(() => {
-        if (route?.tabIndex == 2) {
+        if (route?.tabIndex == 0) {
             if (bills.length <= 0) {
                 setisLoading(true);
             }
@@ -79,7 +79,7 @@ const DeliveringTab = (route) => {
                                     keyExtractor={(item, index) => index.toString()} />
                                 : <View style={styles.viewOther}>
                                     <FontAwesome6 name='boxes-stacked' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                    <Text style={styles.textHint}>Không có đơn hàng đang giao..</Text>
+                                    <Text style={styles.textHint}>Danh sách đơn hàng trống..</Text>
                                 </View>
                         }
                     </>
@@ -88,4 +88,4 @@ const DeliveringTab = (route) => {
     );
 }
 
-export default memo(DeliveringTab);
+export default memo(AllBillTab);
