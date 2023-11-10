@@ -38,9 +38,6 @@ const AllBillTab = (route) => {
     React.useEffect(() => {
         if (route?.tabIndex == 0) {
             setisLoading(true);
-            if (bills.length <= 0) {
-                setisLoading(true);
-            }
             onGetBills();
         }
     }, [route]);

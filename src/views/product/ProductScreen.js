@@ -17,8 +17,8 @@ const ProductScreen = () => {
     ]);
 
     const renderScene = SceneMap({
-        pet: PetTab,
-        product: ProductTab,
+        pet: () => <PetTab tabIndex={index}/>,
+        product: () => <ProductTab tabIndex={index}/>,
     });
 
     const renderTabBar = (props) => (
@@ -41,7 +41,6 @@ const ProductScreen = () => {
     );
 
 
-
     return (
         <View style={styles.container}>
             <HeaderLogo colorHeader={yellowWhite} />
@@ -55,6 +54,5 @@ const ProductScreen = () => {
         </View>
     );
 }
-
 
 export default memo(ProductScreen);

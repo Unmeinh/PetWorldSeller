@@ -37,9 +37,7 @@ const DeliveredTab = (route) => {
 
     React.useEffect(() => {
         if (route?.tabIndex == 3) {
-            if (bills.length <= 0) {
-                setisLoading(true);
-            }
+            setisLoading(true);
             onGetBills();
         }
     }, [route]);

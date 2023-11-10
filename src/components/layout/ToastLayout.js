@@ -15,7 +15,7 @@ export function ToastLayout() {
 
     const toastConfig = {
         success: ({ text1, props }) => (
-            <View style={[styles.toastContainer, (props.isTextLong) ?  { height: 75 } :  {}]}>
+            <View style={styles.toastContainer}>
                 <Ionicons name='checkmark-circle' color={'#55B938'} size={35} />
                 <Text style={styles.toastText}
                     numberOfLines={3}>
@@ -32,7 +32,7 @@ export function ToastLayout() {
         ),
 
         error: ({ text1, props }) => (
-            <View style={[styles.toastContainer, (props.isTextLong) ?  { height: 75 } :  {}]}>
+            <View style={styles.toastContainer}>
                 <Ionicons name='close-circle' color={'#D65745'} size={35} />
                 <Text style={styles.toastText}
                     numberOfLines={3}>
@@ -78,14 +78,16 @@ export function ToastLayout() {
         ),
 
         alert: ({ text1, props }) => (
-            <View style={[styles.toastContainer, { height: 70 }]}>
+            <View style={[styles.toastContainer]}>
                 <Ionicons name='alert-circle' color={'#D65745'} size={35} />
-                <View style={{ width: '85%' }}>
-                    <Text style={styles.toastText}
-                        numberOfLines={3}>
-                        {text1}
-                    </Text>
-                    <View style={{ left: 7, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', bottom: -5.5 }}>
+                <View style={{width: '100%',}}>
+                    <View style={{width: '100%',}}>
+                        <Text style={styles.toastText}
+                            numberOfLines={3}>
+                            {text1}
+                        </Text>
+                    </View>
+                    <View style={{ left: 7, width: '85%', flexDirection: 'row', justifyContent: 'flex-end', bottom: -5.5 }}>
                         <TouchableOpacity onPress={() => props.cancel()}>
                             <Text style={[styles.toastButtonText, { color: '#D65745' }]}>
                                 Hủy bỏ

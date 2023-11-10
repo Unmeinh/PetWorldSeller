@@ -15,11 +15,11 @@ import HeaderTitle from '../../components/header/HeaderTitle';
 const BillScreen = ({ route }) => {
     const [index, setIndex] = useState((route?.params?.selectedTab) ? route?.params?.selectedTab : 0);
     const [routes] = useState([
-        { key: 'all', title: 'Tất cả', tabIndex: 0 },
-        { key: 'processing', title: 'Chờ xử lý', tabIndex: 1 },
-        { key: 'delivering', title: 'Đang giao', tabIndex: 2 },
-        { key: 'delivered', title: 'Đã giao', tabIndex: 3 },
-        { key: 'evaluated', title: 'Đánh giá', tabIndex: 4 },
+        { key: 'all', title: 'Tất cả' },
+        { key: 'processing', title: 'Chờ xử lý' },
+        { key: 'delivering', title: 'Đang giao' },
+        { key: 'delivered', title: 'Đã giao' },
+        { key: 'evaluated', title: 'Đánh giá' },
     ]);
 
     const renderScene =
