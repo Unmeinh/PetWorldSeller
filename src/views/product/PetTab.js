@@ -4,21 +4,20 @@ import {
     TouchableHighlight,
     Image, TouchableOpacity
 } from 'react-native';
-import styles, { WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { darkBlue } from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getDateDefault } from '../../utils/functionSupport';
 import { FlatList } from 'react-native';
 import { onNavigate } from '../../navigation/rootNavigation';
-import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPets, removePet } from '../../redux/reducers/pet/petReducer';
+import { fetchPets, updatePet } from '../../redux/reducers/pet/petReducer';
 import { listPetSelector } from '../../redux/selectors/selector';
 import Toast from 'react-native-toast-message';
-import { onAxiosDelete } from '../../api/axios.function';
+import { onAxiosPut } from '../../api/axios.function';
+import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 
-const PetTab = () => {
-    const navigation = useNavigation();
+const PetTab = (route) => {
     const dispatch = useDispatch();
     const pets = useSelector(listPetSelector);
     const [extraPets, setextraPets] = useState([]);
@@ -48,28 +47,53 @@ const PetTab = () => {
             onNavigate('EditPet', { pet: item });
         }
 
-        function onShowAlert() {
+        function onShowAlertUnremove() {
             Toast.show({
                 type: 'alert',
-                text1: 'Xác nhận xóa thú cưng?',
+                text1: 'Xác nhận đăng thú cưng lên gian hàng của bạn?',
                 position: 'top',
                 props: {
-                    confirm: () => onDeletePet(),
+                    confirm: () => onUnremovePet(),
                     cancel: () => Toast.hide()
                 },
                 autoHide: false
             })
         }
-    
-        async function onDeletePet() {
+
+        async function onUnremovePet() {
             Toast.show({
                 type: 'loading',
-                text1: 'Đang xóa thú cưng...',
+                text1: 'Đang đăng thú cưng...',
                 position: 'top',
             })
-            let res = await onAxiosDelete("pet/delete/" + item._id, true);
+            let res = await onAxiosPut("pet/unremove",  { idPet: item._id }, 'json', true);
             if (res) {
-                dispatch(removePet(item._id));
+                dispatch(updatePet([item._id, res.data]));
+            }
+        }
+
+        function onShowAlertRemove() {
+            Toast.show({
+                type: 'alert',
+                text1: 'Xác nhận gỡ thú cưng khỏi gian hàng của bạn?',
+                position: 'top',
+                props: {
+                    confirm: () => onRemovePet(),
+                    cancel: () => Toast.hide()
+                },
+                autoHide: false
+            })
+        }
+
+        async function onRemovePet() {
+            Toast.show({
+                type: 'loading',
+                text1: 'Đang gỡ thú cưng...',
+                position: 'top',
+            })
+            let res = await onAxiosPut("pet/remove", { idPet: item._id }, 'json', true);
+            if (res) {
+                dispatch(updatePet([item._id, res.data]));
             }
         }
 
@@ -98,23 +122,41 @@ const PetTab = () => {
 
                     <View style={{ marginLeft: 10 }}>
                         <View style={[styles.flexRow, { width: '100%', marginTop: 3, }]}>
-                            <TouchableOpacity style={{ width: '75%', paddingRight: 7.5 }}
-                                onPress={onOpenDetailPet}>
-                                <Text
-                                    numberOfLines={1}
-                                    style={[styles.textDarkBlue, {
-                                        fontSize: 16, fontWeight: 'bold',
-                                    }]}>
-                                    {item?.namePet ? item?.namePet : "Lỗi dữ liệu"}
-                                </Text>
-                            </TouchableOpacity>
+                            <View style={[styles.flexRow, { width: '75%' }]}>
+                                <TouchableOpacity style={[styles.flexRow, { width: '100%' }]}
+                                    onPress={onOpenDetailPet}>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={[styles.textDarkBlue, {
+                                            fontSize: 16, fontWeight: 'bold',
+                                        }]}>
+                                        {item?.namePet ? item?.namePet : "Lỗi dữ liệu"} {item?.namePet} {item?.namePet} {item?.namePet} {item?.namePet}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                             <View style={[styles.flexRow, styles.itemsCenter]}>
                                 <TouchableOpacity onPress={onOpenEditPet}>
-                                    <Feather name='edit' size={15} color={darkBlue} />
+                                    <MaterialCommunityIcons name='square-edit-outline' size={17} color={darkBlue} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onShowAlert}>
-                                    <Feather name='trash-2' size={15} color={darkBlue} style={{ marginLeft: 7, right: -3, }} />
-                                </TouchableOpacity>
+                                {
+                                    (item?.status != undefined)
+                                        ? <>
+                                            {
+                                                (item?.status == 1)
+                                                    ?
+                                                    <TouchableOpacity onPress={onShowAlertUnremove}>
+                                                        <MaterialCommunityIcons name='archive-eye-outline' size={17} color={darkBlue} style={{ marginLeft: 5 }} />
+                                                    </TouchableOpacity>
+                                                    :
+                                                    <TouchableOpacity onPress={onShowAlertRemove}>
+                                                        <MaterialCommunityIcons name='archive-remove-outline' size={17} color={darkBlue} style={{ marginLeft: 5 }} />
+                                                    </TouchableOpacity>
+                                            }
+                                        </>
+                                        : <TouchableOpacity onPress={onShowAlertRemove}>
+                                            <MaterialCommunityIcons name='archive-remove-outline' size={17} color={darkBlue} style={{ marginLeft: 5 }} />
+                                        </TouchableOpacity>
+                                }
                             </View>
                         </View>
                         <Text
@@ -134,10 +176,46 @@ const PetTab = () => {
                         </Text>
 
                         <View style={[styles.flexRow, styles.itemsCenter]}>
-                            <Feather name="clock" size={13} color={'rgba(0, 0, 0, 0.65)'} />
+                            <MaterialCommunityIcons name="clock-time-four-outline" size={13} color={'rgba(0, 0, 0, 0.65)'} />
                             <Text style={styles.textTime}>
                                 {item?.createdAt ? getDateDefault(item?.createdAt) : "Lỗi dữ liệu"}
                             </Text>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+    const ItemLoading = () => {
+        return (
+            <View>
+                <View
+                    style={{
+                        marginHorizontal: 15,
+                        marginTop: 15,
+                        marginBottom: 7,
+                        flexDirection: 'row',
+                    }}>
+                    <ShimmerPlaceHolder
+                        shimmerStyle={{ width: 90, height: 90, borderRadius: 10 }} />
+
+                    <View style={{ marginLeft: 10 }}>
+                        <View style={[styles.flexRow, { width: '100%', marginVertical: 5, }]}>
+                            <View style={{ width: '75%' }}>
+                                <ShimmerPlaceHolder shimmerStyle={{ width: '75%', height: 17, borderRadius: 5 }} />
+                            </View>
+                            <View style={[styles.flexRow, styles.itemsCenter, { left: -3 }]}>
+                                <ShimmerPlaceHolder shimmerStyle={{ width: 17, height: 17, borderRadius: 5 }} />
+                                <ShimmerPlaceHolder shimmerStyle={{ width: 17, height: 17, borderRadius: 5, marginLeft: 7 }} />
+                            </View>
+                        </View>
+                        <ShimmerPlaceHolder shimmerStyle={{ width: '45%', height: 14, marginVertical: 4, borderRadius: 5 }} />
+                        <ShimmerPlaceHolder shimmerStyle={{ width: '45%', height: 14, marginVertical: 4, borderRadius: 5 }} />
+
+                        <View style={[styles.flexRow, styles.itemsCenter, { marginTop: 3 }]}>
+                            <ShimmerPlaceHolder shimmerStyle={{ width: 13, height: 13, borderRadius: 5 }} />
+                            <ShimmerPlaceHolder shimmerStyle={{ width: '30%', height: 13, marginLeft: 3, borderRadius: 5 }} />
                         </View>
                     </View>
                 </View>
@@ -157,17 +235,11 @@ const PetTab = () => {
     }, [pets]);
 
     React.useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            if (pets.length <= 0) {
-                onGetPets();
-            }
-            return () => {
-                unsub.remove();
-            };
-        });
-
-        return unsub;
-    }, [navigation]);
+        if (route?.tabIndex == 0) {
+            setisLoading(true);
+            onGetPets();
+        }
+    }, [route]);
 
     return (
         <View style={styles.container}>
@@ -191,17 +263,31 @@ const PetTab = () => {
                 </TouchableHighlight>
             </View>
             <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View>
-            <FlatList
-                data={pets}
-                extraData={extraPets}
-                renderItem={({ item, index }) =>
-                    <ItemPet key={index} item={item}
-                        index={index} />}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => index.toString()} />
+            {
+                (isLoading)
+                    ? <>
+                        <ItemLoading />
+                        <ItemLoading />
+                        <ItemLoading />
+                    </>
+                    : <>
+                        {
+                            (pets.length > 0)
+                                ?
+                                <FlatList
+                                    data={pets}
+                                    extraData={extraPets}
+                                    renderItem={({ item, index }) =>
+                                        <ItemPet key={index} item={item}
+                                            index={index} />}
+                                    showsVerticalScrollIndicator={false}
+                                    keyExtractor={(item, index) => index.toString()} />
+                                : ""
+                        }
+                    </>
+            }
         </View>
     );
 }
-
 
 export default memo(PetTab);

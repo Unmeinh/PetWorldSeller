@@ -270,7 +270,7 @@ const EditProduct = ({ route }) => {
 
         let res = await onAxiosPut('product/update', formData, 'formdata', true);
         if (res) {
-            dispatch(updateProduct(res.data));
+            dispatch(updateProduct([oldProduct._id, res.data]));
             onGoBack();
         }
     }

@@ -37,9 +37,7 @@ const DeliveredTab = (route) => {
 
     React.useEffect(() => {
         if (route?.tabIndex == 3) {
-            if (bills.length <= 0) {
-                setisLoading(true);
-            }
+            setisLoading(true);
             onGetBills();
         }
     }, [route]);
@@ -74,7 +72,7 @@ const DeliveredTab = (route) => {
                                     extraData={extraBills}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
-                                            index={index} />}
+                                            index={index} fetchBills={onGetBills}/>}
                                     showsVerticalScrollIndicator={false}
                                     keyExtractor={(item, index) => index.toString()} />
                                 : <View style={styles.viewOther}>

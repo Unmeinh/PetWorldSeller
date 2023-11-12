@@ -52,6 +52,11 @@ export default StyleSheet.create({
         marginBottom: 3
     },
 
+    textDetailFade: {
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 24, 88, 0.60)',
+    },
+
     viewDeleteImage: {
         flexDirection: 'row',
         position: 'absolute',

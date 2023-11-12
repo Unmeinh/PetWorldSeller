@@ -3,13 +3,14 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     toastContainer: {
         width: '90%',
-        height: 60,
+        // height: 60,
         backgroundColor: '#fff',
         borderRadius: 5,
         shadowColor: '#001858',
         elevation: 10,
         flexDirection: 'row',
-        paddingVertical: 10,
+        paddingTop: 10,
+        paddingBottom: 13,
         paddingHorizontal: 10,
         alignItems: 'center',
         overflow: 'hidden',
