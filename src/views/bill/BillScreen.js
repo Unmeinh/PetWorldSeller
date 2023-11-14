@@ -9,6 +9,7 @@ import ProcessingTab from './ProcessingTab';
 import DeliveringTab from './DeliveringTab';
 import DeliveredTab from './DeliveredTab';
 import EvaluatedTab from './EvaluatedTab';
+import CancelledTab from './CancelledTab';
 import { memo } from 'react';
 import HeaderTitle from '../../components/header/HeaderTitle';
 
@@ -20,6 +21,7 @@ const BillScreen = ({ route }) => {
         { key: 'delivering', title: 'Đang giao' },
         { key: 'delivered', title: 'Đã giao' },
         { key: 'evaluated', title: 'Đánh giá' },
+        { key: 'cancelled', title: 'Đã hủy' },
     ]);
 
     const renderScene =
@@ -35,6 +37,8 @@ const BillScreen = ({ route }) => {
                     return <DeliveredTab tabIndex={index} />;
                 case 'evaluated':
                     return <EvaluatedTab tabIndex={index} />;
+                case 'cancelled':
+                    return <CancelledTab tabIndex={index} />;
                 default:
                     return null;
             }

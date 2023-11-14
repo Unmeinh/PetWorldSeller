@@ -11,20 +11,27 @@ import { getDateDefault } from '../../utils/functionSupport';
 import { FlatList } from 'react-native';
 import { onNavigate } from '../../navigation/rootNavigation';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts, removeProduct, updateProduct } from '../../redux/reducers/product/productReducer';
-import { listProductSelector } from '../../redux/selectors/selector';
+import { fetchProducts, removeProduct, unremoveProduct } from '../../redux/reducers/product/productReducer';
+import { listProductSelector, listProductHideSelector } from '../../redux/selectors/selector';
 import Toast from 'react-native-toast-message';
-import { onAxiosDelete, onAxiosPut } from '../../api/axios.function';
+import { onAxiosPut } from '../../api/axios.function';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 
 const ProductTab = (route) => {
     const dispatch = useDispatch();
     const products = useSelector(listProductSelector);
+    const productsHide = useSelector(listProductHideSelector);
     const [extraProducts, setextraProducts] = useState([]);
+    const [extraProductsHide, setextraProductsHide] = useState([]);
     const [isLoading, setisLoading] = useState(true);
+    const [statusProducts, setstatusProducts] = useState(0);
 
     function onOpenAddProduct() {
         onNavigate('AddProduct');
+    }
+
+    function onChangeStatusProducts() {
+        setstatusProducts(!statusProducts);
     }
 
     async function onGetProduct() {
@@ -68,7 +75,7 @@ const ProductTab = (route) => {
             })
             let res = await onAxiosPut("product/unremove", { idProduct: item._id }, 'json', true);
             if (res) {
-                dispatch(updateProduct([item._id, res.data]));
+                dispatch(unremoveProduct([item._id, res.data]));
             }
         }
 
@@ -93,7 +100,7 @@ const ProductTab = (route) => {
             })
             let res = await onAxiosPut("product/remove", { idProduct: item._id }, 'json', true);
             if (res) {
-                dispatch(updateProduct([item._id, res.data]));
+                dispatch(removeProduct([item._id, res.data]));
             }
         }
 
@@ -130,7 +137,7 @@ const ProductTab = (route) => {
                                         style={[styles.textDarkBlue, {
                                             fontSize: 16, fontWeight: 'bold',
                                         }]}>
-                                        {item?.nameProduct ? item?.nameProduct : "Lỗi dữ liệu"} {item?.nameProduct} {item?.nameProduct} {item?.nameProduct} {item?.nameProduct}
+                                        {item?.nameProduct ? item?.nameProduct : "Lỗi dữ liệu"}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -235,6 +242,17 @@ const ProductTab = (route) => {
     }, [products]);
 
     React.useEffect(() => {
+        if (productsHide != undefined) {
+            let clone = [...extraProductsHide];
+            clone = productsHide;
+            setextraProductsHide(clone);
+            if (isLoading) {
+                setisLoading(false);
+            }
+        }
+    }, [productsHide]);
+
+    React.useEffect(() => {
         if (route?.tabIndex == 1) {
             setisLoading(true);
             onGetProduct();
@@ -243,24 +261,52 @@ const ProductTab = (route) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.flexRow, styles.justifyBetween, { width: '100%', paddingHorizontal: 10, paddingVertical: 15 }]}>
-                <View style={[styles.flexRow, styles.itemsCenter]}>
-                    <Text style={styles.textDarkBlue}>Sắp xếp theo: </Text>
-                    <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#CCCCCC80' }]}
-                        activeOpacity={0.5} underlayColor="#DC749C">
+            <View style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', padding: 10 }]}>
+                <View style={{ width: '70%', }}>
+                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                        <View style={{ width: "35%", }}>
+                            <Text style={styles.textDarkBlue}>Trạng thái: </Text>
+                        </View>
+                        {
+                            (statusProducts == 0)
+                                ? <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#8BD3DD80' }]}
+                                    activeOpacity={0.5} underlayColor="#8BD3DD" onPress={onChangeStatusProducts}>
+                                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                                        <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Đang bán</Text>
+                                        <Entypo name="eye" color={darkBlue} size={13} style={{ marginLeft: 3, top: 1 }} />
+                                    </View>
+                                </TouchableHighlight>
+                                : <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#F582AE80' }]}
+                                    activeOpacity={0.5} underlayColor="#F582AE" onPress={onChangeStatusProducts}>
+                                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                                        <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Đang ẩn</Text>
+                                        <Entypo name="eye-with-line" color={darkBlue} size={13} style={{ marginLeft: 3, top: 1 }} />
+                                    </View>
+                                </TouchableHighlight>
+                        }
+                    </View>
+                    <View style={[styles.flexRow, styles.itemsCenter, { marginTop: 7 }]}>
+                        <View style={{ width: "35%", }}>
+                            <Text style={styles.textDarkBlue}>Sắp xếp theo: </Text>
+                        </View>
+                        <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#CCCCCC80' }]}
+                            activeOpacity={0.5} underlayColor="#DC749C">
+                            <View style={[styles.flexRow, styles.itemsCenter]}>
+                                <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Ngày tạo</Text>
+                                <Entypo name="arrow-long-down" color={darkBlue} size={12} />
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+                <View>
+                    <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus]}
+                        activeOpacity={0.5} underlayColor="#DC749C" onPress={onOpenAddProduct}>
                         <View style={[styles.flexRow, styles.itemsCenter]}>
-                            <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Ngày tạo</Text>
-                            <Entypo name="arrow-long-down" color={darkBlue} size={12} />
+                            <Entypo name="plus" color={'#FEF6E4'} size={13} />
+                            <Text style={[styles.textButtonSmallPink, { color: '#FEF6E4' }]}>Thêm mới</Text>
                         </View>
                     </TouchableHighlight>
                 </View>
-                <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus]}
-                    activeOpacity={0.5} underlayColor="#DC749C" onPress={onOpenAddProduct}>
-                    <View style={[styles.flexRow, styles.itemsCenter]}>
-                        <Entypo name="plus" color={'#FEF6E4'} size={13} />
-                        <Text style={[styles.textButtonSmallPink, { color: '#FEF6E4' }]}>Thêm mới</Text>
-                    </View>
-                </TouchableHighlight>
             </View>
             <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View>
             {
@@ -271,19 +317,36 @@ const ProductTab = (route) => {
                         <ItemLoading />
                     </>
                     : <>
-                        {
-                            (products.length > 0)
-                                ?
-                                <FlatList
-                                    data={products}
-                                    extraData={extraProducts}
-                                    renderItem={({ item, index }) =>
-                                        <ItemProduct key={index} item={item}
-                                            index={index} />}
-                                    showsVerticalScrollIndicator={false}
-                                    keyExtractor={(item, index) => index.toString()} />
-                                : ""
-                        }
+                        <View style={{ display: (statusProducts) ? 'none' : 'flex' }}>
+                            {
+                                (products.length > 0)
+                                    ?
+                                    <FlatList
+                                        data={products}
+                                        extraData={extraProducts}
+                                        renderItem={({ item, index }) =>
+                                            <ItemProduct key={index} item={item}
+                                                index={index} />}
+                                        showsVerticalScrollIndicator={false}
+                                        keyExtractor={(item, index) => index.toString()} />
+                                    : ""
+                            }
+                        </View>
+                        <View style={{ display: (statusProducts) ? 'flex' : 'none' }}>
+                            {
+                                (productsHide.length > 0)
+                                    ?
+                                    <FlatList
+                                        data={productsHide}
+                                        extraData={extraProductsHide}
+                                        renderItem={({ item, index }) =>
+                                            <ItemProduct key={index} item={item}
+                                                index={index} />}
+                                        showsVerticalScrollIndicator={false}
+                                        keyExtractor={(item, index) => index.toString()} />
+                                    : ""
+                            }
+                        </View>
                     </>
             }
         </View>

@@ -79,7 +79,7 @@ const AppointmentScreen = () => {
 
     }, [navigation]);
 
-    const ReloadData = React.useCallback(() => {
+    const onReloadData = React.useCallback(() => {
         setisRefreshing(true);
         fetchAppointment();
     }, []);
@@ -313,10 +313,10 @@ const AppointmentScreen = () => {
                                     keyExtractor={(item, index) => index.toString()}
                                     style={{ paddingTop: 15 }}
                                     refreshControl={
-                                        <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
+                                        <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                     } />
                                 : <ScrollView refreshControl={
-                                    <RefreshControl refreshing={isRefreshing} onRefresh={ReloadData} progressViewOffset={0} />
+                                    <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                 } >
                                     <View style={styles.viewOther}>
                                         <FontAwesome name='calendar-times-o' size={70} color={'rgba(0, 0, 0, 0.5)'} />

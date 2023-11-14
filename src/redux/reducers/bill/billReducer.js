@@ -10,6 +10,7 @@ const listBillSlice = createSlice({
       delivering: [],
       delivered: [],
       evaluated: [],
+      cancelled: [],
     }, message: ''
   },
   reducers: {
@@ -89,6 +90,17 @@ const listBillSlice = createSlice({
         } else {
           state.status = 'loading';
         }
+      })
+      .addCase(fetchCancelledBills.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchCancelledBills.fulfilled, (state, action) => {
+        if (action.payload.success) {
+          state.data.cancelled = action.payload.data;
+          state.status = 'idle';
+        } else {
+          state.status = 'loading';
+        }
       });
   },
 });
@@ -120,6 +132,12 @@ export const fetchDeliveredBills = createAsyncThunk(
 export const fetchEvaluatedBills = createAsyncThunk(
   'shop/fetchEvaluatedBills', async () => {
     let res = await onAxiosGet('shop/list/bill/evaluated');
+    return res;
+  });
+
+export const fetchCancelledBills = createAsyncThunk(
+  'shop/fetchCancelledBills', async () => {
+    let res = await onAxiosGet('shop/list/bill/cancelled');
     return res;
   });
 

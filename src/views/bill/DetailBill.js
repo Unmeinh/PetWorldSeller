@@ -14,12 +14,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import { onGoBack, onNavigate } from '../../navigation/rootNavigation';
+import { onAxiosPost } from '../../api/axios.function';
 
 const DetailBill = ({ route }) => {
     let item = route.params.bill;
     let productInfo = [...item?.productInfo[0], ...item?.productInfo[0], ...item?.productInfo[0]];
     let petInfo = item?.petInfo[0];
     let userInfo = item?.userInfo[0];
+    const [statusBill, setstatusBill] = useState(item?.statusBill)
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'))
 
     function setErrorAvatar() {
@@ -32,6 +34,66 @@ const DetailBill = ({ route }) => {
             position: 'top',
             text1: 'Tính năng này đang được phát triển!',
         })
+    }
+
+    function onShowAlertConfirm() {
+        Toast.show({
+            type: 'alert',
+            text1: 'Xác nhận nhận đơn hàng?',
+            position: 'top',
+            props: {
+                confirm: () => onConfirmBill(),
+                cancel: () => Toast.hide()
+            },
+            autoHide: false
+        })
+    }
+
+    function onShowAlertCancel() {
+        Toast.show({
+            type: 'alert',
+            text1: 'Xác nhận hủy đơn hàng?',
+            position: 'top',
+            props: {
+                confirm: () => onCancelBill(),
+                cancel: () => Toast.hide()
+            },
+            autoHide: false
+        })
+    }
+
+    async function onConfirmBill() {
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            autoHide: false,
+            text1: 'Đang xác nhận đơn hàng...'
+        })
+        let res = await onAxiosPost('shop/bill/confirm', {
+            idBill: item._id,
+            isConfirm: 0
+        }, 'json', true);
+        if (res) {
+            route.params?.fetchBills();
+            setstatusBill(res.data)
+        }
+    }
+
+    async function onCancelBill() {
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            autoHide: false,
+            text1: 'Đang hủy nhận đơn hàng...'
+        })
+        let res = await onAxiosPost('shop/bill/confirm', {
+            idBill: item._id,
+            isConfirm: 1
+        }, 'json', true);
+        if (res) {
+            route.params?.fetchBills();
+            setstatusBill(res.data)
+        }
     }
 
     const ItemProduct = (row) => {
@@ -151,14 +213,14 @@ const DetailBill = ({ route }) => {
                     style={[styles.flexRow, { paddingVertical: 12, paddingHorizontal: 15, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }]}>
                     <View style={{ width: '65%', }}>
                         <Text style={[styles.textDarkBlue, { fontSize: 20, fontWeight: 'bold' }]}>
-                            {(item?.nameStatus) ? item?.nameStatus : "Không có dữ liệu"}
+                            {(statusBill?.nameStatus) ? statusBill?.nameStatus : "Không có dữ liệu"}
                         </Text>
                         <Text style={[styles.textDarkBlue, { fontSize: 15, marginTop: 2 }]}>
-                            {(item?.descStatus) ? item?.descStatus : "Không có dữ liệu"}
+                            {(statusBill?.descStatus) ? statusBill?.descStatus : "Không có dữ liệu"}
                         </Text>
                     </View>
                     <View style={[{ width: '35%' }, styles.justifyCenter, styles.itemsCenter]}>
-                        <MaterialCommunityIcons name={(item?.iconStatus) ? item?.iconStatus : "database-remove-outline"} color={darkBlue}
+                        <MaterialCommunityIcons name={(statusBill?.iconStatus) ? statusBill?.iconStatus : "database-remove-outline"} color={darkBlue}
                             size={WindowWidth * 12 / 100} style={{ marginLeft: 15 }} />
                     </View>
                 </LinearGradient>
@@ -337,76 +399,99 @@ const DetailBill = ({ route }) => {
                                 Ngày đặt hàng
                             </Text>
                             <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.createdAt) ? getDateTimeDefault(item?.createdAt) : "Không có dữ liệu"}
-                            </Text>
-                        </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày thanh toán
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {/* {(item?.paidAt) ? getDateTimeDefault(item?.paidAt) : "Không có dữ liệu"} */}
                                 {(item?.purchaseDate) ? getDateTimeDefault(item?.purchaseDate) : "Không có dữ liệu"}
                             </Text>
                         </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày duyệt hàng
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.confirmedAt) ? getDateTimeDefault(item?.confirmedAt) : "00/00/0000 00:00 XX"}
-                            </Text>
-                        </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày gửi hàng
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.deliveringAt) ? getDateTimeDefault(item?.deliveringAt) : "00/00/0000 00:00 ??"}
-                            </Text>
-                        </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày giao hàng
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.deliveredAt) ? getDateTimeDefault(item?.deliveredAt) : "??/??/???? ??:?? ??"}
-                            </Text>
-                        </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày nhận hàng
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.receivedAt) ? getDateTimeDefault(item?.receivedAt) : "Lỗi dữ liệu"}
-                            </Text>
-                        </View>
-                        <View style={[styles.flexRow, { marginTop: 5 }]}>
-                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
-                                Ngày đánh giá
-                            </Text>
-                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
-                                {(item?.evaluatedAt) ? getDateTimeDefault(item?.evaluatedAt) : "Không tìm thấy dữ liệu"}
-                            </Text>
-                        </View>
+                        {
+                            (item?.billDate?.paidAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày thanh toán
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.paidAt) ? getDateTimeDefault(item?.billDate?.paidAt) : "Không có dữ liệu"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
+                        {
+                            (item?.billDate?.confirmedAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày duyệt đơn
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.confirmedAt) ? getDateTimeDefault(item?.billDate?.confirmedAt) : "00/00/0000 00:00 XX"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
+                        {
+                            (item?.billDate?.deliveringAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày gửi hàng
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.deliveringAt) ? getDateTimeDefault(item?.billDate?.deliveringAt) : "00/00/0000 00:00 ??"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
+                        {
+                            (item?.billDate?.deliveredAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày giao hàng
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.deliveredAt) ? getDateTimeDefault(item?.billDate?.deliveredAt) : "??/??/???? ??:?? ??"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
+                        {
+                            (item?.billDate?.receivedAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày nhận hàng
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.receivedAt) ? getDateTimeDefault(item?.billDate?.receivedAt) : "Lỗi dữ liệu"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
+                        {
+                            (item?.billDate?.ratedAt)
+                                ? <View style={[styles.flexRow, { marginTop: 5 }]}>
+                                    <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                        Ngày đánh giá
+                                    </Text>
+                                    <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                        {(item?.billDate?.ratedAt) ? getDateTimeDefault(item?.billDate?.ratedAt) : "Không tìm thấy dữ liệu"}
+                                    </Text>
+                                </View>
+                                : ""
+                        }
                     </View>
                     <View style={{ backgroundColor: '#D8D7D4', width: '100%', height: 5 }} />
                 </>
                 <>
                     <View style={{ marginBottom: 15, paddingRight: 15 }}>
                         {
-                            (item?.deliveryStatus == 0)
+                            (statusBill?.status == 0)
                                 ? <View style={[styles.flexRow, styles.justifyFlexend]}>
                                     <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555', backgroundColor: yellowWhite }]}
                                         activeOpacity={0.5} underlayColor="#EE3F3F"
-                                        onPress={() => { }}>
+                                        onPress={onShowAlertCancel}>
                                         <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#F85555', fontWeight: 'bold' }]}>
                                             Hủy nhận
                                         </Text>
                                     </TouchableHighlight>
                                     <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#55B938', backgroundColor: yellowWhite }]}
                                         activeOpacity={0.5} underlayColor="#67CA4A"
-                                        onPress={() => { }}>
+                                        onPress={onShowAlertConfirm}>
                                         <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#449E2A', fontWeight: 'bold' }]}>
                                             Xác nhận
                                         </Text>
@@ -414,14 +499,16 @@ const DetailBill = ({ route }) => {
                                 </View>
                                 : <>
                                     {
-                                        (item?.deliveryStatus == 1)
-                                            ? <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
-                                                activeOpacity={0.5} underlayColor="#EE3F3F"
-                                                onPress={() => { }}>
-                                                <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#001858', fontWeight: 'bold' }]}>
-                                                    Hủy đơn
-                                                </Text>
-                                            </TouchableHighlight>
+                                        (statusBill?.status == 1)
+                                            ? <View style={[styles.flexRow, styles.justifyFlexend]}>
+                                                <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
+                                                    activeOpacity={0.5} underlayColor="#EE3F3F"
+                                                    onPress={onShowAlertCancel}>
+                                                    <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#001858', fontWeight: 'bold' }]}>
+                                                        Hủy đơn
+                                                    </Text>
+                                                </TouchableHighlight>
+                                            </View>
                                             : ""
                                     }
                                 </>
