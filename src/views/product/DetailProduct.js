@@ -125,6 +125,17 @@ const DetailProduct = ({ route }) => {
                     <View style={{ paddingBottom: 20 }}>
                         <View style={[styles.flexRow, styles.justifyBetween]}>
                             <View style={{ width: '47%', }}>
+                                <Text style={styles.titleDetail}>Trạng thái: </Text>
+                                <Text
+                                    numberOfLines={2}
+                                    style={[styles.textDarkBlue, {
+                                        fontSize: 16, fontWeight: 'bold',
+                                        width: '100%',
+                                    }]}>
+                                    {(item?.status != undefined) ? (item?.status == 0) ? "Đang bán" : "Đang ẩn" : "Lỗi dữ liệu"}
+                                </Text>
+                            </View>
+                            <View style={{ width: '47%', }}>
                                 <Text style={styles.titleDetail}>Ngày tạo: </Text>
                                 <Text
                                     numberOfLines={2}

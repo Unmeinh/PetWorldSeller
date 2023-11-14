@@ -11,8 +11,8 @@ import { getDateDefault } from '../../utils/functionSupport';
 import { FlatList } from 'react-native';
 import { onNavigate } from '../../navigation/rootNavigation';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPets, updatePet } from '../../redux/reducers/pet/petReducer';
-import { listPetSelector } from '../../redux/selectors/selector';
+import { fetchPets, removePet, unremovePet } from '../../redux/reducers/pet/petReducer';
+import { listPetSelector, listPetHideSelector } from '../../redux/selectors/selector';
 import Toast from 'react-native-toast-message';
 import { onAxiosPut } from '../../api/axios.function';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
@@ -20,11 +20,18 @@ import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 const PetTab = (route) => {
     const dispatch = useDispatch();
     const pets = useSelector(listPetSelector);
+    const petsHide = useSelector(listPetHideSelector);
     const [extraPets, setextraPets] = useState([]);
+    const [extraPetsHide, setextraPetsHide] = useState([]);
     const [isLoading, setisLoading] = useState(true);
+    const [statusPets, setstatusPets] = useState(0);
 
     function onOpenAddPet() {
         onNavigate('AddPet');
+    }
+
+    function onChangeStatusPets() {
+        setstatusPets(!statusPets);
     }
 
     async function onGetPets() {
@@ -66,9 +73,9 @@ const PetTab = (route) => {
                 text1: 'Đang đăng thú cưng...',
                 position: 'top',
             })
-            let res = await onAxiosPut("pet/unremove",  { idPet: item._id }, 'json', true);
+            let res = await onAxiosPut("pet/unremove", { idPet: item._id }, 'json', true);
             if (res) {
-                dispatch(updatePet([item._id, res.data]));
+                dispatch(unremovePet([item._id, res.data]));
             }
         }
 
@@ -93,7 +100,7 @@ const PetTab = (route) => {
             })
             let res = await onAxiosPut("pet/remove", { idPet: item._id }, 'json', true);
             if (res) {
-                dispatch(updatePet([item._id, res.data]));
+                dispatch(removePet([item._id, res.data]));
             }
         }
 
@@ -130,7 +137,7 @@ const PetTab = (route) => {
                                         style={[styles.textDarkBlue, {
                                             fontSize: 16, fontWeight: 'bold',
                                         }]}>
-                                        {item?.namePet ? item?.namePet : "Lỗi dữ liệu"} {item?.namePet} {item?.namePet} {item?.namePet} {item?.namePet}
+                                        {item?.namePet ? item?.namePet : "Lỗi dữ liệu"}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -172,7 +179,7 @@ const PetTab = (route) => {
                             style={[styles.textDarkBlue, {
                                 fontSize: 14, marginBottom: 3
                             }]}>
-                            Số lượng còn lại: {item?.amountPet ? item?.amountPet : "Lỗi dữ liệu"}
+                            Số lượng còn lại: {(item?.amountPet != undefined && item?.amountPet > -1) ? item?.amountPet : "Lỗi dữ liệu"}
                         </Text>
 
                         <View style={[styles.flexRow, styles.itemsCenter]}>
@@ -235,6 +242,17 @@ const PetTab = (route) => {
     }, [pets]);
 
     React.useEffect(() => {
+        if (petsHide != undefined) {
+            let clone = [...extraPetsHide];
+            clone = petsHide;
+            setextraPetsHide(clone);
+            if (isLoading) {
+                setisLoading(false);
+            }
+        }
+    }, [petsHide]);
+
+    React.useEffect(() => {
         if (route?.tabIndex == 0) {
             setisLoading(true);
             onGetPets();
@@ -243,24 +261,52 @@ const PetTab = (route) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.flexRow, styles.justifyBetween, { width: '100%', paddingHorizontal: 10, paddingVertical: 15 }]}>
-                <View style={[styles.flexRow, styles.itemsCenter]}>
-                    <Text style={styles.textDarkBlue}>Sắp xếp theo: </Text>
-                    <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#CCCCCC80' }]}
-                        activeOpacity={0.5} underlayColor="#DC749C">
+            <View style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', padding: 10 }]}>
+                <View style={{ width: '70%', }}>
+                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                        <View style={{ width: "35%", }}>
+                            <Text style={styles.textDarkBlue}>Trạng thái: </Text>
+                        </View>
+                        {
+                            (statusPets == 0)
+                                ? <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#8BD3DD80' }]}
+                                    activeOpacity={0.5} underlayColor="#8BD3DD" onPress={onChangeStatusPets}>
+                                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                                        <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Đang bán</Text>
+                                        <Entypo name="eye" color={darkBlue} size={13} style={{ marginLeft: 3, top: 1 }} />
+                                    </View>
+                                </TouchableHighlight>
+                                : <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#F582AE80' }]}
+                                    activeOpacity={0.5} underlayColor="#F582AE" onPress={onChangeStatusPets}>
+                                    <View style={[styles.flexRow, styles.itemsCenter]}>
+                                        <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Đang ẩn</Text>
+                                        <Entypo name="eye-with-line" color={darkBlue} size={13} style={{ marginLeft: 3, top: 1 }} />
+                                    </View>
+                                </TouchableHighlight>
+                        }
+                    </View>
+                    <View style={[styles.flexRow, styles.itemsCenter, { marginTop: 7 }]}>
+                        <View style={{ width: "35%", }}>
+                            <Text style={styles.textDarkBlue}>Sắp xếp theo: </Text>
+                        </View>
+                        <TouchableHighlight style={[styles.buttonSortProduct, { backgroundColor: '#CCCCCC80' }]}
+                            activeOpacity={0.5} underlayColor="#DC749C">
+                            <View style={[styles.flexRow, styles.itemsCenter]}>
+                                <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Ngày tạo</Text>
+                                <Entypo name="arrow-long-down" color={darkBlue} size={12} />
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+                <View>
+                    <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus]}
+                        activeOpacity={0.5} underlayColor="#DC749C" onPress={onOpenAddPet}>
                         <View style={[styles.flexRow, styles.itemsCenter]}>
-                            <Text style={[styles.textButtonSmallPink, { color: darkBlue }]}>Ngày tạo</Text>
-                            <Entypo name="arrow-long-down" color={darkBlue} size={12} />
+                            <Entypo name="plus" color={'#FEF6E4'} size={13} />
+                            <Text style={[styles.textButtonSmallPink, { color: '#FEF6E4' }]}>Thêm mới</Text>
                         </View>
                     </TouchableHighlight>
                 </View>
-                <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus]}
-                    activeOpacity={0.5} underlayColor="#DC749C" onPress={onOpenAddPet}>
-                    <View style={[styles.flexRow, styles.itemsCenter]}>
-                        <Entypo name="plus" color={'#FEF6E4'} size={13} />
-                        <Text style={[styles.textButtonSmallPink, { color: '#FEF6E4' }]}>Thêm mới</Text>
-                    </View>
-                </TouchableHighlight>
             </View>
             <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View>
             {
@@ -271,19 +317,36 @@ const PetTab = (route) => {
                         <ItemLoading />
                     </>
                     : <>
-                        {
-                            (pets.length > 0)
-                                ?
-                                <FlatList
-                                    data={pets}
-                                    extraData={extraPets}
-                                    renderItem={({ item, index }) =>
-                                        <ItemPet key={index} item={item}
-                                            index={index} />}
-                                    showsVerticalScrollIndicator={false}
-                                    keyExtractor={(item, index) => index.toString()} />
-                                : ""
-                        }
+                        <View style={{display: (statusPets) ? 'none' : 'flex'}}>
+                            {
+                                (pets.length > 0)
+                                    ?
+                                    <FlatList
+                                        data={pets}
+                                        extraData={extraPets}
+                                        renderItem={({ item, index }) =>
+                                            <ItemPet key={index} item={item}
+                                                index={index} />}
+                                        showsVerticalScrollIndicator={false}
+                                        keyExtractor={(item, index) => index.toString()} />
+                                    : ""
+                            }
+                        </View>
+                        <View style={{display: (statusPets) ? 'flex' : 'none'}}>
+                            {
+                                (petsHide.length > 0)
+                                    ?
+                                    <FlatList
+                                        data={petsHide}
+                                        extraData={extraPetsHide}
+                                        renderItem={({ item, index }) =>
+                                            <ItemPet key={index} item={item}
+                                                index={index} />}
+                                        showsVerticalScrollIndicator={false}
+                                        keyExtractor={(item, index) => index.toString()} />
+                                    : ""
+                            }
+                        </View>
                     </>
             }
         </View>

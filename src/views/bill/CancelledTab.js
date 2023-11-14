@@ -8,27 +8,27 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchDeliveredBills } from '../../redux/reducers/bill/billReducer';
-import { selectDeliveredBills } from '../../redux/selectors/selector';
+import { fetchCancelledBills } from '../../redux/reducers/bill/billReducer';
+import { selectCancelledBills } from '../../redux/selectors/selector';
 import ItemBill from '../../components/items/ItemBill';
 import ItemBillLoading from '../../components/items/ItemBillLoading';
 import { RefreshControl } from "react-native-gesture-handler";
 
-const DeliveredTab = (route) => {
+const CancelledTab = (route) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const bills = useSelector(selectDeliveredBills);
+    const bills = useSelector(selectCancelledBills);
     const [extraBills, setextraBills] = useState([]);
     const [isLoading, setisLoading] = useState(true);
     const [isRefreshing, setisRefreshing] = useState(false);
 
     async function onGetBills() {
-        dispatch(fetchDeliveredBills());
+        dispatch(fetchCancelledBills());
     }
 
     async function onLoadingGetBills() {
         setisLoading(true);
-        dispatch(fetchDeliveredBills());
+        dispatch(fetchCancelledBills());
     }
 
     React.useEffect(() => {
@@ -46,7 +46,7 @@ const DeliveredTab = (route) => {
     }, [bills]);
 
     React.useEffect(() => {
-        if (route?.tabIndex == 3) {
+        if (route?.tabIndex == 5) {
             setisLoading(true);
             onGetBills();
         }
@@ -98,7 +98,7 @@ const DeliveredTab = (route) => {
                                 }>
                                     <View style={styles.viewOther}>
                                         <FontAwesome6 name='boxes-stacked' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                        <Text style={styles.textHint}>Không có đơn hàng đã giao..</Text>
+                                        <Text style={styles.textHint}>Không có đơn hàng bị hủy..</Text>
                                     </View>
                                 </ScrollView>
                         }
@@ -108,4 +108,4 @@ const DeliveredTab = (route) => {
     );
 }
 
-export default memo(DeliveredTab);
+export default memo(CancelledTab);

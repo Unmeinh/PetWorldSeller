@@ -27,7 +27,7 @@ const ItemBill = (row) => {
     }
 
     function onOpenDetailBill() {
-        onNavigate('DetailBill', { bill: item });
+        onNavigate('DetailBill', { bill: item, fetchBills: () => row.fetchBills() });
     }
 
     function onShowAlertConfirm() {
@@ -63,7 +63,7 @@ const ItemBill = (row) => {
             autoHide: false,
             text1: 'Đang xác nhận đơn hàng...'
         })
-        let res = await onAxiosPost('shop/bill/confirm',{
+        let res = await onAxiosPost('shop/bill/confirm', {
             idBill: item._id,
             isConfirm: 0
         }, 'json', true);
@@ -79,7 +79,7 @@ const ItemBill = (row) => {
             autoHide: false,
             text1: 'Đang hủy nhận đơn hàng...'
         })
-        let res = await onAxiosPost('shop/bill/confirm',{
+        let res = await onAxiosPost('shop/bill/confirm', {
             idBill: item._id,
             isConfirm: 1
         }, 'json', true);
@@ -145,8 +145,9 @@ const ItemBill = (row) => {
                         </View>
                         <View style={[{ width: '30%', }]}>
                             <Text style={[styles.textDarkBlue,
-                            { fontSize: 15, textAlign: 'right', fontWeight: 'bold', color: String(item?.colorStatus) }]} numberOfLines={1}>
-                                {item?.nameStatus}
+                            { fontSize: 15, textAlign: 'right', fontWeight: 'bold', color: (String(item?.statusBill?.colorStatus)) ? String(item?.statusBill?.colorStatus) : "#D2D2D2" }]}
+                                numberOfLines={1}>
+                                {item?.statusBill?.nameStatus}
                             </Text>
                         </View>
                     </View>
@@ -241,10 +242,10 @@ const ItemBill = (row) => {
                                     {
                                         (item?.deliveryStatus == 1)
                                             ? <View style={[styles.flexRow, styles.justifyFlexend]}>
-                                                <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
+                                                <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555', backgroundColor: yellowWhite }]}
                                                     activeOpacity={0.5} underlayColor="#EE3F3F"
                                                     onPress={onShowAlertCancel}>
-                                                    <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#001858', fontWeight: 'bold' }]}>
+                                                    <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#F85555', fontWeight: 'bold' }]}>
                                                         Hủy đơn
                                                     </Text>
                                                 </TouchableHighlight>
