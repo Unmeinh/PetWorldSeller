@@ -4,7 +4,6 @@ import {
     ScrollView
 } from 'react-native';
 import styles from '../../styles/all.style';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,6 +11,7 @@ import { fetchDeliveredBills } from '../../redux/reducers/bill/billReducer';
 import { selectDeliveredBills } from '../../redux/selectors/selector';
 import ItemBill from '../../components/items/ItemBill';
 import ItemBillLoading from '../../components/items/ItemBillLoading';
+import LottieAnimation from '../../components/layout/LottieAnimation';
 import { RefreshControl } from "react-native-gesture-handler";
 
 const DeliveredTab = (route) => {
@@ -96,9 +96,11 @@ const DeliveredTab = (route) => {
                                 : <ScrollView refreshControl={
                                     <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                 }>
-                                    <View style={styles.viewOther}>
-                                        <FontAwesome6 name='boxes-stacked' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                        <Text style={styles.textHint}>Không có đơn hàng đã giao..</Text>
+                                    <View style={styles.viewEmptyList}>
+                                        <LottieAnimation fileJson={require('../../assets/images/jsons/emptyBox.json')}
+                                            isLoop={true} isAutoPlay={true}
+                                            style={{ width: "70%", aspectRatio: 1 }} />
+                                        <Text style={styles.textEmptyList}>Không có đơn hàng đã giao..</Text>
                                     </View>
                                 </ScrollView>
                         }

@@ -4,7 +4,6 @@ import {
     ScrollView,
 } from 'react-native';
 import styles, { darkBlue } from '../../styles/all.style';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +12,7 @@ import { selectAllBills, selectCanActionAllBills } from '../../redux/selectors/s
 import ItemBill from '../../components/items/ItemBill';
 import ItemBillLoading from '../../components/items/ItemBillLoading';
 import ViewActionBill from '../../components/items/ViewActionBill';
+import LottieAnimation from '../../components/layout/LottieAnimation';
 import { RefreshControl } from "react-native-gesture-handler";
 
 const AllBillTab = (route) => {
@@ -73,7 +73,9 @@ const AllBillTab = (route) => {
 
     return (
         <View style={styles.container}>
-            <ViewActionBill canAction={canAction} isLoading={isLoading} fetchBills={onLoadingGetBills} />
+            <View style={{ position: 'absolute', bottom: 0, zIndex: 50, height: 57}}>
+                <ViewActionBill canAction={canAction} isLoading={isLoading} fetchBills={onLoadingGetBills} />
+            </View>
             {
                 (isLoading)
                     ? <ScrollView showsVerticalScrollIndicator={false}>
@@ -87,6 +89,7 @@ const AllBillTab = (route) => {
                                 ? <FlatList
                                     data={bills}
                                     extraData={extraBills}
+                                    style={{marginBottom: 57}}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
                                             index={index} fetchBills={onGetBills} />}
@@ -98,9 +101,11 @@ const AllBillTab = (route) => {
                                 : <ScrollView refreshControl={
                                     <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                 }>
-                                    <View style={styles.viewOther}>
-                                        <FontAwesome6 name='boxes-stacked' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                        <Text style={styles.textHint}>Danh sách đơn hàng trống..</Text>
+                                    <View style={styles.viewEmptyList}>
+                                        <LottieAnimation fileJson={require('../../assets/images/jsons/emptyBox.json')}
+                                            isLoop={true} isAutoPlay={true}
+                                            style={{ width: "70%", aspectRatio: 1 }} />
+                                        <Text style={styles.textEmptyList}>Danh sách đơn hàng trống..</Text>
                                     </View>
                                 </ScrollView>
                         }

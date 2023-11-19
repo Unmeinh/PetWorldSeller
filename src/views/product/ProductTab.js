@@ -1,8 +1,9 @@
 import React, { useState, memo } from 'react';
 import {
     Text, View,
+    Image, ScrollView,
+    TouchableOpacity,
     TouchableHighlight,
-    Image, TouchableOpacity
 } from 'react-native';
 import styles, { darkBlue } from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -16,6 +17,9 @@ import { listProductSelector, listProductHideSelector } from '../../redux/select
 import Toast from 'react-native-toast-message';
 import { onAxiosPut } from '../../api/axios.function';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
+import emptyBag from '../../assets/images/jsons/emptyBag.json';
+import LottieAnimation from '../../components/layout/LottieAnimation';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const ProductTab = (route) => {
     const dispatch = useDispatch();
@@ -24,6 +28,7 @@ const ProductTab = (route) => {
     const [extraProducts, setextraProducts] = useState([]);
     const [extraProductsHide, setextraProductsHide] = useState([]);
     const [isLoading, setisLoading] = useState(true);
+    const [isRefreshing, setisRefreshing] = useState(false);
     const [statusProducts, setstatusProducts] = useState(0);
 
     function onOpenAddProduct() {
@@ -47,7 +52,7 @@ const ProductTab = (route) => {
         }
 
         function onOpenDetailProduct() {
-            onNavigate('DetailProduct', { product: item });
+            onNavigate('DetailProduct', { idProd: item._id });
         }
 
         function onOpenEditProduct() {
@@ -249,6 +254,9 @@ const ProductTab = (route) => {
             if (isLoading) {
                 setisLoading(false);
             }
+            if (isRefreshing) {
+                setisRefreshing(false);
+            }
         }
     }, [productsHide]);
 
@@ -258,6 +266,11 @@ const ProductTab = (route) => {
             onGetProduct();
         }
     }, [route]);
+
+    const onReloadData = React.useCallback(() => {
+        setisRefreshing(true);
+        onGetPets();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -329,7 +342,16 @@ const ProductTab = (route) => {
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()} />
-                                    : ""
+                                    : <ScrollView
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } >
+                                        <View style={styles.viewEmptyList}>
+                                            <LottieAnimation fileJson={emptyBag} isLoop={true} isAutoPlay={true}
+                                                style={{ width: "80%", aspectRatio: 1 }} />
+                                            <Text style={styles.textEmptyList}>Không có lịch hẹn nào..</Text>
+                                        </View>
+                                    </ScrollView>
                             }
                         </View>
                         <View style={{ display: (statusProducts) ? 'flex' : 'none' }}>
@@ -344,7 +366,16 @@ const ProductTab = (route) => {
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()} />
-                                    : ""
+                                    : <ScrollView
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } >
+                                        <View style={styles.viewEmptyList}>
+                                            <LottieAnimation fileJson={emptyBag} isLoop={true} isAutoPlay={true}
+                                                style={{ width: "80%", aspectRatio: 1 }} />
+                                            <Text style={styles.textEmptyList}>Không có lịch hẹn nào..</Text>
+                                        </View>
+                                    </ScrollView>
                             }
                         </View>
                     </>

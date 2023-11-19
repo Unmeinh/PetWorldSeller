@@ -7,15 +7,13 @@ import {
 import HeaderTitle from '../../components/header/HeaderTitle';
 import styles from '../../styles/all.style';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-// import { fetchDetailProduct } from '../../redux/reducers/filters/filtersReducer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 import { getDateDefault } from '../../utils/functionSupport';
 import { onAxiosGet, onAxiosDelete, onAxiosPut } from "../../api/axios.function";
 import Toast from "react-native-toast-message";
-import { goBack } from '../../navigation/rootNavigation';
+import { onGoBack } from '../../navigation/rootNavigation';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
@@ -23,14 +21,12 @@ LogBox.ignoreLogs([
 
 const DetailAppointment = ({ route }) => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const [appointment, setappointment] = useState(undefined);
     const [statusApm, setstatusApm] = useState("Đang hẹn");
     const [srcPet, setsrcPet] = useState(require('../../assets/images/loading.png'));
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
     const [isLoader, setisLoader] = useState(true);
     const [isFocusScreen, setisFocusScreen] = useState(false);
-    const [canCancel, setcanCancel] = useState(false);
 
     async function fetchAppointment() {
         let res = await onAxiosGet('shop/appointment/detail/' + route.params.idApm);
@@ -43,22 +39,30 @@ const DetailAppointment = ({ route }) => {
 
     function onOpenPet() {
         let type = 0;
-        let pet = {...appointment.idPet};
+        let pet = { ...appointment.idPet };
         pet.idShop = appointment.idShop;
-        // dispatch(fetchDetailProduct({ id: appointment.idPet._id, type }));
-        navigation.push('DetailProduct', { type, item: pet });
+        navigation.push('DetailPet', { idPet: pet._id });
     }
 
-    function onOpenShop() {
-        navigation.navigate('ShopScreen', { data: appointment.idShop });
+    function onShowAlertAccept() {
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: "Xác nhận nhận lịch hẹn?",
+            props: {
+                cancel: () => Toast.hide(),
+                confirm: onAccept
+            },
+            autoHide: false
+        })
     }
 
-    function onShowAlert() {
-        if (canCancel) {
+    function onShowAlertCancel() {
+        if (appointment?.canAccept) {
             Toast.show({
                 type: 'alert',
                 position: 'top',
-                text1: "Xác nhận hủy lịch hẹn?",
+                text1: "Xác nhận hủy nhận hẹn?",
                 props: {
                     cancel: () => Toast.hide(),
                     confirm: onCancel
@@ -69,38 +73,111 @@ const DetailAppointment = ({ route }) => {
             Toast.show({
                 type: 'alert',
                 position: 'top',
-                text1: "Xác nhận xóa lịch hẹn?",
+                text1: "Xác nhận hủy lịch hẹn?",
                 props: {
                     cancel: () => Toast.hide(),
-                    confirm: onDelete
+                    confirm: onCancel
                 },
                 autoHide: false
             })
         }
     }
 
+    function onShowAlertConfirm() {
+        if (new Date(appointment?.appointmentDate) > new Date()) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: "Bạn sẽ có thể xác nhận sau ngày hẹn!",
+            })
+            return;
+        }
+        Toast.show({
+            type: 'alert',
+            position: 'top',
+            text1: "Xác nhận đã hẹn?",
+            props: {
+                cancel: () => Toast.hide(),
+                confirm: onConfirm
+            },
+            autoHide: false
+        })
+    }
+
+    async function onAccept() {
+        if (appointment?.canAccept) {
+            Toast.show({
+                type: 'loading',
+                position: 'top',
+                text1: "Đang xác nhận đã hẹn...",
+                autoHide: false
+            })
+            let res = await onAxiosPut('shop/appointment/update',
+                {
+                    idAppt: appointment._id,
+                    status: 0,
+                }, 'json', true)
+            if (res && res.success) {
+                setappointment(res.data);
+            }
+        }
+    }
+
     async function onCancel() {
-        if (canCancel) {
+        if (appointment?.canAccept) {
+            Toast.show({
+                type: 'loading',
+                position: 'top',
+                text1: "Đang hủy nhận hẹn...",
+                autoHide: false
+            })
+            let res = await onAxiosPut('shop/appointment/update',
+                {
+                    idAppt: appointment._id,
+                    status: 3
+                }, 'json', true)
+            if (res && res.success) {
+                setappointment(res.data);
+            }
+        } else {
             Toast.show({
                 type: 'loading',
                 position: 'top',
                 text1: "Đang hủy lịch hẹn...",
                 autoHide: false
             })
-            let res = await onAxiosPut('appointment/update',
+            let res = await onAxiosPut('shop/appointment/update',
                 {
                     idAppt: appointment._id,
-                    status: "3"
+                    status: 3
                 }, 'json', true)
-            if (res) {
-                setcanCancel(false);
-                setstatusApm("Đã hủy hẹn")
+            if (res && res.success) {
+                setappointment(res.data);
+            }
+        }
+    }
+
+    async function onConfirm() {
+        if (appointment?.canConfirm) {
+            Toast.show({
+                type: 'loading',
+                position: 'top',
+                text1: "Đang xác nhận đã hẹn...",
+                autoHide: false
+            })
+            let res = await onAxiosPut('shop/appointment/update',
+                {
+                    idAppt: appointment._id,
+                    status: 1,
+                }, 'json', true)
+            if (res && res.success) {
+                setappointment(res.data);
             }
         }
     }
 
     async function onDelete() {
-        if (!canCancel) {
+        if (!appointment?.canCancel) {
             Toast.show({
                 type: 'loading',
                 position: 'top',
@@ -122,31 +199,7 @@ const DetailAppointment = ({ route }) => {
             setisLoader(false);
             if (appointment != "null") {
                 setsrcPet({ uri: String(appointment.idPet.imagesPet[0]) })
-                setsrcAvatar({ uri: String(appointment.idShop.avatarShop) })
-                switch (appointment.status) {
-                    case "-1":
-                        setcanCancel(true);
-                        setstatusApm("Chờ xác nhận")
-                        break;
-                    case "0":
-                        setcanCancel(true);
-                        setstatusApm("Đang hẹn")
-                        break;
-                    case "1":
-                        setcanCancel(false);
-                        setstatusApm("Đã hẹn")
-                        break;
-                    case "2":
-                        setcanCancel(false);
-                        setstatusApm("Đã lỡ hẹn")
-                        break;
-                    case "3":
-                        setcanCancel(false);
-                        setstatusApm("Đã hủy hẹn")
-                        break;
-                    default:
-                        break;
-                }
+                setsrcAvatar({ uri: String(appointment?.idUser?.avatarUser) })
             }
         }
     }, [appointment]);
@@ -213,14 +266,14 @@ const DetailAppointment = ({ route }) => {
                                     <MaterialCommunityIcons name='calendar' color={'#001858'} size={17} />
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, fontFamily: 'ProductSans', fontSize: 15 }}>
                                         Ngày hẹn: {(appointment.appointmentDate != undefined)
-                                            ? getDateDefault(appointment.appointmentDate) : "Chưa có"}
+                                            ? getDateDefault(appointment.appointmentDate) : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
                                     <MaterialCommunityIcons name='paw' color={'#001858'} size={17} />
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, marginTop: 4, fontFamily: 'ProductSans', fontSize: 15 }}>
                                         Số lượng: {(appointment.amountPet != undefined)
-                                            ? appointment.amountPet : "Chưa có"}
+                                            ? appointment.amountPet : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
@@ -229,7 +282,7 @@ const DetailAppointment = ({ route }) => {
                                     </View>
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, fontFamily: 'ProductSans', fontSize: 15 }}>
                                         Tiền đặt cọc: {(appointment.deposits != undefined)
-                                            ? Number(appointment.deposits).toLocaleString() + " đồng" : "Chưa có"}
+                                            ? Number(appointment.deposits).toLocaleString() + " đồng" : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
@@ -238,20 +291,21 @@ const DetailAppointment = ({ route }) => {
                                     </View>
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, fontFamily: 'ProductSans', fontSize: 15 }}>
                                         Địa điểm hẹn: {(appointment.location != undefined)
-                                            ? appointment.location : "Chưa có"}
+                                            ? appointment.location : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
                                     <MaterialCommunityIcons name='progress-question' color={'#001858'} size={17} />
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, fontFamily: 'ProductSans', fontSize: 15 }}>
-                                        Trạng thái: {statusApm}
+                                        Trạng thái: {(appointment.nameStatus != undefined)
+                                            ? appointment.nameStatus : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
                                     <MaterialCommunityIcons name='calendar' color={'#001858'} size={17} />
                                     <Text style={{ color: 'rgba(0, 24, 88, 0.80)', marginLeft: 7, fontFamily: 'ProductSans', fontSize: 15 }}>
                                         Ngày đặt: {(appointment.createdAt != undefined)
-                                            ? getDateDefault(appointment.createdAt) : "Chưa có"}
+                                            ? getDateDefault(appointment.createdAt) : "Lỗi dữ liệu"}
                                     </Text>
                                 </View>
                             </View>
@@ -263,28 +317,28 @@ const DetailAppointment = ({ route }) => {
                                             onError={() => setsrcAvatar(require('../../assets/images/error.png'))} />
                                         <View style={{ marginLeft: 10 }}>
                                             <Text style={styles.textNameShop} numberOfLines={1}>
-                                                {appointment.idShop.nameShop}
+                                                {appointment?.idUser?.fullName}
                                             </Text>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 9 }}>
-                                                <View style={{ width: 12, marginLeft: 3 }}>
-                                                    <MaterialCommunityIcons name='map-marker' size={12} />
+                                                <View style={{ width: 12, marginRight: 3 }}>
+                                                    <MaterialCommunityIcons name='map-marker' size={13} color={'#656565'} />
                                                 </View>
                                                 <Text style={styles.textLocationShop} numberOfLines={1}>
-                                                    {appointment.idShop.locationShop}
+                                                    {appointment?.idUser?.locationUser}
                                                 </Text>
                                             </View>
                                         </View>
                                     </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                                        <Text style={styles.textInfoShop}>
-                                            <Text style={{ color: '#F582AE' }}>{appointment.idShop.followers}</Text> người theo dõi
+                                    <View style={{ marginTop: 10 }}>
+                                        <Text style={[styles.textInfoShop, styles.textDarkBlue]}>
+                                            Số liên hệ: <Text style={{ color: '#F582AE' }}>+{appointment?.idUser?.idAccount?.phoneNumber ? appointment?.idUser?.idAccount?.phoneNumber : "Không có dữ liệu"}</Text>
                                         </Text>
-                                        <Text style={[styles.textInfoShop, { marginLeft: 9 }]}>
-                                            <Text style={{ color: '#F582AE' }}>{(appointment.idShop.rating) ? appointment.idShop.rating : "?.0"}</Text> đánh giá
+                                        <Text style={[styles.textInfoShop, styles.textDarkBlue]}>
+                                            Email: <Text style={{ color: '#F582AE' }}>{appointment?.idUser?.idAccount?.emailAddress ? appointment?.idUser?.idAccount?.emailAddress : "Không có dữ liệu"}</Text>
                                         </Text>
                                     </View>
                                 </View>
-                                <View>
+                                {/* <View>
                                     <TouchableOpacity style={styles.buttonItemShop}
                                         onPress={onOpenShop}>
                                         <Text style={styles.textButtonItemShop}>Xem shop</Text>
@@ -293,32 +347,60 @@ const DetailAppointment = ({ route }) => {
                                         onPress={() => setisShowSetApm(true)}>
                                         <Text style={styles.textButtonItemShop}>Nhắn tin</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                             </View>
                             <View style={{ backgroundColor: 'rgba(204, 204, 204, 0.50)', height: 5, width: '100%' }} />
-                            <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25, paddingRight: 20 }}>
+                            <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 20, paddingRight: 20 }}>
+                                {
+                                    (appointment?.canAccept)
+                                        ? <>
+                                            <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F85555' }]}
+                                                activeOpacity={0.5} underlayColor="#EE3F3F"
+                                                onPress={onShowAlertCancel}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={styles.textButtonSave}>Hủy nhận hẹn</Text>
+                                                </View>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#55B938' }]}
+                                                activeOpacity={0.5} underlayColor="#67CA4A"
+                                                onPress={onShowAlertAccept}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={styles.textButtonSave}>Xác nhận hẹn</Text>
+                                                </View>
+                                            </TouchableHighlight>
+                                        </>
+                                        : <>
+                                            {
+                                                (appointment?.canCancel)
+                                                    ? <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F85555' }]}
+                                                        activeOpacity={0.5} underlayColor="#EE3F3F"
+                                                        onPress={onShowAlertCancel}>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                            <Text style={styles.textButtonSave}>Hủy lịch hẹn</Text>
+                                                        </View>
+                                                    </TouchableHighlight>
+                                                    : ""
+                                            }
+                                            {
+                                                (appointment?.canConfirm)
+                                                    ? <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#55B938' }]}
+                                                        activeOpacity={0.5} underlayColor="#67CA4A"
+                                                        onPress={onShowAlertConfirm}>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                            <Text style={styles.textButtonSave}>Xác nhận đã hẹn</Text>
+                                                        </View>
+                                                    </TouchableHighlight>
+                                                    : ""
+                                            }
+                                        </>
+                                }
+                            </View>
+                            <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 20, paddingRight: 20 }}>
                                 <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#8E8E8E' }]}
                                     activeOpacity={0.5} underlayColor="#6D6D6D"
-                                    onPress={goBack}>
-                                    <Text style={styles.textButtonSave}>Quay lại</Text>
+                                    onPress={onGoBack}>
+                                    <Text style={styles.textButtonSave}> Quay lại  </Text>
                                 </TouchableHighlight>
-                                {
-                                    (canCancel)
-                                        ? <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F85555' }]}
-                                            activeOpacity={0.5} underlayColor="#EE3F3F"
-                                            onPress={onShowAlert}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <Text style={styles.textButtonSave}>Hủy lịch hẹn</Text>
-                                            </View>
-                                        </TouchableHighlight>
-                                        : <TouchableHighlight style={[styles.buttonSave, { backgroundColor: '#F85555' }]}
-                                            activeOpacity={0.5} underlayColor="#EE3F3F"
-                                            onPress={onShowAlert}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <Text style={styles.textButtonSave}>Xóa lịch hẹn</Text>
-                                            </View>
-                                        </TouchableHighlight>
-                                }
                             </View>
                         </View>
                         : ""
@@ -404,11 +486,11 @@ const DetailAppointment = ({ route }) => {
                     </View>
                 </View>
                 <View style={{ backgroundColor: 'rgba(204, 204, 204, 0.50)', height: 5, width: '100%' }} />
-                <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25, paddingRight: 20 }}>
+                <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 20, paddingRight: 20 }}>
                     <ShimmerPlaceHolder
-                        shimmerStyle={{ width: 75, height: 30, borderRadius: 10, marginLeft: 20 }} />
+                        shimmerStyle={{ width: 95, height: 30, borderRadius: 10, marginLeft: 20 }} />
                     <ShimmerPlaceHolder
-                        shimmerStyle={{ width: 75, height: 30, borderRadius: 10, marginLeft: 20 }} />
+                        shimmerStyle={{ width: 95, height: 30, borderRadius: 10, marginLeft: 20 }} />
                 </View>
             </View>
         )
@@ -423,9 +505,9 @@ const DetailAppointment = ({ route }) => {
                     : <>
                         {
                             (appointment == "null")
-                                ? <View style={styles.viewOther}>
+                                ? <View style={styles.viewEmptyList}>
                                     <FontAwesome name='calendar-times-o' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                    <Text style={styles.textHint}>Không tìm thấy lịch hẹn..</Text>
+                                    <Text style={styles.textEmptyList}>Không tìm thấy lịch hẹn..</Text>
                                 </View>
                                 : <>
                                     <DetailItem />

@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { onAxiosGet } from '../../api/axios.function';
 import { getMonthVietnamese, getTimeDefault, getDateDefault } from '../../utils/functionSupport';
+import LottieAnimation from '../../components/layout/LottieAnimation';
 
 const AppointmentScreen = () => {
     const navigation = useNavigation();
@@ -317,10 +318,12 @@ const AppointmentScreen = () => {
                                     } />
                                 : <ScrollView refreshControl={
                                     <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
-                                } >
-                                    <View style={styles.viewOther}>
-                                        <FontAwesome name='calendar-times-o' size={70} color={'rgba(0, 0, 0, 0.5)'} />
-                                        <Text style={styles.textHint}>Không có lịch hẹn nào..</Text>
+                                }>
+                                    <View style={styles.viewEmptyList}>
+                                        <LottieAnimation fileJson={require('../../assets/images/jsons/emptyMailbox.json')}
+                                            isLoop={true} isAutoPlay={true}
+                                            style={{ width: "65%", aspectRatio: 1 }} />
+                                        <Text style={styles.textEmptyList}>Không có lịch hẹn nào..</Text>
                                     </View>
                                 </ScrollView>
                         }

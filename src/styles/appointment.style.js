@@ -10,19 +10,6 @@ let pinkLotus = '#F582AE';
 let darkBlue = '#001858';
 
 export default StyleSheet.create({
-    viewOther: {
-        flex: 1,
-        alignItems: 'center',
-        marginTop: 25
-    },
-
-    textHint: {
-        fontSize: 16,
-        fontFamily: 'ProductSans',
-        color: 'rgba(0, 0, 0, 0.6)',
-        marginTop: 15
-    },
-
     //AppointmentItem
     circleLineItem: {
         height: 10,

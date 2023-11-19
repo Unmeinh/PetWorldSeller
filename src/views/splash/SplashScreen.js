@@ -8,6 +8,7 @@ import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
 import { onNavigate } from '../../navigation/rootNavigation';
+import LottieAnimation from '../../components/layout/LottieAnimation';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -29,7 +30,6 @@ export default function SplashScreen() {
 
   const stepAnimation = new Animated.Value(0);
   const [pawPositions, setPawPositions] = useState([]);
-  const [logoVisible, setLogoVisible] = useState(true);
   const [nameVisible, setNameVisible] = useState(false);
   const [isFinishedOneTime, setisFinishedOneTime] = useState(false);
   const [nextScreen, setnextScreen] = useState('');
@@ -48,21 +48,7 @@ export default function SplashScreen() {
       });
     };
 
-    const hideLogo = () => {
-      setTimeout(() => {
-        setLogoVisible(false);
-        showName();
-      }, 2000);
-    };
-
-    const showName = () => {
-      setTimeout(() => {
-        setNameVisible(true);
-      }, 300);
-    };
-
     movePaw();
-    hideLogo();
   }, [pawPositions]);
 
   function onLayoutPaw(event) {
@@ -77,6 +63,8 @@ export default function SplashScreen() {
   }
 
   async function getNavigate() {
+    // setnextScreen('Test');
+    // return;
     if (storageMMKV.checkKey('login.isFirstTime')) {
       if (!storageMMKV.getBoolean('login.isFirstTime')) {
         if (storageMMKV.checkKey('login.isLogin')) {
@@ -117,16 +105,25 @@ export default function SplashScreen() {
     }
   }
 
+    const showNameApp = () => {
+      setTimeout(() => {
+        setNameVisible(true);
+      }, 500);
+    };
+
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
       onNavigate(nextScreen);
-      storageMMKV.setValue('login.isFirstTime', false);
+      if (storageMMKV.checkKey('login.isFirstTime') && storageMMKV.getBoolean('login.isFirstTime')) {
+        storageMMKV.setValue('login.isFirstTime', false);
+      }
     }
   }, [isFinishedOneTime, nextScreen]);
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {
       getNavigate();
+      showNameApp();
       return () => {
         unsub.remove();
       };
@@ -137,27 +134,11 @@ export default function SplashScreen() {
 
   return (
     <View style={[styles.container, styles.justifyCenter, styles.itemsCenter]}>
-      {logoVisible && (
-        <Animatable.Image
-          animation={{
-            from: { scale: 0 },
-            to: { scale: 1 },
-          }}
-          duration={3000}
-          source={require('../../assets/images/gifs/catWaiting.gif')}
-          style={[
-            styles.positionAbsolute,
-            { width: logoSize, height: logoSize, bottom: bottomPosition },
-          ]}
-        />
-      )}
+      <LottieAnimation fileJson={require('../../assets/images/jsons/logo.json')}
+        isLoop={true} isAutoPlay={true}
+        style={{ width: "100%", aspectRatio: 1, marginBottom: '65%' }} />
       {nameVisible && (
-        <Animatable.View animation="fadeIn" duration={1000} style={[styles.positionAbsolute, { top: nameBottomPosition }]}>
-          {/* <Image
-            source={require('../../assets/images/gifs/catWaiting.gif')}
-            style={{ width: nameImageWidth, height: nameImageHeight }}
-            resizeMode="contain"
-          /> */}
+        <Animatable.View animation="zoomIn" duration={2000} style={[styles.positionAbsolute, { top: '57%' }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {/* <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>PETW</Text> */}
             <View style={{ borderRadius: 50, borderColor: '#001858', borderWidth: 3, width: 50, height: 50, alignItems: 'center', padding: 5 }}>
@@ -169,10 +150,11 @@ export default function SplashScreen() {
               </View>
             </View>
             <Text style={{ fontSize: 45, color: '#001858', fontWeight: '500' }}>URPET</Text>
-              <Text style={{
-                fontSize: 25, color: '#001858',
-                position: 'absolute'
-              }}>Seller</Text>
+            <Text style={{
+              fontSize: 25, color: '#001858',
+              position: 'absolute',
+              right: '-7.3%', bottom: -17
+            }}>Seller</Text>
           </View>
         </Animatable.View>
       )}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     Text, View
 } from 'react-native';
-import styles, { darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { WindowHeight, darkBlue, yellowWhite } from '../../styles/all.style';
 import { TabView, TabBar } from 'react-native-tab-view';
 import AllBillTab from './AllBillTab';
 import ProcessingTab from './ProcessingTab';
@@ -72,13 +72,15 @@ const BillScreen = ({ route }) => {
     return (
         <View style={styles.container}>
             <HeaderTitle titleHeader={'Quản lý đơn hàng'} colorHeader={yellowWhite} />
-            <TabView
-                style={{ top: -5 }}
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                renderTabBar={renderTabBar}
-                onIndexChange={setIndex}
-            />
+            <View style={{ flex: 1 }}>
+                <View style={{ width: '100%', height: 5, top: -5, backgroundColor: yellowWhite, position: 'absolute' }}></View>
+                <TabView
+                    navigationState={{ index, routes }}
+                    renderScene={renderScene}
+                    renderTabBar={renderTabBar}
+                    onIndexChange={setIndex}
+                />
+            </View>
         </View>
     );
 }

@@ -3,7 +3,7 @@ import {
     Text, View,
     TouchableHighlight
 } from 'react-native';
-import styles, { darkBlue } from '../../styles/all.style';
+import styles from '../../styles/all.style';
 import { onAxiosPost } from '../../api/axios.function';
 import Toast from 'react-native-toast-message';
 import ShimmerPlaceHolder from '../layout/ShimmerPlaceHolder';
@@ -63,7 +63,7 @@ const ViewActionBill = (props) => {
     }
 
     return (
-        <>
+        <View style={[styles.bgLightBrown, {borderTopLeftRadius: 15, borderTopRightRadius: 15}]}>
             {
                 (props.isLoading)
                     ? <>
@@ -71,7 +71,7 @@ const ViewActionBill = (props) => {
                             <ShimmerPlaceHolder shimmerStyle={{height: 30, width: '27%', borderRadius: 5}}/>
                             <ShimmerPlaceHolder shimmerStyle={{height: 30, width: '27%', borderRadius: 5, marginLeft: 10,}}/>
                         </View>
-                        <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View>
+                        {/* <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View> */}
                     </>
                     : <>
                         {
@@ -99,13 +99,13 @@ const ViewActionBill = (props) => {
                                                 : ""
                                         }
                                     </View>
-                                    <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View>
+                                    {/* <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View> */}
                                 </>
                                 : ""
                         }
                     </>
             }
-        </>
+        </View>
     )
 }
 
