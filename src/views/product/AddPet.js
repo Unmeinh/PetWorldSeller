@@ -55,6 +55,7 @@ const AddPet = ({ route }) => {
                     maxSelectedAssets: 5 - arr_Image.length
                 });
                 setarr_Image([...arr_Image, ...response]);
+                console.log(response);
             }
         } catch (error) {
             console.log(error);

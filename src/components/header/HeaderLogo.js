@@ -14,7 +14,7 @@ export default function HeaderLogo({ colorHeader }) {
         }}>
             <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 30, color: '#001858', fontWeight: '500' }}>PETW</Text>
+                    {/* <Text style={{ fontSize: 30, color: '#001858', fontWeight: '500' }}>PETW</Text> */}
                     <View style={{ borderRadius: 50, borderColor: '#001858', borderWidth: 3, width: 35, height: 35, alignItems: 'center', padding: 5 }}>
                         <View style={{ width: 30, height: 35 }}>
                             <FontAwesome6 name='dog' size={25} color={'#001858'}
@@ -23,10 +23,10 @@ export default function HeaderLogo({ colorHeader }) {
                                 style={{ position: 'absolute', bottom: 13, left: 4 }} />
                         </View>
                     </View>
-                    <Text style={{ fontSize: 30, color: '#001858', fontWeight: '500' }}>RD</Text>
+                    <Text style={{ fontSize: 30, color: '#001858', fontWeight: '500' }}>URPET</Text>
                 <Text style={{
-                    fontSize: 15, color: '#000', 
-                    right: 25, bottom: -17
+                    fontSize: 15, color: '#001858', 
+                    right: '75%', bottom: -18
                 }}>Seller</Text>
                 </View>
             </View>

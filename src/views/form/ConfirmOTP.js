@@ -160,7 +160,6 @@ export default function ConfirmOTP({ route }) {
                         if (message != null) {
                             try {
                                 const otp = /(\d{6})/g.exec(message)[1];
-                                console.log(otp);
                                 setinputOTP(otp);
                                 setisReadedMessage(true);
                             } catch (error) {

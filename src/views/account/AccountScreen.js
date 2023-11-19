@@ -194,7 +194,7 @@ const AccountScreen = () => {
                 <View style={{ marginBottom: 20 }}>
                     <TouchableOpacity onPress={onOpenAppointmentScreen}
                         style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%' }]}>
-                        <Text style={[{ fontSize: 17 }, styles.textDarkBlue]}>Quản lý đặt lịch</Text>
+                        <Text style={[{ fontSize: 17 }, styles.textDarkBlue]}>Quản lý lịch hẹn</Text>
                         <MaterialCommunityIcons name='chevron-right' size={25} color={darkBlue} />
                     </TouchableOpacity>
                 </View>

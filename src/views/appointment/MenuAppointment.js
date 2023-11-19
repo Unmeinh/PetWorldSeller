@@ -68,10 +68,10 @@ const MenuAppointment = (route) => {
 
     function onOpenPet() {
         let type = 0;
-        let pet = {...route.pet};
+        let pet = { ...route.pet };
         pet.idShop = route.shop;
         // dispatch(fetchDetailProduct({ id: route.pet._id, type }));
-        navigation.push('DetailProduct', { type, item: pet });
+        navigation.push('DetailPet', { idPet: pet._id });
     }
 
     async function onCancel() {

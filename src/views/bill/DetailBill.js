@@ -105,7 +105,7 @@ const DetailBill = ({ route }) => {
         }
 
         function onOpenDetailProduct() {
-            onNavigate("DetailProduct", { product: itemProduct.idProduct[0] })
+            onNavigate("DetailProduct", { idProd: itemProduct.idProduct[0]._id })
         }
 
         React.useEffect(() => {
@@ -155,7 +155,7 @@ const DetailBill = ({ route }) => {
         }
 
         function onOpenDetailProduct() {
-            onNavigate("DetailPet", { pet: itemPet.idPet[0] })
+            onNavigate("DetailPet", { idPet: itemPet.idPet[0]._id })
         }
 
         React.useEffect(() => {

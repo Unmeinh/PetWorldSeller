@@ -121,6 +121,18 @@ export default StyleSheet.create({
         flexDirection: 'row'
     },
 
+    viewEmptyList: {
+        flex: 1,
+        alignItems: 'center',
+    },
+
+    textEmptyList: {
+        fontSize: 17,
+        fontFamily: 'ProductSans',
+        color: 'rgba(0, 0, 0, 0.6)',
+        marginTop: 15
+    },
+
     ...formStyle,
     ...toastStyle,
     ...productStyle,

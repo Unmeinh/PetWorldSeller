@@ -1,8 +1,9 @@
 import React, { memo, useState } from 'react';
 import {
     Text, View,
+    Image, ScrollView,
     TouchableHighlight,
-    Image, TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 import styles, { darkBlue } from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -16,6 +17,9 @@ import { listPetSelector, listPetHideSelector } from '../../redux/selectors/sele
 import Toast from 'react-native-toast-message';
 import { onAxiosPut } from '../../api/axios.function';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
+import catSwitch from '../../assets/images/jsons/catSwitch.json';
+import LottieAnimation from '../../components/layout/LottieAnimation';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const PetTab = (route) => {
     const dispatch = useDispatch();
@@ -24,6 +28,7 @@ const PetTab = (route) => {
     const [extraPets, setextraPets] = useState([]);
     const [extraPetsHide, setextraPetsHide] = useState([]);
     const [isLoading, setisLoading] = useState(true);
+    const [isRefreshing, setisRefreshing] = useState(false);
     const [statusPets, setstatusPets] = useState(0);
 
     function onOpenAddPet() {
@@ -47,11 +52,11 @@ const PetTab = (route) => {
         }
 
         function onOpenDetailPet() {
-            onNavigate('DetailPet', { pet: item });
+            onNavigate('DetailPet', { idPet: item._id });
         }
 
         function onOpenEditPet() {
-            onNavigate('EditPet', { pet: item });
+            onNavigate('EditPet', { idPet: item._id });
         }
 
         function onShowAlertUnremove() {
@@ -238,6 +243,9 @@ const PetTab = (route) => {
             if (isLoading) {
                 setisLoading(false);
             }
+            if (isRefreshing) {
+                setisRefreshing(false);
+            }
         }
     }, [pets]);
 
@@ -258,6 +266,11 @@ const PetTab = (route) => {
             onGetPets();
         }
     }, [route]);
+
+    const onReloadData = React.useCallback(() => {
+        setisRefreshing(true);
+        onGetPets();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -317,7 +330,7 @@ const PetTab = (route) => {
                         <ItemLoading />
                     </>
                     : <>
-                        <View style={{display: (statusPets) ? 'none' : 'flex'}}>
+                        <View style={{ display: (statusPets) ? 'none' : 'flex' }}>
                             {
                                 (pets.length > 0)
                                     ?
@@ -329,10 +342,19 @@ const PetTab = (route) => {
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()} />
-                                    : ""
+                                    : <ScrollView
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } >
+                                        <View style={styles.viewEmptyList}>
+                                            <LottieAnimation fileJson={catSwitch} isLoop={true} isAutoPlay={true}
+                                                style={{ width: "100%", aspectRatio: 1 }} />
+                                            <Text style={styles.textEmptyList}>Không có thú cưng nào..</Text>
+                                        </View>
+                                    </ScrollView>
                             }
                         </View>
-                        <View style={{display: (statusPets) ? 'flex' : 'none'}}>
+                        <View style={{ display: (statusPets) ? 'flex' : 'none' }}>
                             {
                                 (petsHide.length > 0)
                                     ?
@@ -344,7 +366,16 @@ const PetTab = (route) => {
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
                                         keyExtractor={(item, index) => index.toString()} />
-                                    : ""
+                                    : <ScrollView
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } >
+                                        <View style={styles.viewEmptyList}>
+                                            <LottieAnimation fileJson={catSwitch} isLoop={true} isAutoPlay={true}
+                                                style={{ width: "100%", aspectRatio: 1 }} />
+                                            <Text style={styles.textEmptyList}>Không có thú cưng nào..</Text>
+                                        </View>
+                                    </ScrollView>
                             }
                         </View>
                     </>

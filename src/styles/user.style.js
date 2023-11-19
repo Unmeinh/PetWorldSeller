@@ -22,13 +22,12 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
-    viewOther: {
+    viewEmptyList: {
         flex: 1,
         alignItems: 'center',
-        marginTop: 25
     },
 
-    textHint: {
+    textEmptyList: {
         fontSize: 15,
         fontFamily: 'ProductSans',
         color: 'rgba(0, 0, 0, 0.6)',
