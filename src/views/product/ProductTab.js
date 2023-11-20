@@ -349,7 +349,7 @@ const ProductTab = (route) => {
                                         <View style={styles.viewEmptyList}>
                                             <LottieAnimation fileJson={emptyBag} isLoop={true} isAutoPlay={true}
                                                 style={{ width: "80%", aspectRatio: 1 }} />
-                                            <Text style={styles.textEmptyList}>Không có lịch hẹn nào..</Text>
+                                            <Text style={styles.textEmptyList}>Không có sản phẩm nào..</Text>
                                         </View>
                                     </ScrollView>
                             }

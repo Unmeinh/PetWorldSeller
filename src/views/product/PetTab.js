@@ -56,7 +56,7 @@ const PetTab = (route) => {
         }
 
         function onOpenEditPet() {
-            onNavigate('EditPet', { pet: item._id });
+            onNavigate('EditPet', { pet: item });
         }
 
         function onShowAlertUnremove() {
