@@ -7,7 +7,6 @@ import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
-import { onNavigate } from '../../navigation/rootNavigation';
 import LottieAnimation from '../../components/layout/LottieAnimation';
 
 export default function SplashScreen() {
@@ -113,7 +112,7 @@ export default function SplashScreen() {
 
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
-      onNavigate(nextScreen);
+      navigation.replace(nextScreen);
       if (storageMMKV.checkKey('login.isFirstTime') && storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }

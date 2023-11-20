@@ -81,7 +81,7 @@ const AccountScreen = () => {
     function onLogout() {
         storageMMKV.setValue('login.isLogin', false);
         storageMMKV.setValue('login.token', "");
-        navigation.push('LoginScreen')
+        navigation.replace('LoginScreen')
     }
 
     React.useEffect(() => {

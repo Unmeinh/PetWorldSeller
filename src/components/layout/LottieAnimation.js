@@ -1,6 +1,5 @@
 import React from "react";
 import LottieView from "lottie-react-native";
-import { WindowWidth } from "../../styles/all.style";
 
 const LottieAnimation = ({ fileJson, isLoop, isAutoPlay, style }) => {
     const options = {
