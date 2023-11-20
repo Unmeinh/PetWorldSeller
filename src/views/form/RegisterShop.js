@@ -314,7 +314,7 @@ export default function RegisterShop({ route }) {
     if (!inputNewPassword.match(regPass)) {
       Toast.show({
         type: 'error',
-        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, một chữ viết thường, chữ viết hoa!',
+        text1: 'Mật khẩu cần dài ít nhất 8 ký tự và chứa ít nhất một số, một chữ viết thường và một chữ viết hoa!',
         position: 'top',
         props: {
           isTextLong: true
