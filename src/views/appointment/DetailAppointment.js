@@ -109,7 +109,7 @@ const DetailAppointment = ({ route }) => {
             Toast.show({
                 type: 'loading',
                 position: 'top',
-                text1: "Đang xác nhận đã hẹn...",
+                text1: "Đang xác nhận lịch hẹn...",
                 autoHide: false
             })
             let res = await onAxiosPut('shop/appointment/update',
@@ -172,24 +172,6 @@ const DetailAppointment = ({ route }) => {
                 }, 'json', true)
             if (res && res.success) {
                 setappointment(res.data);
-            }
-        }
-    }
-
-    async function onDelete() {
-        if (!appointment?.canCancel) {
-            Toast.show({
-                type: 'loading',
-                position: 'top',
-                text1: "Đang xóa lịch hẹn...",
-                autoHide: false
-            })
-            let res = await onAxiosDelete('appointment/delete/' + appointment._id, true);
-            if (res) {
-                if (route.params.onCallbackDelete != undefined) {
-                    route.params.onCallbackDelete();
-                }
-                goBack();
             }
         }
     }

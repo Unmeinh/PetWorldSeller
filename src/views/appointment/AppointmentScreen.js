@@ -16,6 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { onAxiosGet } from '../../api/axios.function';
 import { getMonthVietnamese, getTimeDefault, getDateDefault } from '../../utils/functionSupport';
 import LottieAnimation from '../../components/layout/LottieAnimation';
+import Toast from 'react-native-toast-message';
 
 const AppointmentScreen = () => {
     const navigation = useNavigation();
@@ -141,13 +142,19 @@ const AppointmentScreen = () => {
         const [isShowMenu, setisShowMenu] = useState(false);
         const [colorStatus, setcolorStatus] = useState("rgba(0, 24, 88, 0.55)");
         const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'));
-        const [isDeleted, setisDeleted] = useState(false);
 
         function onViewDetail() {
-            navigation.navigate('DetailAppointment', {
-                idApm: item._id,
-                onCallbackDelete: () => onCallbackDelete()
-            });
+            if (pet) {
+                navigation.navigate('DetailAppointment', {
+                    idApm: item._id,
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể xem chi tiết!'
+                })
+            }
         }
 
         function onCallbackCancel() {
@@ -155,14 +162,21 @@ const AppointmentScreen = () => {
             setcolorStatus("#rgba(0, 24, 88, 0.55)");
         }
 
-        function onCallbackDelete() {
-            setisDeleted(true);
-            row.onDeleteItem(row.index);
+        function onCallbackUpdate(colorS) {
+            setcolorStatus(colorS);
         }
 
         function onShowMenu() {
             if (!isShowMenu) {
-                setisShowMenu(true);
+                if (pet) {
+                    setisShowMenu(true);
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: 'Lịch hẹn bị lỗi dữ liệu!\nKhông thể tương tác!'
+                    })
+                }
             }
         }
 
@@ -217,7 +231,7 @@ const AppointmentScreen = () => {
                             </Text>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={onShowMenu} disabled={isDeleted}>
+                    <TouchableOpacity onPress={onShowMenu}>
                         <Entypo name='dots-three-vertical' size={20} color={'#001858'} />
                     </TouchableOpacity>
                 </View>
@@ -239,9 +253,9 @@ const AppointmentScreen = () => {
                     </TouchableHighlight>
                 </View>
                 <View style={{ height: 15 }} />
-                <MenuAppointment isShow={isShowMenu} status={item.status}
+                <MenuAppointment isShow={isShowMenu} status={item.status} appointmentDate={item.appointmentDate}
                     idAppt={item._id} pet={pet} customer={customer} callBackHide={onCallbackHide}
-                    onCallbackCancel={onCallbackCancel} onCallbackDelete={onCallbackDelete} />
+                    onCallbackCancel={onCallbackCancel} onCallbackUpdate={onCallbackUpdate} />
             </View>
         )
     }

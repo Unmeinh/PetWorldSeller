@@ -70,7 +70,7 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                let res = await onAxiosGet('/shop/autoLogin')
+                let res = await onAxiosGet('shop/autoLogin')
                 if (res) {
                   if (res.data == 1) {
                     setnextScreen('NaviTabScreen');
@@ -104,16 +104,16 @@ export default function SplashScreen() {
     }
   }
 
-    const showNameApp = () => {
-      setTimeout(() => {
-        setNameVisible(true);
-      }, 500);
-    };
+  const showNameApp = () => {
+    setTimeout(() => {
+      setNameVisible(true);
+    }, 500);
+  };
 
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '') {
       navigation.replace(nextScreen);
-      if (storageMMKV.checkKey('login.isFirstTime') && storageMMKV.getBoolean('login.isFirstTime')) {
+      if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }
     }
