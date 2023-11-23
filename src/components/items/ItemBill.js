@@ -178,7 +178,7 @@ const ItemBill = (row) => {
                                                 >{Number(product?.price).toLocaleString()}</Text> đồng</Text>
                                         </Text>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
-                                            Số lượng: {product?.amount}{" | "}{getDateDefault(item?.createdAt)}
+                                            Số lượng: {product?.amount}{" | "}{getDateDefault(item?.purchaseDate)}
                                         </Text>
                                     </View>
                                 </View>
@@ -208,7 +208,7 @@ const ItemBill = (row) => {
                                                 >{Number(pet?.price).toLocaleString()}</Text> đồng</Text>
                                         </Text>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
-                                            Số lượng: {pet?.amount}{" | "}{getDateDefault(item?.createdAt)}
+                                            Số lượng: {pet?.amount}{" | "}{getDateDefault(item?.purchaseDate)}
                                         </Text>
                                     </View>
                                 </View>

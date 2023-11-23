@@ -5,12 +5,10 @@ import {
     View
 } from 'react-native';
 import styles, { WindowWidth, darkBlue, lighBlue, lightBrown, pinkLotus, yellowWhite } from '../../styles/all.style';
-import HeaderLogo from '../../components/header/HeaderLogo';
 import { LineChart } from "react-native-chart-kit";
 import { useNavigation } from '@react-navigation/native';
 import { getPreviosMonth } from '../../utils/functionSupport';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { memo } from 'react';
 
 const RevenueStatistics = () => {
     const navigation = useNavigation();
