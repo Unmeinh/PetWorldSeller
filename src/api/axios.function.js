@@ -28,6 +28,14 @@ export async function onAxiosGet(url, isFeedback) {
                         bottomOffset: 20
                     });
                     return false;
+                } else if (String(e.response.data).indexOf("404") > 0) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Không tìm thấy api với phương thức get!",
+                        bottomOffset: 20
+                    });
+                    return false;
                 } else {
                     Toast.show({
                         type: 'error',

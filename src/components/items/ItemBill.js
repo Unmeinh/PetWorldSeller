@@ -171,11 +171,11 @@ const ItemBill = (row) => {
                                     </Text>
                                     <View>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
-                                            <Text style={{ fontWeight: 'bold' }}>{Number(product?.price - (product?.price * product?.discount / 100)).toLocaleString()}{" đồng"}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Number(product?.price - (product?.price * product?.discount / 100)).toLocaleString()}{" ₫"}</Text>
                                             {" | "}
                                             <Text style={{ color: '#656565' }}>
                                                 <Text style={{ textDecorationLine: 'line-through' }}
-                                                >{Number(product?.price).toLocaleString()}</Text> đồng</Text>
+                                                >{Number(product?.price).toLocaleString()}</Text> ₫</Text>
                                         </Text>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
                                             Số lượng: {product?.amount}{" | "}{getDateDefault(item?.purchaseDate)}
@@ -201,11 +201,11 @@ const ItemBill = (row) => {
                                     </Text>
                                     <View>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
-                                            <Text style={{ fontWeight: 'bold' }}>{Number(pet?.price - (pet?.price * pet?.discount / 100)).toLocaleString()}{" đồng"}</Text>
+                                            <Text style={{ fontWeight: 'bold' }}>{Number(pet?.price - (pet?.price * pet?.discount / 100)).toLocaleString()}{" ₫"}</Text>
                                             {" | "}
                                             <Text style={{ color: '#656565' }}>
                                                 <Text style={{ textDecorationLine: 'line-through' }}
-                                                >{Number(pet?.price).toLocaleString()}</Text> đồng</Text>
+                                                >{Number(pet?.price).toLocaleString()}</Text> ₫</Text>
                                         </Text>
                                         <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
                                             Số lượng: {pet?.amount}{" | "}{getDateDefault(item?.purchaseDate)}
@@ -218,7 +218,7 @@ const ItemBill = (row) => {
                         <Text style={[styles.textDarkBlue,
                         { fontSize: 17, textAlign: 'right', fontWeight: 'bold' }]} numberOfLines={1}>
                             Tổng tiền:
-                            <Text style={{ color: '#FD3F3F' }}> {Number(item.total).toLocaleString()} đồng</Text>
+                            <Text style={{ color: '#FD3F3F' }}> {Number(item.total).toLocaleString()} ₫</Text>
                         </Text>
                         {
                             (item?.deliveryStatus == 0)

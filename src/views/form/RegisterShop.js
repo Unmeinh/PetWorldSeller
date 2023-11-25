@@ -57,7 +57,7 @@ export default function RegisterShop({ route }) {
         singleSelectedMode: true
       });
       response.crop.path = "file://" + response.crop.path;
-      setpickedAvatar([response.crop]);
+      setpickedAvatar(response.crop);
     } catch (error) {
       console.log(error);
     }
@@ -149,7 +149,7 @@ export default function RegisterShop({ route }) {
                       setinputDatePicker(new Date(String((new Date().getFullYear() - 14) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
                       Toast.show({
                         type: 'error',
-                        text1: 'Thông tin căn cước không chính xác với mặt trước của căn cước!',
+                        text1: 'Thông tin căn cước không chính xác với mặt sau của căn cước!',
                         position: 'top'
                       })
                       setisOKFrontCard(false);
@@ -644,7 +644,7 @@ export default function RegisterShop({ route }) {
               color: 'rgba(0, 24, 88, 0.80)',
             }, styles.titleInput]}>Thẻ căn cước</Text>
             <View style={{ paddingVertical: 10, flexDirection: 'row' }}>
-              <Image style={{ width: '25%', aspectRatio: 3 / 2 }} source={require('../../assets/images/democccd.png')} />
+              <Image style={{ width: '25%', aspectRatio: 3 / 2 }} source={require('../../assets/images/democard.png')} />
               {
                 (isLoadingCard)
                   ? <ShimmerPlaceHolder shimmerStyle={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, marginHorizontal: 10, overflow: 'hidden' }} />

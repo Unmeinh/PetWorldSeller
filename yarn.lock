@@ -1710,11 +1710,6 @@
   dependencies:
     plist "^3.1.0"
 
-"@react-native-ml-kit/text-recognition@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@react-native-ml-kit/text-recognition/-/text-recognition-1.5.0.tgz"
-  integrity sha512-8eJXDTjauBRipLgUQqhC/9hbXKmKedC1BSIBBOEG4vaJt+sL1AxqWzD0G8HryhPbKUVVX+U8jPdYaAPPOdccvg==
-
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.72.0.tgz"

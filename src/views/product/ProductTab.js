@@ -177,7 +177,7 @@ const ProductTab = (route) => {
                                 fontSize: 14,
                                 marginTop: 3, marginBottom: 3
                             }]}>
-                            Đơn giá: {item?.priceProduct ? Number(item?.priceProduct).toLocaleString() + " đồng" : "Lỗi dữ liệu"}
+                            Đơn giá: {item?.priceProduct ? Number(item?.priceProduct).toLocaleString() + " ₫" : "Lỗi dữ liệu"}
                         </Text>
                         <Text
                             numberOfLines={1}
@@ -269,7 +269,7 @@ const ProductTab = (route) => {
 
     const onReloadData = React.useCallback(() => {
         setisRefreshing(true);
-        onGetPets();
+        onGetProduct();
     }, []);
 
     return (

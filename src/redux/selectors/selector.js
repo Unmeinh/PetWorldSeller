@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
+export const indexHomeTabSelector = state => state.listLayout?.HomeTab?.index;
 export const listShopSelector = state => state.listShop.data;
 export const listPetSelector = state => state.listPet.data;
 export const listPetHideSelector = state => state.listPet.dataHide;

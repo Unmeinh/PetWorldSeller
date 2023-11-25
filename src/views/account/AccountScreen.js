@@ -160,11 +160,11 @@ const AccountScreen = () => {
                                     {
                                         (isShowRevenue)
                                             ? <>
-                                                <Text style={[styles.textDarkBlue]}>{Number(accountShop?.revenue).toLocaleString()} đồng</Text>
+                                                <Text style={[styles.textDarkBlue]}>{Number(accountShop?.revenue).toLocaleString()} ₫</Text>
                                                 <MaterialCommunityIcons name='eye' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
                                             </>
                                             : <>
-                                                <Text style={[styles.textDarkBlue]}>******* đồng</Text>
+                                                <Text style={[styles.textDarkBlue]}>******* ₫</Text>
                                                 <MaterialCommunityIcons name='eye-off' color={'rgba(0, 24, 88, 0.80)'} size={15} style={[styles.positionAbsolute, { right: 5, top: 1 }]} />
                                             </>
                                     }

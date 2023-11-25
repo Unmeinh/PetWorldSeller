@@ -177,7 +177,7 @@ const PetTab = (route) => {
                                 fontSize: 14,
                                 marginTop: 3, marginBottom: 3
                             }]}>
-                            Đơn giá: {item?.pricePet ? Number(item?.pricePet).toLocaleString() + " đồng" : "Lỗi dữ liệu"}
+                            Đơn giá: {item?.pricePet ? Number(item?.pricePet).toLocaleString() + " ₫" : "Lỗi dữ liệu"}
                         </Text>
                         <Text
                             numberOfLines={1}
