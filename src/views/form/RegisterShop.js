@@ -360,7 +360,7 @@ export default function RegisterShop({ route }) {
   }
 
   async function onSendVerify() {
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     if (!inputEmail.match(regEmail)) {
       Toast.show({
         type: 'error',
@@ -584,6 +584,20 @@ export default function RegisterShop({ route }) {
     })
   }
 
+  function onChangeTextEmail(input) {
+    setinputEmail(input.replace(" ", ""));
+  }
+
+  function onChangeNumberCard(input) {
+    var number = input.replace(/\D/g, '');
+    setnumberCard(number);
+  }
+
+  function onChangeOTP(input) {
+    var number = input.replace(/\D/g, '');
+    setinputOTP(number);
+  }
+
   function onChangePassToggle() {
     if (passToggle == true) {
       setpassToggle(false);
@@ -712,7 +726,7 @@ export default function RegisterShop({ route }) {
                     }} />
                     :
                     <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={fullNameCard}
-                      onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                      onChangeText={setfullNameCard} />
                 }
               </View>
             </View>
@@ -734,7 +748,7 @@ export default function RegisterShop({ route }) {
                     }} />
                     :
                     <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={numberCard}
-                      onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                      onChangeText={onChangeNumberCard} keyboardType='numeric'/>
                 }
               </View>
             </View>
@@ -757,7 +771,7 @@ export default function RegisterShop({ route }) {
                     :
                     <Pressable onPress={onShowDatePicker}>
                       <TextInput style={[styles.textInputLogin, styles.bgLightBrown, { color: editable ? '#001858' : '#001858' }]} value={birthCard}
-                        onChangeText={(input) => { setinputConfirmPassword(input) }} editable={editable} />
+                        onChangeText={setbirthCard} editable={editable} />
                     </Pressable>
                 }
               </View>
@@ -776,7 +790,7 @@ export default function RegisterShop({ route }) {
               <View>
                 <TextInput style={[[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown], { color: 'rgba(0, 24, 88, 0.80)' }]}
                   value={(objShop?.hotline != undefined) ? "+" + objShop?.hotline : ""}
-                  editable={false} />
+                  editable={false} keyboardType='number-pad'/>
               </View>
             </View>
             <View>
@@ -784,8 +798,9 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ email</Text>
               <View>
-                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputEmail}
-                  onChangeText={(input) => { setinputEmail(input) }} />
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
+                  value={inputEmail} keyboardType='email-address'
+                  onChangeText={onChangeTextEmail} />
               </View>
             </View>
             <View>
@@ -795,7 +810,7 @@ export default function RegisterShop({ route }) {
               <View style={{ marginBottom: 25 }}>
                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputOTP}
                   maxLength={6} keyboardType='numeric'
-                  onChangeText={(input) => { setinputOTP(input) }} />
+                  onChangeText={onChangeOTP} />
                 <TouchableOpacity onPress={onSendVerify} disabled={(cdSendAgain == 0) ? false : true}
                   style={{ position: 'absolute', right: 5, top: '20%' }}>
                   <Text style={[styles.textDetailFormRed, { fontSize: 15, color: '#4285F4' }]}>
@@ -819,7 +834,7 @@ export default function RegisterShop({ route }) {
               }]}>Địa chỉ cửa hàng</Text>
               <View>
                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputLocation}
-                  onChangeText={(input) => { setinputLocation(input) }} />
+                  onChangeText={setinputLocation} />
               </View>
             </View>
           </View>
@@ -835,7 +850,7 @@ export default function RegisterShop({ route }) {
             <View>
               <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={passToggle} value={inputNewPassword}
-                onChangeText={(input) => { setinputNewPassword(input) }} />
+                onChangeText={setinputNewPassword} />
               {
                 (passToggle)
                   ?
@@ -859,7 +874,7 @@ export default function RegisterShop({ route }) {
             <View>
               <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={confirmPassToggle} value={inputConfirmPassword}
-                onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                onChangeText={setinputConfirmPassword} />
               {
                 (confirmPassToggle)
                   ?

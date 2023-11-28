@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import {
-    Text, Dimensions,
+    Text, Keyboard,
     TouchableOpacity,
     View, Image,
 } from 'react-native';
@@ -67,6 +67,7 @@ const AccountManager = () => {
     }
 
     async function onUpdateAvatar() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật ảnh đại diện...",

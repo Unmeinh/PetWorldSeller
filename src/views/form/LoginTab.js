@@ -1,15 +1,13 @@
 import {
     Image, Text, View,
     TouchableHighlight,
-    TextInput,
-    TouchableOpacity,
-    ToastAndroid
+    TextInput, Keyboard,
+    TouchableOpacity
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
@@ -21,7 +19,6 @@ export default function LoginTab(route) {
     const [rememberMe, setrememberMe] = useState(false);
     const [inputUsername, setinputUsername] = useState(route.user);
     const [inputPassword, setinputPassword] = useState("");
-    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangePassToggle() {
         if (passToggle == true) {
@@ -76,8 +73,7 @@ export default function LoginTab(route) {
             return;
         }
 
-        // setisDisableRequest(true);
-
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -102,8 +98,6 @@ export default function LoginTab(route) {
                     navigation.replace('NaviTabScreen');
                 }
             }
-        } else {
-            setisDisableRequest(false);
         }
     }
 
@@ -190,7 +184,7 @@ export default function LoginTab(route) {
 
                     <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 45 }]}
                         activeOpacity={0.5} underlayColor="#DC749C"
-                        onPress={onSignIn} disabled={isDisableRequest}>
+                        onPress={onSignIn}>
                         <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Đăng nhập</Text>
                     </TouchableHighlight>
 

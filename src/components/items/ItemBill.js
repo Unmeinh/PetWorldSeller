@@ -1,8 +1,9 @@
 import React, { memo, useState } from 'react';
 import {
     Text, View,
+    Image, Keyboard,
     TouchableHighlight,
-    Image, TouchableOpacity,
+    TouchableOpacity,
 } from 'react-native';
 import styles, { WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
 import { getDateDefault } from '../../utils/functionSupport';
@@ -57,6 +58,7 @@ const ItemBill = (row) => {
     }
 
     async function onConfirmBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -73,6 +75,7 @@ const ItemBill = (row) => {
     }
 
     async function onCancelBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',

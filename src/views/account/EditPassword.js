@@ -2,6 +2,7 @@ import React, { useState, memo } from 'react';
 import {
     View, Text,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -90,6 +91,7 @@ const EditPassword = ({ route }) => {
     }
 
     async function onUpdatePassword() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật mật khẩu...",

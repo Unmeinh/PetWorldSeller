@@ -4,6 +4,7 @@ import {
     FlatList,
     Text, View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -240,6 +241,7 @@ const AddProduct = ({ route }) => {
     }
 
     async function onAddProduct() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: 'Đang thêm sản phẩm...',

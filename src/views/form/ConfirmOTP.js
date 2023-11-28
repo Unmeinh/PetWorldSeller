@@ -1,9 +1,8 @@
 import {
     Text, View,
-    ToastAndroid,
     TouchableHighlight,
     TouchableOpacity,
-    TextInput
+    Keyboard
 } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import styles from '../../styles/all.style';
@@ -82,6 +81,7 @@ export default function ConfirmOTP({ route }) {
 
         setisDisableRequest(true);
 
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',

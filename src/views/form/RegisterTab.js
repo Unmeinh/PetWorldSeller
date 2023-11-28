@@ -2,7 +2,7 @@ import {
     Image, Text, View,
     TouchableHighlight,
     TextInput, Pressable,
-    ToastAndroid
+    ToastAndroid, Keyboard
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/all.style';
@@ -64,6 +64,7 @@ export default function RegisterTab(route) {
             return;
         }
         setisDisableRequest(true);
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -79,7 +80,7 @@ export default function RegisterTab(route) {
             hotline: phoneCountry + inputPhoneNumber,
         }
 
-        var res = await onAxiosPost('/shop/checkPhoneNumber', { hotline: newShop.hotline }, 'json', true);
+        var res = await onAxiosPost('/shop/checkPhoneNumber', { userName: newShop.userName, hotline: newShop.hotline }, 'json', true);
         if (res) {
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
             if (response != undefined && response.success) {

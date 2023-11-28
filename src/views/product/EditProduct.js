@@ -4,6 +4,7 @@ import {
     FlatList,
     Text, View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -242,6 +243,7 @@ const EditProduct = ({ route }) => {
     }
 
     async function onEditProduct() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: 'Đang sửa sản phẩm...',

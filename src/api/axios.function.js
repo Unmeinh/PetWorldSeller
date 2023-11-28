@@ -11,6 +11,15 @@ export async function onAxiosGet(url, isFeedback) {
         .catch((e) => {
             // var data = response.data;
             console.log(e);
+            if (String(e).indexOf('Network Error')) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                    bottomOffset: 20
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
@@ -28,26 +37,25 @@ export async function onAxiosGet(url, isFeedback) {
                         bottomOffset: 20
                     });
                     return false;
-                } else if (String(e.response.data).indexOf("404") > 0) {
+                }
+                if (String(e.response.data).indexOf("404") > 0) {
                     Toast.show({
                         type: 'error',
                         position: 'top',
-                        text1: "Không tìm thấy api với phương thức get!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(e.response.data),
+                        text1: "Không tìm thấy api!",
                         bottomOffset: 20
                     });
                     return false;
                 }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                    bottomOffset: 20
+                });
+                return false;
             }
         });
-
     if (response) {
         if (response.status == 200) {
             var data = response.data;
@@ -80,6 +88,8 @@ export async function onAxiosGet(url, isFeedback) {
             });
             return false;
         }
+    } else {
+
     }
 }
 
@@ -107,6 +117,15 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
     const response = await axios.post(url, body)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error')) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                    bottomOffset: 20
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
@@ -129,7 +148,7 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
                     Toast.show({
                         type: 'error',
                         position: 'top',
-                        text1: "Không tìm thấy api với phương thức post!",
+                        text1: "Không tìm thấy api!",
                         bottomOffset: 20
                     });
                     return false;
@@ -205,6 +224,15 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
     const response = await axios.put(url, body)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error')) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                    bottomOffset: 20
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
@@ -222,15 +250,23 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
                         bottomOffset: 20
                     });
                     return false;
-                } else {
+                }
+                if (String(e.response.data).indexOf("404") > 0) {
                     Toast.show({
                         type: 'error',
                         position: 'top',
-                        text1: String(e.response.data),
+                        text1: "Không tìm thấy api!",
                         bottomOffset: 20
                     });
                     return false;
                 }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                    bottomOffset: 20
+                });
+                return false;
             }
         });
 
@@ -278,6 +314,15 @@ export async function onAxiosDelete(url, isFeedback) {
     const response = await axios.delete(url)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error')) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                    bottomOffset: 20
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
@@ -295,15 +340,23 @@ export async function onAxiosDelete(url, isFeedback) {
                         bottomOffset: 20
                     });
                     return false;
-                } else {
+                }
+                if (String(e.response.data).indexOf("404") > 0) {
                     Toast.show({
                         type: 'error',
                         position: 'top',
-                        text1: String(e.response.data),
+                        text1: "Không tìm thấy api!",
                         bottomOffset: 20
                     });
                     return false;
                 }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                    bottomOffset: 20
+                });
+                return false;
             }
         });
 

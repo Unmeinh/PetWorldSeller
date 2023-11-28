@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     Text, View,
     Image, ScrollView,
-    FlatList,
+    FlatList, Keyboard,
     TouchableOpacity,
     TouchableHighlight
 } from 'react-native';
@@ -63,6 +63,7 @@ const DetailBill = ({ route }) => {
     }
 
     async function onConfirmBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -80,6 +81,7 @@ const DetailBill = ({ route }) => {
     }
 
     async function onCancelBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',

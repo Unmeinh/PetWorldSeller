@@ -3,6 +3,7 @@ import {
     Pressable,
     Text, View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -182,6 +183,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onUpdateAccount() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật " + infoTypes[route.params.infoType] + "...",

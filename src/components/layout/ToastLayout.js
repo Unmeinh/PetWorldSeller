@@ -1,7 +1,8 @@
 import {
     View, Text,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'react-native';
 import React from 'react';
 import styles from '../../styles/toast.style';
@@ -10,6 +11,7 @@ import * as Progress from 'react-native-progress';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { WindowHeight, WindowWidth } from '../../styles/all.style';
+// import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export function ToastLayout() {
 
@@ -25,7 +27,7 @@ export function ToastLayout() {
                     <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                         colors={['#55B93859', '#FFFFFF00']}
                         style={styles.circleToastType}>
-                        <Text> </Text>
+                        <Text></Text>
                     </LinearGradient>
                 </View>
             </View>
@@ -66,22 +68,24 @@ export function ToastLayout() {
                         </LinearGradient>
                     </View>
                 </View>
-                <View style={{
-                    zIndex: 150,
-                    backgroundColor: "#00000033",
-                    height: WindowHeight * 10,
-                    width: WindowWidth,
-                    position: 'absolute',
-                    top: -200
-                }} />
+                <TouchableWithoutFeedback>
+                    <View style={{
+                        zIndex: 150,
+                        backgroundColor: "#00000033",
+                        height: WindowHeight * 10,
+                        width: WindowWidth,
+                        position: 'absolute',
+                        top: -200
+                    }} />
+                </TouchableWithoutFeedback>
             </>
         ),
 
         alert: ({ text1, props }) => (
             <View style={[styles.toastContainer]}>
                 <Ionicons name='alert-circle' color={'#D65745'} size={35} />
-                <View style={{width: '100%',}}>
-                    <View style={{width: '100%',}}>
+                <View style={{ width: '100%', }}>
+                    <View style={{ width: '100%', }}>
                         <Text style={styles.toastText}
                             numberOfLines={3}>
                             {text1}

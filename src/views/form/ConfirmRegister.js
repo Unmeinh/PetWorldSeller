@@ -1,5 +1,6 @@
 import {
     Text, View,
+    Keyboard,
     TouchableHighlight,
 } from 'react-native'
 import React, { useState } from 'react'
@@ -15,6 +16,7 @@ export default function ConfirmRegister({ route }) {
     const navigation = useNavigation();
 
     async function onRegister() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: 'Đang gửi đơn đăng ký cửa hàng',
