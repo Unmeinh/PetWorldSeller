@@ -10,13 +10,13 @@ let darkBlue = '#001858';
 
 export default StyleSheet.create({
     bgHeaderAccount: {
-        height: '15%', width: WindowWidth,
+        height: WindowHeight * 0.15, width: WindowWidth,
         borderBottomLeftRadius: WindowWidth * 10 / 100,
         borderBottomRightRadius: WindowWidth * 10 / 100,
     },
 
     viewHeaderAccount: {
-        height: '18%', width: '90%',
+        height: WindowHeight * 0.18, width: WindowWidth * 0.9,
         borderRadius: WindowWidth * 5 / 100,
         top: WindowHeight * 6.5 / 100,
         left: WindowWidth * 5 / 100,
@@ -138,7 +138,7 @@ export default StyleSheet.create({
         borderRadius: 15,
         fontFamily: 'ProductSans',
     },
-    
+
     buttonFormSmall: {
         paddingHorizontal: 15,
         paddingVertical: 5.5,

@@ -100,9 +100,9 @@ export default function ConfirmOTP({ route }) {
                 });
                 setTimeout(() => {
                     if (route.params.navigate == "RegisterShop") {
-                        navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
             } catch (error) {
@@ -119,9 +119,9 @@ export default function ConfirmOTP({ route }) {
             if (response) {
                 setTimeout(() => {
                     if (route.params.navigate == "RegisterShop") {
-                        navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
             } else {
@@ -129,7 +129,7 @@ export default function ConfirmOTP({ route }) {
             }
         }
         // ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
-        // navigation.navigate('ChangePassword');
+        // navigation.replace('ChangePassword');
     }
 
     function onAuthStateChanged(user) {
@@ -226,14 +226,14 @@ export default function ConfirmOTP({ route }) {
                     }
                     if (route.params.navigate) {
                         if (route.params.navigate == "RegisterShop") {
-                            navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                            navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                         } else {
-                            navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                            navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                         }
                     }
                 }, 500)
                 // setTimeout(() => {
-                //     navigation.navigate('ChangePassword');
+                //     navigation.replace('ChangePassword');
                 // }, 1000)
             }
         }

@@ -35,7 +35,6 @@ const AccountManager = () => {
                 isCrop: true,
                 isCropCircle: true,
                 singleSelectedMode: true
-
             });
             if (response.crop) {
                 let cropPath = "file://" + response.crop.path;
@@ -44,8 +43,11 @@ const AccountManager = () => {
                 setpickedImage(response.crop);
                 setsrcAvatar({ uri: cropPath });
             } else {
+                if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+                    response.path = 'file://' + res.path;
+                }
                 setpickedImage(response);
-                setsrcAvatar({ uri: "file://" + response.path });
+                setsrcAvatar({ uri: response.path });
             }
         } catch (error) {
             console.log(error);
@@ -131,14 +133,12 @@ const AccountManager = () => {
         return unsub;
     }, [navigation]);
 
-    React.useEffect(() => {
-        // console.log(styles);
-        console.log(
-            Object.keys(styles).length,
-            Object.values(styles).length,
-            Object.entries(styles).length
-        )
-    }, [styles]);
+    // console.log(styles);
+    // console.log(
+    //     Object.keys(styles).length,
+    //     Object.values(styles).length,
+    //     Object.entries(styles).length
+    // )
 
     return (
         <View style={styles.container}>

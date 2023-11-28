@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     TouchableHighlight,
 } from 'react-native';
-import styles, { darkBlue } from '../../styles/all.style';
+import styles, { WindowHeight, darkBlue } from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getDateDefault } from '../../utils/functionSupport';
@@ -118,7 +118,7 @@ const ProductTab = (route) => {
         }, [item])
 
         return (
-            <View>
+            <View style={{ marginBottom: (row.index == (products.length - 1)) ? WindowHeight * 0.2 : 0 }}>
                 <View
                     style={{
                         marginHorizontal: 15,
@@ -243,6 +243,9 @@ const ProductTab = (route) => {
             if (isLoading) {
                 setisLoading(false);
             }
+            if (isRefreshing) {
+                setisRefreshing(false);
+            }
         }
     }, [products]);
 
@@ -269,6 +272,7 @@ const ProductTab = (route) => {
 
     const onReloadData = React.useCallback(() => {
         setisRefreshing(true);
+        setisLoading(true);
         onGetProduct();
     }, []);
 
@@ -341,7 +345,10 @@ const ProductTab = (route) => {
                                             <ItemProduct key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} />
+                                        keyExtractor={(item, index) => index.toString()} 
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } />
                                     : <ScrollView
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
@@ -365,7 +372,10 @@ const ProductTab = (route) => {
                                             <ItemProduct key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} />
+                                        keyExtractor={(item, index) => index.toString()} 
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } />
                                     : <ScrollView
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />

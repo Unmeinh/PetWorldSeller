@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     Text, View
 } from 'react-native';
-import styles, { WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { WindowHeight, WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
 import HeaderLogo from '../../components/header/HeaderLogo';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import RevenueStatistics from './RevenueStatistics';
@@ -52,7 +52,6 @@ const HomeScreen = () => {
         <View style={styles.container}>
             <HeaderLogo colorHeader={yellowWhite} />
             <TabView
-                style={{ top: -5 }}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={onChangeTab}

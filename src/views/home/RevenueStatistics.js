@@ -49,28 +49,24 @@ const RevenueStatistics = () => {
 
     async function onGetChartRevenue() {
         let res = await onAxiosGet('shop/statistics/chart/revenue');
+        setisRefreshing(false);
         if (res && res.success) {
             setchartMonths(res?.data?.date);
             settotals6Month(res?.data?.value);
             if (isLoadingChart) {
                 setisLoadingChart(false);
             }
-            if (isRefreshing) {
-                setisRefreshing(false);
-            }
-        }
+        } 
     }
 
     async function onGetListRevenue() {
         let res = await onAxiosGet('shop/statistics/year/revenue');
+        setisRefreshing(false);
         if (res && res.success) {
             settotals(res?.data?.list);
             setfullTotal(res?.data?.total);
             if (isLoadingList) {
                 setisLoadingList(false);
-            }
-            if (isRefreshing) {
-                setisRefreshing(false);
             }
         }
     }
@@ -114,7 +110,7 @@ const RevenueStatistics = () => {
                 refreshControl={
                     <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                 }>
-                <View style={[styles.viewChartContainer, { marginBottom: 30 }]}>
+                <View style={styles.viewChartContainer}>
                     <View style={[styles.itemsCenter]}>
                         <View style={[styles.itemsCenter, { width: WindowWidth * 0.8, top: -7, marginBottom: 10 }]}>
                             <Text style={[styles.textDarkBlue, { fontWeight: 'bold', fontSize: 16 }]}>

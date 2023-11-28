@@ -55,6 +55,7 @@ const SoldStatistics = () => {
 
     async function onGetChartSold() {
         let res = await onAxiosGet('shop/statistics/chart/sold');
+        setisRefreshing(false);
         if (res && res.success) {
             setchartMonths(res?.data?.date);
             setcountsPet6Month(res?.data?.pet);
@@ -65,14 +66,12 @@ const SoldStatistics = () => {
             if (isPetChart) {
                 setisLoadingPetChart(false);
             }
-            if (isRefreshing) {
-                setisRefreshing(false);
-            }
         }
     }
 
     async function onGetListSold() {
         let res = await onAxiosGet('shop/statistics/year/sold');
+        setisRefreshing(false);
         if (res && res.success) {
             setcountsPet(res?.data?.pet?.list);
             setfullCountPet(res?.data?.pet?.total);
@@ -83,9 +82,6 @@ const SoldStatistics = () => {
             }
             if (isPetChart) {
                 setisLoadingPetList(false);
-            }
-            if (isRefreshing) {
-                setisRefreshing(false);
             }
         }
     }
@@ -175,7 +171,7 @@ const SoldStatistics = () => {
                         refreshControl={
                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                         }>
-                        <View style={[styles.viewChartContainer, { marginBottom: 30 }]}>
+                        <View style={styles.viewChartContainer}>
                             <View style={[styles.itemsCenter]}>
                                 <View style={[styles.itemsCenter, { width: WindowWidth * 0.8, top: -7, right: '-3%', marginBottom: 10 }]}>
                                     <Text style={[styles.textDarkBlue, { fontWeight: 'bold', fontSize: 16 }]}>
@@ -219,7 +215,7 @@ const SoldStatistics = () => {
                                         formatYLabel={(val) => {
                                             return val.substring(0, val.indexOf('.'));
                                         }}
-                                        yAxisSuffix="sp"
+                                        yAxisSuffix="c"
                                         yAxisInterval={1} // optional, defaults to 1
                                         chartConfig={chartConfig}
                                         bezier
@@ -254,7 +250,7 @@ const SoldStatistics = () => {
                                         (!isLoadingPetList && countsPet?.length > 0)
                                             ? countsPet?.map((count, index, arr) =>
                                                 <Text style={styles.textDarkBlue} key={index}>
-                                                    {count?.date}{(index + 1 < 10) ? "  " : ""}: {count?.value}
+                                                    {count?.date}{(index + 1 < 10) ? "  " : ""}: {count?.value} con
                                                 </Text>)
                                             : ""
                                     }
@@ -273,7 +269,7 @@ const SoldStatistics = () => {
                                     {
                                         (!isLoadingPetList && countsPet.length > 0)
                                             ? <Text style={[styles.textDarkBlue, { fontWeight: 'bold' }]}>
-                                                Tổng thú cưng đã bán: {(fullCountPet) ? fullCountPet : "Lỗi dữ liệu"}
+                                                Tổng thú cưng đã bán: {(fullCountPet) ? fullCountPet + " con" : "Lỗi dữ liệu"}
                                             </Text>
                                             : ""
                                     }

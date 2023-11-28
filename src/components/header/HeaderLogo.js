@@ -7,8 +7,6 @@ export default function HeaderLogo({ colorHeader }) {
         <View style={{
             backgroundColor: String(colorHeader),
             padding: 9,
-            paddingBottom: 10,
-            marginBottom: 3,
             shadowColor: '#000',
             // elevation: 5,
         }}>

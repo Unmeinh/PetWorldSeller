@@ -1,9 +1,9 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect, useRef } from 'react'
 import {
     StyleSheet, Text,
     TouchableOpacity, View,
-    Animated,
+    Animated, Dimensions
 } from 'react-native'
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -61,9 +61,12 @@ const TabButton = (props) => {
         </TouchableOpacity>
     )
 }
+let WindowWidth = Dimensions.get("window").width;
 
 export default function NaviTabScreen({ navigation }) {
     //animated AI
+    const [isCollapse, setisCollapse] = useState(false);
+    const [isCollapsing, setisCollapsing] = useState(true);
     const [offset, setoffset] = useState(0);
     const scrollRef = useRef(null);
     const startValue = useRef(new Animated.Value(90)).current;
@@ -97,6 +100,34 @@ export default function NaviTabScreen({ navigation }) {
             duration: 750,
             useNativeDriver: true,
         }).start();
+        setTimeout(() => {
+            setisCollapsing(false);
+        }, 750);
+    }
+
+    function onPressCollapseTabBar() {
+        setisCollapsing(true);
+        if (isCollapse) {
+            setTimeout(() => {
+                setisCollapsing(false);
+            }, 150);
+            Animated.timing(startValue, {
+                toValue: 0,
+                duration: 150,
+                useNativeDriver: true,
+            }).start();
+            setisCollapse(false);
+        } else {
+            setTimeout(() => {
+                setisCollapsing(false);
+            }, 150);
+            Animated.timing(startValue, {
+                toValue: 90,
+                duration: 150,
+                useNativeDriver: true,
+            }).start();
+            setisCollapse(true);
+        }
     }
 
     React.useEffect(() => {
@@ -118,23 +149,24 @@ export default function NaviTabScreen({ navigation }) {
                     tabBarStyle: {
                         backgroundColor: '#F3D2C1',
                         height: 60,
-                        position: 'absolute',
-                        marginLeft: 10, marginRight: 10,
-                        paddingHorizontal: 1,
-                        bottom: 15,
                         borderRadius: 15,
-                        transform: [
-                            {
-                                translateY: startValue,
-                            },],
-                    }
-                }} >
+                        transform: [{ translateY: startValue, }]
+                    },
+                }}
+                tabBar={(props, ) => (
+                    <View style={[styles.viewTabBar, {
+                    }]}>
+                        <BottomTabBar {...props} />
+                    </View>
+                )}>
                 {TabArr.map((item, index) => {
                     return (
                         <Tab.Screen key={index} name={item.route}
-                            children={() => <item.component onScrollView={onScrollView} scrollRef={scrollRef} navigation={navigation} />}
+                            // children={() => <item.component />}
+                            component={item.component}
                             options={{
                                 tabBarShowLabel: false,
+                                tabBarActiveBackgroundColor: '#FEF6E4',
                                 tabBarButton: (props) => <TabButton {...props} item={item} />
                             }}
                         />
@@ -159,4 +191,32 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 15,
     },
+
+    viewTabBar: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        left: 0, bottom: 0, right: 0
+    },
+
+    buttonUncollapseTabBar: {
+        backgroundColor: '#F3D2C1',
+        position: 'absolute',
+        top: -(WindowWidth * 0.045 + 8),
+        right: WindowWidth * 0.045,
+        paddingVertical: 4,
+        paddingHorizontal: 3.5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    },
+
+    buttonCollapseTabBar: {
+        backgroundColor: '#F3D2C1',
+        position: 'absolute',
+        top: -(WindowWidth * 0.045 + 8),
+        right: WindowWidth * 0.045,
+        paddingVertical: 4,
+        paddingHorizontal: 3.5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    }
 })

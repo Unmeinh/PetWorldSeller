@@ -13,9 +13,7 @@ import HeaderTitle from '../../components/header/HeaderTitle';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PhoneSelect from '../../components/modals/PhoneSelect';
-import SelectDropdown from 'react-native-select-dropdown';
 import { onSendOTPbyPhoneNumber, onSendOTPbyEmail } from '../../utils/functionSupport';
-import { onNavigate } from '../../navigation/rootNavigation';
 import { onAxiosPut } from '../../api/axios.function';
 import Toast from 'react-native-toast-message';
 
@@ -104,7 +102,7 @@ export default function ForgetPassword({ navigation }) {
         const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
         if (response && response.success) {
           setTimeout(() => {
-            onNavigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+            navigation.replace('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
           }, 500)
         } 
       } 
@@ -113,7 +111,7 @@ export default function ForgetPassword({ navigation }) {
       if (res && res.success) {
         const response = await onSendOTPbyEmail(inputEmail);
         if (response) {
-          onNavigate('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'email', valueVerify: inputEmail, authConfirm: null })
+          navigation.replace('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'email', valueVerify: inputEmail, authConfirm: null })
         } 
       }
     }
@@ -131,7 +129,7 @@ export default function ForgetPassword({ navigation }) {
       }
     }} style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
       <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
-        <HeaderTitle nav={navigation} titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
+        <HeaderTitle titleHeader={'Quên mật khẩu'} colorHeader={'#FEF6E4'} />
         <View style={[styles.container, styles.formContainer]}>
           <Text style={[styles.titleLargeForm, styles.textDarkBlue]}>
             Thay đổi mật khẩu

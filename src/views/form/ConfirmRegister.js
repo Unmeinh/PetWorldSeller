@@ -7,7 +7,6 @@ import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import { onNavigate } from '../../navigation/rootNavigation';
 import { onAxiosPost } from '../../api/axios.function';
 
 export default function ConfirmRegister({ route }) {
@@ -23,8 +22,8 @@ export default function ConfirmRegister({ route }) {
             autoHide: false
         })
         let res = await onAxiosPost('shop/register', formData, "formdata", true);
-        if (res) {
-            onNavigate("ConfirmedShop");
+        if (res && res.success) {
+            navigation.replace("ConfirmedShop");
         }
     }
 

@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
 import { onAxiosPost } from '../../api/axios.function';
-import { onNavigate } from '../../navigation/rootNavigation';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
@@ -56,8 +55,17 @@ export default function RegisterShop({ route }) {
         isCropCircle: true,
         singleSelectedMode: true
       });
-      response.crop.path = "file://" + response.crop.path;
-      setpickedAvatar(response.crop);
+      if (response.crop) {
+        let cropPath = "file://" + response.crop.path;
+        response.crop.path = cropPath;
+        response.crop.fileName = response.fileName;
+        setpickedAvatar(response.crop);
+      } else {
+        if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+          response.path = 'file://' + res.path;
+        }
+        setpickedAvatar(response);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -104,6 +112,9 @@ export default function RegisterShop({ route }) {
         doneTitle: 'Xong',
         singleSelectedMode: true,
       });
+      if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+        response.path = 'file://' + res.path;
+      }
       setpickedFrontCard(response);
       setisLoadingCard(true);
       let result = await onCheckCardPicked(response?.path);
@@ -241,6 +252,9 @@ export default function RegisterShop({ route }) {
         doneTitle: 'Xong',
         singleSelectedMode: true
       });
+      if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+        response.path = 'file://' + res.path;
+      }
       setpickedBehindCard(response);
       setisLoadingCard(true);
       let result = await onCheckCardPicked(response?.path);
@@ -558,7 +572,7 @@ export default function RegisterShop({ route }) {
       }
     }
 
-    onNavigate('ConfirmRegister', {
+    navigation.replace('ConfirmRegister', {
       formData: formData,
       objShop: {
         nameShop: objShop?.nameShop,

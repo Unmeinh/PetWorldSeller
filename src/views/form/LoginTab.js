@@ -97,9 +97,9 @@ export default function LoginTab(route) {
             if (storageMMKV.getString('login.token') == String(response.token)) {
                 Toast.hide();
                 if (response.data.shopStatus == 0) {
-                    navigation.navigate('ConfirmedShop');
+                    navigation.replace('ConfirmedShop');
                 } else {
-                    navigation.navigate('NaviTabScreen');
+                    navigation.replace('NaviTabScreen');
                 }
             }
         } else {
