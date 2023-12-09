@@ -100,9 +100,9 @@ export default function NaviTabScreen({ navigation }) {
             duration: 750,
             useNativeDriver: true,
         }).start();
-        setTimeout(() => {
-            setisCollapsing(false);
-        }, 750);
+        // setTimeout(() => {
+        //     setisCollapsing(false);
+        // }, 750);
     }
 
     function onPressCollapseTabBar() {

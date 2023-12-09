@@ -63,7 +63,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onSendVerify() {
-        let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+        let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
         if (!inputValue.match(regEmail)) {
             Toast.show({
                 type: 'error',
@@ -85,7 +85,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onVerifyCode() {
-        let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+        let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
         if (!inputValue.match(regEmail)) {
             Toast.show({
                 type: 'error',
@@ -158,7 +158,7 @@ const EditAccount = ({ route }) => {
                 return;
             }
         } else {
-            var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+            var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
             if (!inputValue.match(regEmail)) {
                 Toast.show({
                     type: 'error',

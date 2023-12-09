@@ -89,9 +89,11 @@ const AccountScreen = () => {
     }
 
     React.useEffect(() => {
+        if (Object.keys(accountShop).length > 0) {
+            setisLoading(false);
+        }
         if (accountShop.avatarShop != undefined && accountShop.avatarShop != "") {
             setsrcAvatar({ uri: String(accountShop.avatarShop) })
-            setisLoading(false);
         }
         if (accountShop?.objCountBills) {
             setisLoadingCount(false);

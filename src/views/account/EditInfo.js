@@ -56,7 +56,7 @@ const EditInfo = ({ route }) => {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: infoTypes[route.params.infoNames] + ' không được để trống!',
+                text1: infoNames[route.params.infoType] + ' không được để trống!',
             })
             return;
         }

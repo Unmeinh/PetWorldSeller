@@ -382,7 +382,7 @@ export default function RegisterShop({ route }) {
   }
 
   async function onVerifyCode() {
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     if (!inputEmail.match(regEmail)) {
       Toast.show({
         type: 'error',
@@ -437,7 +437,7 @@ export default function RegisterShop({ route }) {
 
   function checkValidate() {
     let regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
 
     if (pickedAvatar == null) {
       Toast.show({
