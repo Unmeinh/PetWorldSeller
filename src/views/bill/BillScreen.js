@@ -85,5 +85,4 @@ const BillScreen = ({ route }) => {
     );
 }
 
-
 export default memo(BillScreen);

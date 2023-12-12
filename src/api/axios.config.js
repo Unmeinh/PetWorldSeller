@@ -1,7 +1,7 @@
 import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
-const apiURL = "https://ee33-2405-4802-1cde-9d0-f922-a81a-5f88-567c.ngrok-free.app/api";
+const apiURL = "https://eeb0-2402-800-61c4-98fb-e5a8-8367-c772-5360.ngrok-free.app/api";
 
 // axiosAPi.defaults.withCredentials = true;
 let axiosAPi = axios.create();
@@ -13,5 +13,81 @@ axiosAPi.defaults.headers = {
     "Content-Type": "application/x-www-form-urlencoded",
     "Authorization": (storageMMKV.getString('login.token') != "") ? `Bearer ${storageMMKV.getString('login.token')}` : undefined
 };
+
+export const Get = ({ endPoint, data, params, header }) => {
+    return fetch({
+        method: 'GET',
+        endPoint: endPoint,
+        data: data,
+        params: params,
+        header: header,
+    });
+};
+
+const getAxiosInstance = () => {
+    const axiosInstance = axios.create({
+        baseURL: apiURL,
+    });
+    axiosInstance.interceptors.response.use(
+        response => {
+            if (response.status === 200) {
+            }
+            return response.data;
+        },
+        async error => {
+            console.error(error);
+            return error.response.data;
+
+            if (error.response) {
+                // console.log("Error response", error.response);
+                if (error.response.status === 400) {
+                }
+                if (error.response.status === 401) {
+                }
+            }
+
+            return Promise.reject(error);
+        },
+    );
+
+    //  request interceptor
+    axiosInstance.interceptors.request.use(
+        config => {
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        },
+    );
+    return axiosInstance;
+};
+
+const fetch = async ({ method, endPoint, data, params, header }) => {
+    let headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+    };
+    const token = await storageMMKV.getString('login.token');
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return getAxiosInstance()({
+        method: method,
+        url: endPoint,
+        data: data,
+        params: params,
+        headers: { ...headers, ...header },
+    });
+};
+
+export const Post = ({ endPoint, data, params, header }) => {
+    return fetch({
+        method: 'POST',
+        endPoint: endPoint,
+        data: data,
+        params: params,
+        header: header,
+    });
+};
+
 export default axiosAPi;
-    

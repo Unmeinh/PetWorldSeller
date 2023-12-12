@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import {
     ScrollView,
     Text,
     View
 } from 'react-native';
-import styles, { WindowWidth, darkBlue, lighBlue, lightBrown, pinkLotus, yellowWhite } from '../../styles/all.style';
-import HeaderLogo from '../../components/header/HeaderLogo';
+import styles, { WindowWidth, darkBlue, lighBlue, pinkLotus } from '../../styles/all.style';
 import { LineChart } from "react-native-chart-kit";
 import { useNavigation } from '@react-navigation/native';
-import { getPreviosMonth } from '../../utils/functionSupport';
+import { useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { memo } from 'react';
+import { onAxiosGet } from '../../api/axios.function';
+import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
+import { indexHomeTabSelector } from '../../redux/selectors/selector';
+import { RefreshControl } from "react-native-gesture-handler";
 
 const RevenueStatistics = () => {
     const navigation = useNavigation();
+    const selectIndex = useSelector(indexHomeTabSelector);
     const [chartMonths, setchartMonths] = useState([]);
     const [totals6Month, settotals6Month] = useState([]);
     const [totals, settotals] = useState([]);
-    const [isRefresh, setisRefresh] = useState(true);
+    const [fullTotal, setfullTotal] = useState(0);
+    const [isRefreshing, setisRefreshing] = useState(false);
+    const [isLoadingChart, setisLoadingChart] = useState(true);
+    const [isLoadingList, setisLoadingList] = useState(true);
     const chartConfig = {
         backgroundGradientFrom: lighBlue,
         backgroundGradientFromOpacity: 0,
@@ -41,24 +47,34 @@ const RevenueStatistics = () => {
         useShadowColorFromDataset: true
     };
 
-    function randomInteger() {
-        return Math.floor(Math.random() * 100000000)
+    async function onGetChartRevenue() {
+        let res = await onAxiosGet('shop/statistics/chart/revenue');
+        setisRefreshing(false);
+        if (res && res.success) {
+            setchartMonths(res?.data?.date);
+            settotals6Month(res?.data?.value);
+            if (isLoadingChart) {
+                setisLoadingChart(false);
+            }
+        } 
+    }
+
+    async function onGetListRevenue() {
+        let res = await onAxiosGet('shop/statistics/year/revenue');
+        setisRefreshing(false);
+        if (res && res.success) {
+            settotals(res?.data?.list);
+            setfullTotal(res?.data?.total);
+            if (isLoadingList) {
+                setisLoadingList(false);
+            }
+        }
     }
 
     React.useEffect(() => {
         const unsub = navigation.addListener('focus', () => {
-            if (totals.length <= 0) {
-                setchartMonths(getPreviosMonth(6));
-                let arr_total = [];
-                for (let i = 0; i < 12; i++) {
-                    let number = randomInteger();
-                    if ((i + 1) % 3 == 0) {
-                        number = Math.floor(number / 100);
-                    }
-                    arr_total.push(number);
-                }
-                settotals(arr_total);
-            }
+            onGetChartRevenue();
+            onGetListRevenue();
             return () => {
                 unsub.remove();
             };
@@ -68,34 +84,49 @@ const RevenueStatistics = () => {
     }, [navigation]);
 
     React.useEffect(() => {
-        if (totals.length > 0 && totals6Month.length <= 0) {
-            let thisMonth = new Date().getMonth() + 1;
-            let arr6Month = [];
-            for (let i = thisMonth - 6; i < thisMonth; i++) {
-                const total = totals[i];
-                let totalByMil = total / 1000000;
-                arr6Month.push(totalByMil);
+        if (selectIndex == 0) {
+            if (totals6Month <= 0) {
+                setisLoadingChart(true);
             }
-            let clone = [...totals];
-            for (let i = thisMonth; i < 12; i++) {
-                clone.splice(i, 1, 0);
+            if (totals.length <= 0) {
+                setisLoadingList(true);
             }
-            settotals(clone);
-            settotals6Month(arr6Month);
+            onGetChartRevenue();
+            onGetListRevenue();
         }
-    }, [totals])
+    }, [selectIndex])
+
+    const onReloadData = React.useCallback(() => {
+        setisRefreshing(true);
+        setisLoadingChart(true);
+        setisLoadingList(true);
+        onGetChartRevenue();
+        onGetListRevenue();
+    }, []);
 
     return (
         <View style={styles.container}>
-            <ScrollView>
-                <View style={[styles.viewChartContainer, {marginBottom: 30}]}>
-                    <View style={[{ width: WindowWidth, top: -7, marginBottom: 10 }, styles.itemsCenter]}>
-                        <Text style={[styles.textDarkBlue, { fontWeight: 'bold', fontSize: 16 }]}>
-                            Biểu đồ doanh số 6 tháng gần đây
-                        </Text>
+            <ScrollView showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                }>
+                <View style={styles.viewChartContainer}>
+                    <View style={[styles.itemsCenter]}>
+                        <View style={[styles.itemsCenter, { width: WindowWidth * 0.8, top: -7, marginBottom: 10 }]}>
+                            <Text style={[styles.textDarkBlue, { fontWeight: 'bold', fontSize: 16 }]}>
+                                Biểu đồ doanh thu 6 tháng gần đây
+                            </Text>
+                        </View>
                     </View>
                     {
-                        (totals6Month.length == 6)
+                        (isLoadingChart)
+                            ? <View style={[styles.itemsCenter, { marginBottom: 20 }]}>
+                                <ShimmerPlaceHolder shimmerStyle={{ height: 250, width: WindowWidth * 0.92, borderRadius: 15 }} />
+                            </View>
+                            : ""
+                    }
+                    {
+                        (!isLoadingChart && totals6Month.length == 6)
                             ? <LineChart
                                 data={{
                                     labels: chartMonths,
@@ -139,7 +170,7 @@ const RevenueStatistics = () => {
                                 borderBottomColor: darkBlue,
                                 top: -7, paddingHorizontal: 10
                             }]}>
-                                Chi tiết doanh số theo năm
+                                Chi tiết doanh thu theo năm
                             </Text>
                             <View style={[styles.flexRow, styles.itemsCenter, { top: -7, right: 7 }]}>
                                 <Text style={styles.textDarkBlue}>2023</Text>
@@ -148,17 +179,35 @@ const RevenueStatistics = () => {
                         </View>
                         <View style={{ paddingHorizontal: 15 }}>
                             {
-                                totals.map((total, index, arr) =>
-                                    <Text style={styles.textDarkBlue} key={index}>
-                                        Tháng {index + 1}{(index + 1 < 10) ? "  " : ""}: {Number(total).toLocaleString('vi-VN')} đồng
-                                    </Text>)
+                                (!isLoadingList && totals?.length > 0)
+                                    ? totals?.map((total, index, arr) =>
+                                        <Text style={styles.textDarkBlue} key={index}>
+                                            {total?.date}{(index + 1 < 10) ? "  " : ""}: {total?.value}
+                                        </Text>)
+                                    : ""
+                            }
+                            {
+                                (isLoadingList)
+                                    ? <>
+                                        <ShimmerPlaceHolder shimmerStyle={{ height: 13, width: WindowWidth * 0.4, marginTop: 3.5, borderRadius: 5 }} />
+                                        <ShimmerPlaceHolder shimmerStyle={{ height: 13, width: WindowWidth * 0.4, marginTop: 9, borderRadius: 5 }} />
+                                        <ShimmerPlaceHolder shimmerStyle={{ height: 13, width: WindowWidth * 0.4, marginTop: 9, borderRadius: 5 }} />
+                                        <ShimmerPlaceHolder shimmerStyle={{ height: 13, width: WindowWidth * 0.4, marginTop: 9, borderRadius: 5 }} />
+                                        <ShimmerPlaceHolder shimmerStyle={{ height: 13, width: WindowWidth * 0.4, marginTop: 9, marginBottom: 7, borderRadius: 5 }} />
+                                    </>
+                                    : ""
                             }
                             <View style={{ height: 1, width: '90%', backgroundColor: darkBlue, marginVertical: 5 }}></View>
                             {
-                                (totals.length > 0)
-                                    ? <Text style={styles.textDarkBlue}>
-                                        Tổng doanh số: {totals.reduce((accumulator, currentValue) => accumulator + currentValue).toLocaleString('vi-VN')} đồng
+                                (!isLoadingList && totals.length > 0)
+                                    ? <Text style={[styles.textDarkBlue, { fontWeight: 'bold' }]}>
+                                        Tổng doanh thu: {(fullTotal) ? fullTotal : "Lỗi dữ liệu"}
                                     </Text>
+                                    : ""
+                            }
+                            {
+                                (isLoadingList)
+                                    ? <ShimmerPlaceHolder shimmerStyle={{ height: 15, width: WindowWidth * 0.57, marginTop: 3.5, borderRadius: 5 }} />
                                     : ""
                             }
                         </View>
@@ -169,5 +218,4 @@ const RevenueStatistics = () => {
     );
 }
 
-
-export default RevenueStatistics;
+export default memo(RevenueStatistics);

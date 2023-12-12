@@ -5,7 +5,7 @@ import {
     TouchableHighlight,
     TouchableOpacity,
 } from 'react-native';
-import styles, { darkBlue } from '../../styles/all.style';
+import styles, { WindowHeight, darkBlue } from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getDateDefault } from '../../utils/functionSupport';
@@ -118,7 +118,7 @@ const PetTab = (route) => {
         }, [item])
 
         return (
-            <View>
+            <View style={{ marginBottom: (row.index == (pets.length - 1)) ? WindowHeight * 0.2 : 0 }}>
                 <View
                     style={{
                         marginHorizontal: 15,
@@ -177,7 +177,7 @@ const PetTab = (route) => {
                                 fontSize: 14,
                                 marginTop: 3, marginBottom: 3
                             }]}>
-                            Đơn giá: {item?.pricePet ? Number(item?.pricePet).toLocaleString() + " đồng" : "Lỗi dữ liệu"}
+                            Đơn giá: {item?.pricePet ? Number(item?.pricePet).toLocaleString() + " ₫" : "Lỗi dữ liệu"}
                         </Text>
                         <Text
                             numberOfLines={1}
@@ -269,6 +269,7 @@ const PetTab = (route) => {
 
     const onReloadData = React.useCallback(() => {
         setisRefreshing(true);
+        setisLoading(true);
         onGetPets();
     }, []);
 
@@ -341,7 +342,10 @@ const PetTab = (route) => {
                                             <ItemPet key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} />
+                                        keyExtractor={(item, index) => index.toString()}
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } />
                                     : <ScrollView
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
@@ -365,7 +369,10 @@ const PetTab = (route) => {
                                             <ItemPet key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} />
+                                        keyExtractor={(item, index) => index.toString()}
+                                        refreshControl={
+                                            <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
+                                        } />
                                     : <ScrollView
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />

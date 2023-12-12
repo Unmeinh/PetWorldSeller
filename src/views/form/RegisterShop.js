@@ -3,8 +3,8 @@ import {
   TouchableOpacity,
   TextInput, Image,
   TouchableHighlight,
-  ToastAndroid,
-  ScrollView
+  ScrollView,
+  Pressable
 } from 'react-native'
 import React, { useState } from 'react'
 import styles from '../../styles/all.style';
@@ -13,13 +13,16 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
-import TextRecognition from '@react-native-ml-kit/text-recognition';
 import { onAxiosPost } from '../../api/axios.function';
-import { onNavigate } from '../../navigation/rootNavigation';
+import axios from 'axios';
+import RNFS from 'react-native-fs';
+import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
+import DatePickerModal from '../../components/modals/DatePickerModal';
+import moment from 'moment';
 
 export default function RegisterShop({ route }) {
   const navigation = useNavigation();
-  let objShop = route.params.objShop;
+  let objShop = route?.params?.objShop;
   const [passToggle, setpassToggle] = useState(true);
   const [confirmPassToggle, setconfirmPassToggle] = useState(true);
   const [cdSendAgain, setcdSendAgain] = useState(0);
@@ -37,6 +40,10 @@ export default function RegisterShop({ route }) {
   const [pickedBehindCard, setpickedBehindCard] = useState(null);
   const [isOKFrontCard, setisOKFrontCard] = useState(false);
   const [isOKBehindCard, setisOKBehindCard] = useState(false);
+  const [isLoadingCard, setisLoadingCard] = useState(false);
+  const [isShowPicker, setisShowPicker] = useState(false);
+  const [inputDatePicker, setinputDatePicker] = useState(new Date(String((new Date().getFullYear() - 14) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
+  let editable = false;
 
   async function onAvatarPicked() {
     try {
@@ -48,10 +55,52 @@ export default function RegisterShop({ route }) {
         isCropCircle: true,
         singleSelectedMode: true
       });
-      response.crop.path = "file://" + response.crop.path;
-      setpickedAvatar([response.crop]);
+      if (response.crop) {
+        let cropPath = "file://" + response.crop.path;
+        response.crop.path = cropPath;
+        response.crop.fileName = response.fileName;
+        setpickedAvatar(response.crop);
+      } else {
+        if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+          response.path = 'file://' + res.path;
+        }
+        setpickedAvatar(response);
+      }
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async function onCheckCardPicked(imagePath) {
+    let base64Image = await RNFS.readFile(imagePath, 'base64')
+      .then(async res => {
+        if (res) {
+          return res;
+        }
+      });
+    if (base64Image) {
+      let axiosAPI = axios.create();
+      axios.defaults.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
+      let res = await axiosAPI.post('https://api.regulaforensics.com/api/process',
+        {
+          processParam: {
+            scenario: "FullProcess",
+            doublePageSpread: true,
+            measureSystem: 0
+          },
+          List: [{
+            ImageData: { image: String(base64Image) },
+            page_idx: 0
+          }]
+        })
+      if (res) {
+        return res;
+      } else {
+        return false;
+      }
     }
   }
 
@@ -61,67 +110,137 @@ export default function RegisterShop({ route }) {
         mediaType: 'image',
         selectedAssets: 'Images',
         doneTitle: 'Xong',
-        singleSelectedMode: true
+        singleSelectedMode: true,
       });
+      if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+        response.path = 'file://' + res.path;
+      }
       setpickedFrontCard(response);
-      const result = await TextRecognition.recognize(response.path);
-      let checkResult = 0;
-      let iNumber = result.text.indexOf('No.');
-      let iFullName1 = result.text.indexOf('Họ và tên');
-      let iFullName2 = result.text.indexOf('Full name:');
-      let iBirth1 = result.text.indexOf('Ngày sinh');
-      let iBirth2 = result.text.indexOf('Date of birth:');
-      let iGender = result.text.indexOf('Giới tính');
-      if (iNumber > -1 && iFullName1 > -1) {
-        let num = result.text.substring((iNumber + + String('No.').length), iFullName1).trim();
-        setnumberCard(num);
+      setisLoadingCard(true);
+      let result = await onCheckCardPicked(response?.path);
+      if (result) {
+        let data = result?.data?.ContainerList?.List;
+        if (data && data.length > 0) {
+          let checkResult = 0;
+          let FaceDetection = (data.length >= 1) ? data[0]?.FaceDetection : null;
+          let OneCandidate = (data.length >= 3) ? data[2]?.OneCandidate : null;
+          let DocVisualExtendedInfo = (data.length >= 4) ? data[3]?.DocVisualExtendedInfo : null;
+          let BarcodePosition = (data.length >= 5) ? data[4]?.BarcodePosition : null;
+          let AuthenticityCheckList = (data.length >= 7) ? data[6]?.AuthenticityCheckList : null;
+          let ListVerifiedFields = (data.length >= 11) ? data[10]?.ListVerifiedFields : null;
+          if (!FaceDetection) {
+            //Xác minh khuôn mặt
+            checkResult = 1;
+          }
+          if (OneCandidate) {
+            //Xác minh thẻ
+            if (OneCandidate?.FDSIDList && OneCandidate?.FDSIDList?.dDescription == "Identity Card") {
+              //Thẻ là chứng minh
+            } else {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (DocVisualExtendedInfo) {
+            //Xác minh thông tin
+            let pArrayFields = DocVisualExtendedInfo?.pArrayFields;
+            if (pArrayFields && pArrayFields.length > 0) {
+              //Đọc được thông tin
+              for (let i = 0; i < pArrayFields.length; i++) {
+                const pFields = pArrayFields[i];
+                if (pFields?.FieldName == "Personal Number") {
+                  if (numberCard == "") {
+                    setnumberCard(pFields?.Buf_Text);
+                  } else {
+                    if (numberCard != pFields?.Buf_Text) {
+                      setnumberCard(pFields?.Buf_Text);
+                      setfullNameCard("");
+                      setbirthCard("");
+                      setinputDatePicker(new Date(String((new Date().getFullYear() - 14) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
+                      Toast.show({
+                        type: 'error',
+                        text1: 'Thông tin căn cước không chính xác với mặt sau của căn cước!',
+                        position: 'top'
+                      })
+                      setisOKFrontCard(false);
+                      setisLoadingCard(false);
+                      return;
+                    }
+                  }
+                }
+                if (pFields?.FieldName == "Surname And Given Names") {
+                  setfullNameCard(pFields?.Buf_Text);
+                }
+                if (pFields?.FieldName == "Date of Birth") {
+                  setbirthCard(pFields?.Buf_Text);
+                  let i = pFields?.Buf_Text.indexOf('/');
+                  let date = String(pFields?.Buf_Text.substring(i + 4) + "-" + pFields?.Buf_Text.substring(i + 1, i + 3) + "-" + pFields?.Buf_Text.substring(0, i));
+                  setinputDatePicker(new Date(date));
+                }
+              }
+            } else {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (!BarcodePosition) {
+            //Xác minh mã qr
+            checkResult = 1;
+          }
+          if (AuthenticityCheckList) {
+            //Xác minh danh tính
+            if (AuthenticityCheckList?.Count == 0) {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (!ListVerifiedFields) {
+            //Xác minh thông tin theo danh sách
+            checkResult = 1;
+          }
+          if (checkResult == 0) {
+            Toast.show({
+              type: 'success',
+              text1: 'Ảnh tải lên hợp lệ!',
+              position: 'top'
+            })
+            setisOKFrontCard(true);
+            setisLoadingCard(false);
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
+              position: 'top'
+            })
+            if (isOKFrontCard) {
+              setisOKFrontCard(false);
+            }
+            setisLoadingCard(false);
+          }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Xác minh ảnh thất bại!\nVui lòng tải lại ảnh để xác minh!',
+            position: 'top'
+          })
+          setisOKFrontCard(false);
+          setisLoadingCard(false);
+        }
       } else {
-        setnumberCard("");
         Toast.show({
           type: 'error',
-          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
+          text1: 'Xác minh ảnh thất bại!\nVui lòng tải lại ảnh để xác minh!',
           position: 'top'
         })
-        if (isOKFrontCard) {
-          setisOKFrontCard(false);
-        }
-        checkResult = 1;
-      }
-      if (iFullName2 > -1 && iBirth1 > -1) {
-        let name = result.text.substring((iFullName2 + String('Full name:').length), iBirth1).trim();
-        setfullNameCard(name);
-      } else {
-        setfullNameCard("");
-        Toast.show({
-          type: 'error',
-          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
-          position: 'top'
-        })
-        if (isOKFrontCard) {
-          setisOKFrontCard(false);
-        }
-        checkResult = 1;
-      }
-      if (iBirth2 > -1 && iGender > -1) {
-        let birth = result.text.substring((iBirth2 + String('Date of birth:').length), iGender).trim();
-        setbirthCard(birth);
-      } else {
-        setbirthCard("");
-        Toast.show({
-          type: 'error',
-          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
-          position: 'top'
-        })
-        if (isOKFrontCard) {
-          setisOKFrontCard(false);
-        }
-        checkResult = 1;
-      }
-      if (checkResult == 0) {
-        setisOKFrontCard(true);
+        setisOKFrontCard(false);
+        setisLoadingCard(false);
       }
     } catch (error) {
       console.log(error);
+      setisLoadingCard(false);
     }
   }
 
@@ -133,34 +252,115 @@ export default function RegisterShop({ route }) {
         doneTitle: 'Xong',
         singleSelectedMode: true
       });
+      if (response?.path.indexOf('file://') < 0 && response?.path.indexOf('content://') < 0) {
+        response.path = 'file://' + res.path;
+      }
       setpickedBehindCard(response);
-      const result = await TextRecognition.recognize(response.path);
-      console.log(result.text);
-      console.log(result.text.indexOf(numberCard + '<'));
-      let checkResult = 0;
-      let iCode = result.text.indexOf(numberCard + '<');
-      if (iCode == -1) {
+      setisLoadingCard(true);
+      let result = await onCheckCardPicked(response?.path);
+      if (result) {
+        let data = result?.data?.ContainerList?.List;
+        if (data && data.length > 0) {
+          let checkResult = 0;
+          let DocVisualExtendedInfo = (data.length >= 3) ? data[2]?.DocVisualExtendedInfo : null;
+          let OneCandidate = (data.length >= 7) ? data[6]?.OneCandidate : null;
+          let DocGraphicsInfo = (data.length >= 9) ? data[8]?.DocGraphicsInfo : null;
+          if (DocVisualExtendedInfo) {
+            //Xác minh thông tin
+            let pArrayFields = DocVisualExtendedInfo?.pArrayFields;
+            if (pArrayFields && pArrayFields.length > 0) {
+              //Đọc được thông tin
+              for (let i = 0; i < pArrayFields.length; i++) {
+                const pFields = pArrayFields[i];
+                if (pFields?.FieldName == "Personal Number") {
+                  if (numberCard == "") {
+                    setnumberCard(pFields?.Buf_Text);
+                  } else {
+                    if (numberCard != pFields?.Buf_Text) {
+                      setnumberCard(pFields?.Buf_Text);
+                      setfullNameCard("");
+                      setinputDatePicker(new Date(String((new Date().getFullYear() - 14) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
+                      Toast.show({
+                        type: 'error',
+                        text1: 'Thông tin căn cước không chính xác với mặt trước của căn cước!',
+                        position: 'top'
+                      })
+                      setisOKBehindCard(false);
+                      setisLoadingCard(false);
+                      return;
+                    }
+                  }
+                }
+              }
+            } else {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (OneCandidate) {
+            //Xác minh thẻ
+            if (OneCandidate?.FDSIDList && OneCandidate?.FDSIDList?.dDescription == "Identity Card") {
+              //Thẻ là chứng minh
+            } else {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (DocGraphicsInfo) {
+            //Xác minh vân tay
+            if (DocGraphicsInfo?.nFields != 2) {
+              checkResult = 1;
+            }
+          } else {
+            checkResult = 1;
+          }
+          if (checkResult == 0) {
+            Toast.show({
+              type: 'success',
+              text1: 'Ảnh tải lên hợp lệ!',
+              position: 'top'
+            })
+            setisOKBehindCard(true);
+            setisLoadingCard(false);
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
+              position: 'top'
+            })
+            if (isOKBehindCard) {
+              setisOKBehindCard(false);
+            }
+            setisLoadingCard(false);
+          }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Xác minh ảnh thất bại!\nVui lòng tải lại ảnh để xác minh!',
+            position: 'top'
+          })
+          setisOKBehindCard(false);
+          setisLoadingCard(false);
+        }
+      } else {
         Toast.show({
           type: 'error',
-          text1: 'Ảnh tải lên quá mờ hoặc không hợp lệ!',
+          text1: 'Xác minh ảnh thất bại!\nVui lòng tải lại ảnh để xác minh!',
           position: 'top'
         })
-        if (isOKBehindCard) {
-          setisOKBehindCard(false);
-        }
-        checkResult = 1;
-      }
-
-      if (checkResult == 0) {
-        setisOKBehindCard(true);
+        setisOKBehindCard(false);
+        setisLoadingCard(false);
       }
     } catch (error) {
       console.log(error);
+      setisLoadingCard(false);
     }
   }
 
   async function onSendVerify() {
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     if (!inputEmail.match(regEmail)) {
       Toast.show({
         type: 'error',
@@ -182,7 +382,7 @@ export default function RegisterShop({ route }) {
   }
 
   async function onVerifyCode() {
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
     if (!inputEmail.match(regEmail)) {
       Toast.show({
         type: 'error',
@@ -237,7 +437,7 @@ export default function RegisterShop({ route }) {
 
   function checkValidate() {
     let regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}/;
-    let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+    let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
 
     if (pickedAvatar == null) {
       Toast.show({
@@ -350,12 +550,12 @@ export default function RegisterShop({ route }) {
     }
 
     var formData = new FormData();
-    formData.append("nameShop", objShop.nameShop);
+    formData.append("nameShop", objShop?.nameShop);
     formData.append("email", inputEmail);
     formData.append("locationShop", inputLocation);
-    formData.append("userName", objShop.userName);
+    formData.append("userName", objShop?.userName);
     formData.append("passWord", inputNewPassword);
-    formData.append("hotline", objShop.hotline);
+    formData.append("hotline", objShop?.hotline);
     formData.append("nameIdentity", fullNameCard);
     formData.append("numberIdentity", numberCard);
     formData.append("dateIdentity", birthCard);
@@ -372,16 +572,30 @@ export default function RegisterShop({ route }) {
       }
     }
 
-    onNavigate('ConfirmRegister', {
+    navigation.replace('ConfirmRegister', {
       formData: formData,
       objShop: {
-        nameShop: objShop.nameShop,
-        hotline: objShop.hotline,
+        nameShop: objShop?.nameShop,
+        hotline: objShop?.hotline,
         fullName: fullNameCard,
         numberCard: numberCard,
         dateBirth: birthCard,
       }
     })
+  }
+
+  function onChangeTextEmail(input) {
+    setinputEmail(input.replace(" ", ""));
+  }
+
+  function onChangeNumberCard(input) {
+    var number = input.replace(/\D/g, '');
+    setnumberCard(number);
+  }
+
+  function onChangeOTP(input) {
+    var number = input.replace(/\D/g, '');
+    setinputOTP(number);
   }
 
   function onChangePassToggle() {
@@ -398,6 +612,19 @@ export default function RegisterShop({ route }) {
     } else {
       setconfirmPassToggle(true);
     }
+  }
+
+  function onShowDatePicker() {
+    setisShowPicker(true)
+  }
+
+  function onHideDatePicker() {
+    setisShowPicker(false)
+  }
+
+  function onSetDatePicker(date) {
+    setinputDatePicker(date);
+    setbirthCard(moment(date).format('DD/MM/YYYY'))
   }
 
   React.useEffect(() => {
@@ -445,41 +672,62 @@ export default function RegisterShop({ route }) {
               color: 'rgba(0, 24, 88, 0.80)',
             }, styles.titleInput]}>Thẻ căn cước</Text>
             <View style={{ paddingVertical: 10, flexDirection: 'row' }}>
-              <Image style={{ width: '25%', aspectRatio: 3 / 2 }} source={{ uri: 'https://congdankhuyenhoc.qltns.mediacdn.vn/449484899827462144/2022/7/19/tich-hop-giay-phep-vao-cccd-16582037485611165393960.jpg' }} />
-              <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, marginHorizontal: 10, overflow: 'hidden' }}
-                onPress={onFrontCardPicked}>
-                {
-                  (pickedFrontCard != null)
-                    ?
-                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedFrontCard.path) }} />
-                    :
-                    <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                      <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
-                      <Text style={{ color: 'rgba(0, 24, 88, 0.80)', fontSize: 10 }}>Mặt trước</Text>
-                    </View>
-                }
-              </TouchableOpacity>
-              <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }}
-                onPress={onBehindCardPicked}>
-                {
-                  (pickedBehindCard != null)
-                    ?
-                    <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedBehindCard.path) }} />
-                    :
-                    <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                      <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
-                      <Text style={{ color: 'rgba(0, 24, 88, 0.80)', fontSize: 10 }}>Mặt sau</Text>
-                    </View>
-                }
-              </TouchableOpacity>
+              <Image style={{ width: '25%', aspectRatio: 3 / 2 }} source={require('../../assets/images/democard.png')} />
+              {
+                (isLoadingCard)
+                  ? <ShimmerPlaceHolder shimmerStyle={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, marginHorizontal: 10, overflow: 'hidden' }} />
+                  : <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, marginHorizontal: 10, overflow: 'hidden' }}
+                    onPress={onFrontCardPicked}>
+                    {
+                      (pickedFrontCard != null)
+                        ?
+                        <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedFrontCard.path) }} />
+                        :
+                        <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                          <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
+                          <Text style={{ color: 'rgba(0, 24, 88, 0.80)', fontSize: 10 }}>Mặt trước</Text>
+                        </View>
+                    }
+                  </TouchableOpacity>
+              }
+              {
+                (isLoadingCard)
+                  ? <ShimmerPlaceHolder shimmerStyle={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }} />
+                  : <TouchableOpacity style={{ width: '25%', aspectRatio: 3 / 2, borderRadius: 5, overflow: 'hidden' }}
+                    onPress={onBehindCardPicked}>
+                    {
+                      (pickedBehindCard != null)
+                        ?
+                        <Image style={{ aspectRatio: 3 / 2, borderRadius: 5 }} source={{ uri: String(pickedBehindCard.path) }} />
+                        :
+                        <View style={{ backgroundColor: '#F3D2C1', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                          <Entypo name='plus' size={23} color={'rgba(0, 24, 88, 0.80)'} />
+                          <Text style={{ color: 'rgba(0, 24, 88, 0.80)', fontSize: 10 }}>Mặt sau</Text>
+                        </View>
+                    }
+                  </TouchableOpacity>
+              }
             </View>
             <View>
               <Text style={[styles.titleInput, {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 5
               }]}>Họ và tên</Text>
               <View>
-                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={fullNameCard}
-                  onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                {
+                  (isLoadingCard)
+                    ?
+                    <ShimmerPlaceHolder shimmerStyle={{
+                      marginTop: 7,
+                      height: 50,
+                      width: '100%',
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: 'rgba(0, 0, 0, 0.50)',
+                    }} />
+                    :
+                    <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={fullNameCard}
+                      onChangeText={setfullNameCard} />
+                }
               </View>
             </View>
             <View>
@@ -487,8 +735,21 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Số thẻ căn cước</Text>
               <View>
-                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={numberCard}
-                  onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                {
+                  (isLoadingCard)
+                    ?
+                    <ShimmerPlaceHolder shimmerStyle={{
+                      marginTop: 7,
+                      height: 50,
+                      width: '100%',
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: 'rgba(0, 0, 0, 0.50)',
+                    }} />
+                    :
+                    <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={numberCard}
+                      onChangeText={onChangeNumberCard} keyboardType='numeric'/>
+                }
               </View>
             </View>
             <View>
@@ -496,8 +757,23 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Ngày sinh</Text>
               <View>
-                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={birthCard}
-                  onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                {
+                  (isLoadingCard)
+                    ?
+                    <ShimmerPlaceHolder shimmerStyle={{
+                      marginTop: 7,
+                      height: 50,
+                      width: '100%',
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: 'rgba(0, 0, 0, 0.50)',
+                    }} />
+                    :
+                    <Pressable onPress={onShowDatePicker}>
+                      <TextInput style={[styles.textInputLogin, styles.bgLightBrown, { color: editable ? '#001858' : '#001858' }]} value={birthCard}
+                        onChangeText={setbirthCard} editable={editable} />
+                    </Pressable>
+                }
               </View>
             </View>
           </View>
@@ -513,8 +789,8 @@ export default function RegisterShop({ route }) {
               }]}>Số điện thoại</Text>
               <View>
                 <TextInput style={[[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown], { color: 'rgba(0, 24, 88, 0.80)' }]}
-                  value={(objShop.hotline != undefined) ? "+" + objShop.hotline : ""}
-                  editable={false} />
+                  value={(objShop?.hotline != undefined) ? "+" + objShop?.hotline : ""}
+                  editable={false} keyboardType='number-pad'/>
               </View>
             </View>
             <View>
@@ -522,8 +798,9 @@ export default function RegisterShop({ route }) {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
               }]}>Địa chỉ email</Text>
               <View>
-                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputEmail}
-                  onChangeText={(input) => { setinputEmail(input) }} />
+                <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
+                  value={inputEmail} keyboardType='email-address'
+                  onChangeText={onChangeTextEmail} />
               </View>
             </View>
             <View>
@@ -533,7 +810,7 @@ export default function RegisterShop({ route }) {
               <View style={{ marginBottom: 25 }}>
                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputOTP}
                   maxLength={6} keyboardType='numeric'
-                  onChangeText={(input) => { setinputOTP(input) }} />
+                  onChangeText={onChangeOTP} />
                 <TouchableOpacity onPress={onSendVerify} disabled={(cdSendAgain == 0) ? false : true}
                   style={{ position: 'absolute', right: 5, top: '20%' }}>
                   <Text style={[styles.textDetailFormRed, { fontSize: 15, color: '#4285F4' }]}>
@@ -557,7 +834,7 @@ export default function RegisterShop({ route }) {
               }]}>Địa chỉ cửa hàng</Text>
               <View>
                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputLocation}
-                  onChangeText={(input) => { setinputLocation(input) }} />
+                  onChangeText={setinputLocation} />
               </View>
             </View>
           </View>
@@ -573,7 +850,7 @@ export default function RegisterShop({ route }) {
             <View>
               <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={passToggle} value={inputNewPassword}
-                onChangeText={(input) => { setinputNewPassword(input) }} />
+                onChangeText={setinputNewPassword} />
               {
                 (passToggle)
                   ?
@@ -597,7 +874,7 @@ export default function RegisterShop({ route }) {
             <View>
               <TextInput style={[styles.textInputPass, styles.bgLightBrown, styles.textDarkBlue]}
                 secureTextEntry={confirmPassToggle} value={inputConfirmPassword}
-                onChangeText={(input) => { setinputConfirmPassword(input) }} />
+                onChangeText={setinputConfirmPassword} />
               {
                 (confirmPassToggle)
                   ?
@@ -614,13 +891,14 @@ export default function RegisterShop({ route }) {
             </View>
           </View>
 
-          <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 35, marginBottom: 25 }]}
+          <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 35, marginBottom: 25 }]}
             activeOpacity={0.5} underlayColor="#DC749C"
             onPress={onContinue}>
             <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Tiếp tục</Text>
           </TouchableHighlight>
         </View>
-      </ScrollView>
-    </View>
+      </ScrollView >
+      <DatePickerModal type={'datebirth'} isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={onHideDatePicker} callBackSetDate={onSetDatePicker} />
+    </View >
   )
 }

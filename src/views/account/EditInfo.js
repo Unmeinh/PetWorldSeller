@@ -1,10 +1,8 @@
 import React, { useState, memo } from 'react';
 import {
-    Pressable,
-    Text,
-    TextInput,
+    Keyboard, View,
+    Text, TextInput,
     TouchableHighlight,
-    View
 } from 'react-native';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
@@ -58,7 +56,7 @@ const EditInfo = ({ route }) => {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: infoTypes[route.params.infoNames] + ' không được để trống!',
+                text1: infoNames[route.params.infoType] + ' không được để trống!',
             })
             return;
         }
@@ -77,6 +75,7 @@ const EditInfo = ({ route }) => {
     }
 
     async function onSave() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật " + infoTypes[route.params.infoType] + "...",
@@ -180,12 +179,12 @@ const EditInfo = ({ route }) => {
                                                 (route.params.infoType == 2)
                                                     ?
                                                     <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
-                                        placeholderTextColor={'#A0A0A0'}
+                                                        placeholderTextColor={'#A0A0A0'}
                                                         value={inputValue} onChangeText={onChangeInputValue}
                                                         multiline={true} textAlignVertical='top' />
                                                     :
                                                     <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
-                                        placeholderTextColor={'#A0A0A0'}
+                                                        placeholderTextColor={'#A0A0A0'}
                                                         value={inputValue} onChangeText={onChangeInputValue} />
                                             }
                                         </View>

@@ -31,6 +31,8 @@ import DetailAppointment from '../views/appointment/DetailAppointment';
 import BillScreen from '../views/bill/BillScreen';
 import DetailBill from '../views/bill/DetailBill';
 import Test from '../views/splash/Test';
+import pushNotification from '../services/pushNotification';
+import notifee, { EventType } from '@notifee/react-native';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -48,6 +50,21 @@ export default function StackScreen() {
       };
     },
   };
+
+  React.useEffect(() => {
+    pushNotification.notificationListenner();
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator

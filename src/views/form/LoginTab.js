@@ -1,18 +1,19 @@
 import {
     Image, Text, View,
     TouchableHighlight,
-    TextInput,
-    TouchableOpacity,
-    ToastAndroid
+    TextInput, Keyboard,
+    TouchableOpacity
 } from 'react-native';
 import React, { useState } from 'react';
 import styles from '../../styles/all.style';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
+import messaging from '@react-native-firebase/messaging';
+import database from '@react-native-firebase/database';
+import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { onAxiosPost } from '../../api/axios.function';
 
 export default function LoginTab(route) {
@@ -21,7 +22,6 @@ export default function LoginTab(route) {
     const [rememberMe, setrememberMe] = useState(false);
     const [inputUsername, setinputUsername] = useState(route.user);
     const [inputPassword, setinputPassword] = useState("");
-    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangePassToggle() {
         if (passToggle == true) {
@@ -67,16 +67,10 @@ export default function LoginTab(route) {
     }
 
     async function onSignIn() {
-        var newShop = {
-            userName: inputUsername,
-            passWord: inputPassword
-        }
-
+        Keyboard.dismiss();
         if (checkValidate() == false) {
             return;
         }
-
-        // setisDisableRequest(true);
 
         Toast.show({
             type: 'loading',
@@ -86,7 +80,18 @@ export default function LoginTab(route) {
             autoHide: false
         });
 
-        const response = await onAxiosPost('shop/login', newShop, "Json", true);
+        if (rememberMe) {
+            let onSendDeviceToken = await requestNotificationPermission();
+            if (onSendDeviceToken && onSendDeviceToken == "") {
+                return;
+            }
+        }
+
+        const response = await onAxiosPost('shop/login', {
+            userName: inputUsername,
+            passWord: inputPassword,
+            tokenDevice: onSendDeviceToken
+        }, "Json", true);
         if (response) {
             storageMMKV.setValue('login.token', String(response.token));
             if (rememberMe) {
@@ -97,15 +102,71 @@ export default function LoginTab(route) {
             if (storageMMKV.getString('login.token') == String(response.token)) {
                 Toast.hide();
                 if (response.data.shopStatus == 0) {
-                    navigation.navigate('ConfirmedShop');
+                    navigation.replace('ConfirmedShop');
                 } else {
-                    navigation.navigate('NaviTabScreen');
+                    navigation.replace('NaviTabScreen');
                 }
             }
-        } else {
-            setisDisableRequest(false);
         }
     }
+
+    const requestNotificationPermission = async () => {
+        try {
+            const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+            if (result === RESULTS.GRANTED) {
+                let token = await messaging().getToken();
+                if (token) {
+                    const hasSentToken = storageMMKV.getBoolean('hasSentToken');
+                    const tokenDevice = storageMMKV.getString('tokenDevice');
+                    if (!hasSentToken) {
+                        sendTokenToFirebase(token);
+                    } else {
+                        if (String(tokenDevice) != String(token)) {
+                            sendTokenToFirebase(token);
+                        }
+                    }
+                    return token;
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+                    })
+                    return "";
+                }
+            } else {
+                console.log(result);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Vui lòng bật thông báo ứng dụng để tiếp tục!'
+                })
+                return "";
+            }
+        } catch (error) {
+            console.log(error);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+            })
+            return "";
+        }
+    };
+
+    const sendTokenToFirebase = async (newToken) => {
+        try {
+            const databaseRef = database().ref('/tokens');
+            const tokenData = {
+                token: newToken,
+            };
+            await databaseRef.push(tokenData);
+            storageMMKV.setValue('hasSentToken', true);
+            storageMMKV.setValue('tokenDevice', newToken);
+        } catch (error) {
+            console.error('Lỗi khi gửi token đến Firebase:', error);
+        }
+    };
 
     return (
         <View style={[styles.container, styles.formContainer]}>
@@ -190,7 +251,7 @@ export default function LoginTab(route) {
 
                     <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 45 }]}
                         activeOpacity={0.5} underlayColor="#DC749C"
-                        onPress={onSignIn} disabled={isDisableRequest}>
+                        onPress={onSignIn}>
                         <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Đăng nhập</Text>
                     </TouchableHighlight>
 

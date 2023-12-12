@@ -9,34 +9,53 @@ export async function onAxiosGet(url, isFeedback) {
     };
     const response = await axios.get(url)
         .catch((e) => {
-            // var data = response.data;
             console.log(e);
+            if (String(e).indexOf('Network Error') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                });
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 500') >= 0) {
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 404') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Không tìm thấy máy chủ hoặc api!",
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
                     text1: String(e.response.data.message),
-                    bottomOffset: 20
                 });
                 return false;
             } else {
-                if (String(e.response.data).indexOf("not found") > 0) {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: "Không tìm thấy máy chủ!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(e.response.data),
-                        bottomOffset: 20
-                    });
-                    return false;
-                }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                });
+                return false;
             }
         });
 
@@ -58,7 +77,6 @@ export async function onAxiosGet(url, isFeedback) {
                     type: 'error',
                     position: 'top',
                     text1: String(data.message),
-                    bottomOffset: 20
                 });
                 return false;
             }
@@ -99,38 +117,50 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
     const response = await axios.post(url, body)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                });
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 500') >= 0) {
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 404') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Không tìm thấy máy chủ hoặc api!",
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
                     text1: String(e.response.data.message),
-                    bottomOffset: 20
                 });
                 return false;
             } else {
-                if (String(e.response.data).indexOf("not found") > 0) {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: "Không tìm thấy máy chủ!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                }
-                if (String(e.response.data).indexOf("404") > 0) {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: "Không tìm thấy api với phương thức post!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                }
                 Toast.show({
                     type: 'error',
                     position: 'top',
                     text1: String(e.response.data),
-                    bottomOffset: 20
                 });
                 return false;
             }
@@ -154,7 +184,6 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
                     type: 'error',
                     position: 'top',
                     text1: String(data.message),
-                    bottomOffset: 20
                 });
                 return false;
             }
@@ -197,32 +226,52 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
     const response = await axios.put(url, body)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                });
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 500') >= 0) {
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 404') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Không tìm thấy máy chủ hoặc api!",
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
                     text1: String(e.response.data.message),
-                    bottomOffset: 20
                 });
                 return false;
             } else {
-                if (String(e.response.data).indexOf("not found") > 0) {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: "Không tìm thấy máy chủ!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(e.response.data),
-                        bottomOffset: 20
-                    });
-                    return false;
-                }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                });
+                return false;
             }
         });
 
@@ -244,7 +293,6 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
                     type: 'error',
                     position: 'top',
                     text1: String(data.message),
-                    bottomOffset: 20
                 });
                 return false;
             }
@@ -270,32 +318,52 @@ export async function onAxiosDelete(url, isFeedback) {
     const response = await axios.delete(url)
         .catch((e) => {
             console.log(e);
+            if (String(e).indexOf('Network Error') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Lỗi kết nối mạng!\nVui lòng kết nối mạng để tiếp tục!",
+                });
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 500') >= 0) {
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
+                return false;
+            }
+            if (String(e).indexOf('Request failed with status code 404') >= 0) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: "Không tìm thấy máy chủ hoặc api!",
+                });
+                return false;
+            }
             if (e.response.data.message) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
                     text1: String(e.response.data.message),
-                    bottomOffset: 20
                 });
                 return false;
             } else {
-                if (String(e.response.data).indexOf("not found") > 0) {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: "Không tìm thấy máy chủ!",
-                        bottomOffset: 20
-                    });
-                    return false;
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        position: 'top',
-                        text1: String(e.response.data),
-                        bottomOffset: 20
-                    });
-                    return false;
-                }
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: String(e.response.data),
+                });
+                return false;
             }
         });
 
@@ -317,7 +385,6 @@ export async function onAxiosDelete(url, isFeedback) {
                     type: 'error',
                     position: 'top',
                     text1: String(data.message),
-                    bottomOffset: 20
                 });
                 return false;
             }

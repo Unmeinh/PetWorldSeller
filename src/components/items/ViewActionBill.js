@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     Text, View,
+    Keyboard,
     TouchableHighlight
 } from 'react-native';
 import styles from '../../styles/all.style';
@@ -37,6 +38,7 @@ const ViewActionBill = (props) => {
     }
 
     async function onConfirmAllBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -50,6 +52,7 @@ const ViewActionBill = (props) => {
     }
 
     async function onCancelAllBill() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',

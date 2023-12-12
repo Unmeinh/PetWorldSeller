@@ -1,9 +1,8 @@
 import {
     Text, View,
-    ToastAndroid,
     TouchableHighlight,
     TouchableOpacity,
-    TextInput
+    Keyboard
 } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import styles from '../../styles/all.style';
@@ -31,31 +30,27 @@ export default function ConfirmOTP({ route }) {
     const [emailDisplay, setemailDisplay] = useState('');
     const [confirm, setconfirm] = useState(route.params.authConfirm);
     const [cdSendAgain, setcdSendAgain] = useState(30);
-    const [isDisableRequest, setisDisableRequest] = useState(false);
     const [isReadedMessage, setisReadedMessage] = useState(false);
 
     async function onSendAgain() {
-        if (auth().currentUser !== null) {
+        if (auth().currentUser) {
             await auth().signOut();
         }
+        setconfirm(null);
         setuserAuth(null);
         setinputOTP('');
-        if (otpRef != null) {
+        if (otpRef) {
             otpRef.setValue('');
         }
         setcdSendAgain(30);
         if (inputTypeVerify == "phoneNumber") {
-            const response = await onSendOTPbyPhoneNumber(inputValueVerify);
+            const response = await onSendOTPbyPhoneNumber(String(inputValueVerify));
             if (response != undefined && response.success) {
                 setconfirm(response.confirm);
-                setisDisableRequest(false);
                 setisReadedMessage(false);
             }
         } else {
-            const response = await onSendOTPbyEmail(inputValueVerify);
-            if (response) {
-                setisDisableRequest(false);
-            }
+            await onSendOTPbyEmail(inputValueVerify);
         }
     }
 
@@ -80,8 +75,7 @@ export default function ConfirmOTP({ route }) {
             return;
         }
 
-        setisDisableRequest(true);
-
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -100,9 +94,9 @@ export default function ConfirmOTP({ route }) {
                 });
                 setTimeout(() => {
                     if (route.params.navigate == "RegisterShop") {
-                        navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
             } catch (error) {
@@ -112,24 +106,21 @@ export default function ConfirmOTP({ route }) {
                     text1: 'Mã xác minh sai!',
                     bottomOffset: 20
                 });
-                setisDisableRequest(false);
             }
         } else {
             var response = await onVerifyOTPbyEmail(inputValueVerify, inputOTP);
             if (response) {
                 setTimeout(() => {
                     if (route.params.navigate == "RegisterShop") {
-                        navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     } else {
-                        navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                        navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
-            } else {
-                setisDisableRequest(false);
-            }
+            } 
         }
         // ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
-        // navigation.navigate('ChangePassword');
+        // navigation.replace('ChangePassword');
     }
 
     function onAuthStateChanged(user) {
@@ -220,20 +211,20 @@ export default function ConfirmOTP({ route }) {
                     text1: 'Thành công',
                     bottomOffset: 20
                 });
-                setTimeout(() => {
-                    if (route.params.function) {
-                        route.params.function();
-                    }
-                    if (route.params.navigate) {
-                        if (route.params.navigate == "RegisterShop") {
-                            navigation.navigate(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                        } else {
-                            navigation.navigate(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
-                        }
-                    }
-                }, 500)
                 // setTimeout(() => {
-                //     navigation.navigate('ChangePassword');
+                //     if (route.params.function) {
+                //         route.params.function();
+                //     }
+                //     if (route.params.navigate) {
+                //         if (route.params.navigate == "RegisterShop") {
+                //             navigation.replace(route.params.navigate, { objShop: route.params.objShop, typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                //         } else {
+                //             navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
+                //         }
+                //     }
+                // }, 500)
+                // setTimeout(() => {
+                //     navigation.replace('ChangePassword');
                 // }, 1000)
             }
         }
@@ -276,7 +267,7 @@ export default function ConfirmOTP({ route }) {
 
                 <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 75 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
-                    onPress={onContinue} disabled={isDisableRequest}>
+                    onPress={onContinue}>
                     <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Tiếp tục</Text>
                 </TouchableHighlight>
             </View>

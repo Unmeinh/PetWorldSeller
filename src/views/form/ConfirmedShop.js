@@ -6,14 +6,15 @@ import {
 import React, { useState } from 'react'
 import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
-import { onNavigate } from '../../navigation/rootNavigation';
+import { useNavigation } from '@react-navigation/native';
 
-export default function ConfirmedShop({ route }) {
+export default function ConfirmedShop() {
+    const navigation = useNavigation();
 
     function onGoToLogin() {
         storageMMKV.setValue('login.token', "");
         storageMMKV.setValue('login.isLogin', false);
-        onNavigate('LoginScreen');
+        navigation.replace('LoginScreen');
     }
 
     return (

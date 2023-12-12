@@ -92,7 +92,7 @@ export default function ChangePassword({ route }) {
     var response = await onAxiosPut('/shop/changePassword', objData, 'json', true);
     if (response && response.success) {
       setTimeout(() =>
-        navigation.navigate('LoginScreen'), 1000)
+        navigation.replace('LoginScreen'), 1000)
     }
   }
 

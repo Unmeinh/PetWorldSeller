@@ -4,6 +4,7 @@ import {
     FlatList,
     Text, View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -56,6 +57,13 @@ const EditPet = ({ route }) => {
                     doneTitle: 'Xong',
                     maxSelectedAssets: 5 - arr_Image.length
                 });
+                for (let i = 0; i < response.length; i++) {
+                    const res = response[i];
+                    if (res?.path.indexOf('file://') < 0 && res?.path.indexOf('content://') < 0) {
+                        res.path = 'file://' + res.path;
+                        response.splice(i, 1, res);
+                    }
+                }
                 setarr_Image([...arr_Image, ...response]);
             }
         } catch (error) {
@@ -321,6 +329,7 @@ const EditPet = ({ route }) => {
     }
 
     async function onEditPet() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: 'Đang sửa thú cưng...',

@@ -18,7 +18,7 @@ export default StyleSheet.create({
     viewChartContainer: {
         backgroundColor: "#fff",
         marginTop: 15,
-        marginBottom: 10,
+        marginBottom: 70,
         paddingVertical: 10,
         marginHorizontal: 5,
         paddingTop: 20,

@@ -1,104 +1,73 @@
 import React, { useState } from 'react';
 import {
     Text, View,
-    ScrollView
+    TouchableOpacity
 } from 'react-native';
 import styles, { darkBlue, yellowWhite } from '../../styles/all.style';
-import { FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-// import { fetchNotices } from '../../redux/reducers/notice/noticeReducer';
-// import { selectAllNotices } from '../../redux/selectors/selector';
-import LottieAnimation from '../../components/layout/LottieAnimation';
-import { RefreshControl } from "react-native-gesture-handler";
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import NotifyAll from './NotifyAll';
+import NotifyRemind from './NotifyRemind';
+import NotifyRead from './NotifyRead';
+import NotifyUnRead from './NotifyUnRead';
 import HeaderLogo from '../../components/header/HeaderLogo';
+import { useIsFocused } from '@react-navigation/native';
 
 const NotifyScreen = () => {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    // const notices = useSelector(selectAllNotices);
-    const notices = [];
-    const [extraNotices, setextraNotices] = useState([]);
-    const [isLoading, setisLoading] = useState(false);
-    const [isRefreshing, setisRefreshing] = useState(false);
-
-    async function onGetNotices() {
-        // dispatch(fetchNotices());
-    }
-
-    const ItemNotice = (row) => {
-        return (
-            <View></View>
-        )
-    }
-
-    // React.useEffect(() => {
-    //     if (notices != undefined) {
-    //         let clone = [...extraNotices];
-    //         clone = notices;
-    //         setextraNotices(clone);
-    //         if (isLoading) {
-    //             setisLoading(false);
-    //         }
-    //         if (isRefreshing) {
-    //             setisRefreshing(false);
-    //         }
-    //     }
-    // }, [notices]);
-
-    React.useEffect(() => {
-        const unsub = navigation.addListener('focus', () => {
-            if (notices && notices.length <= 0) {
-                onGetNotices();
-            }
-            return () => {
-                unsub.remove();
-            };
-        });
-
-        return unsub;
-    }, [navigation]);
-
-    const onReloadData = React.useCallback(() => {
-        setisRefreshing(true);
-        onGetNotices();
-    }, []);
+    const isFocused = useIsFocused();
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        { key: '1', title: 'Tất cả' },
+        { key: '2', title: 'Nhắc nhở' },
+        { key: '3', title: 'Đã đọc' },
+        { key: '4', title: 'Chưa đọc' },
+    ]);
+    const renderScene = SceneMap({
+        1: () => <NotifyAll index={index} isFocused={isFocused} />,
+        2: () => <NotifyRemind index={index} isFocused={isFocused} />,
+        3: () => <NotifyRead index={index} isFocused={isFocused} />,
+        4: () => <NotifyUnRead index={index} isFocused={isFocused} />,
+    });
+    const renderTabBar = props => (
+        <TabBar
+            {...props}
+            pressColor="transparent"
+            indicatorStyle={{ backgroundColor: '#F582AE' }}
+            style={{ backgroundColor: '#FEF6E4' }}
+            renderLabel={({ route, focused, color }) => (
+                <Text
+                    style={{
+                        color: focused ? '#001858' : '#001858',
+                        fontSize: 16,
+                        fontFamily: 'ProductSans',
+                        fontWeight: 'bold',
+                    }}>
+                    {route.title}
+                </Text>
+            )}
+        />
+    );
 
     return (
         <View style={styles.container}>
-            <HeaderLogo colorHeader={yellowWhite} />
-            {
-                (isLoading)
-                    ? <ScrollView showsVerticalScrollIndicator={false}>
-
-                    </ScrollView>
-                    : <>
-                        {
-                            (notices && notices.length > 0)
-                                ? <FlatList
-                                    data={notices}
-                                    extraData={extraNotices}
-                                    renderItem={({ item, index }) =>
-                                        <ItemNotice key={index} item={item}
-                                            index={index} fetchNotices={onGetNotices} />}
-                                    showsVerticalScrollIndicator={false}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    refreshControl={
-                                        <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
-                                    } />
-                                : <ScrollView refreshControl={
-                                    <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
-                                }>
-                                    <View style={styles.viewEmptyList}>
-                                        <LottieAnimation fileJson={require('../../assets/images/jsons/catNotify.json')}
-                                            isLoop={true} isAutoPlay={true}
-                                            style={{ width: "70%", aspectRatio: 1 }} />
-                                        <Text style={styles.textEmptyList}>Không có thông báo nào..</Text>
-                                    </View>
-                                </ScrollView>
-                        }
-                    </>
-            }
+            <HeaderLogo colorHeader={yellowWhite}
+                // addonComponent={<View style={{position: 'absolute', top: '25%', right: 0,}}>
+                //     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+                //         <TouchableOpacity onPress={() => {}}>
+                //             <Ionicons name='checkmark-done' size={24} color={'#001858'} style={{ marginRight: 5 }} />
+                //         </TouchableOpacity>
+                //         <TouchableOpacity onPress={() => {}}>
+                //             <Ionicons name='settings-outline' size={24} color={'#001858'} style={{ marginLeft: 5 }} />
+                //         </TouchableOpacity>
+                //     </View>
+                // </View>} 
+                />
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                renderTabBar={renderTabBar}
+            />
         </View>
     );
 }

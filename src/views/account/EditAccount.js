@@ -3,6 +3,7 @@ import {
     Pressable,
     Text, View,
     TextInput,
+    Keyboard,
     TouchableHighlight,
     TouchableOpacity
 } from 'react-native';
@@ -62,7 +63,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onSendVerify() {
-        let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+        let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
         if (!inputValue.match(regEmail)) {
             Toast.show({
                 type: 'error',
@@ -84,7 +85,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onVerifyCode() {
-        let regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+        let regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
         if (!inputValue.match(regEmail)) {
             Toast.show({
                 type: 'error',
@@ -157,7 +158,7 @@ const EditAccount = ({ route }) => {
                 return;
             }
         } else {
-            var regEmail = /^(\w+@[a-zA-Z]+\.[a-zA-Z]{2,})$/;
+            var regEmail = /^(?=[A-Za-z]).*@[a-zA-Z]+.[a-zA-Z]{2,}$/;
             if (!inputValue.match(regEmail)) {
                 Toast.show({
                     type: 'error',
@@ -182,6 +183,7 @@ const EditAccount = ({ route }) => {
     }
 
     async function onUpdateAccount() {
+        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             text1: "Đang cập nhật " + infoTypes[route.params.infoType] + "...",

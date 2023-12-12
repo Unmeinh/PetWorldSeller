@@ -2,23 +2,31 @@ import React, { useState } from 'react';
 import {
     Text, View
 } from 'react-native';
-import styles, { WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { WindowHeight, WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
 import HeaderLogo from '../../components/header/HeaderLogo';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import RevenueStatistics from './RevenueStatistics';
-import ProductStatistics from './ProductStatistics';
+import SoldStatistics from './SoldStatistics';
+import { useDispatch } from 'react-redux';
+import { onChangeHomeTabIndex } from '../../redux/reducers/layout/layoutReducer';
 import { memo } from 'react';
 
 const HomeScreen = () => {
+    const dispatch = useDispatch();
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'revenue', title: 'Doanh thu' },
-        { key: 'product', title: 'Sản phẩm' },
+        { key: 'sold', title: 'Đã bán' },
     ]);
+
+    function onChangeTab(ind) {
+        dispatch(onChangeHomeTabIndex(ind));
+        setIndex(ind);
+    }
 
     const renderScene = SceneMap({
         revenue: RevenueStatistics,
-        product: ProductStatistics,
+        sold: SoldStatistics,
     });
 
     const renderTabBar = (props) => (
@@ -44,10 +52,9 @@ const HomeScreen = () => {
         <View style={styles.container}>
             <HeaderLogo colorHeader={yellowWhite} />
             <TabView
-                style={{ top: -5 }}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
-                onIndexChange={setIndex}
+                onIndexChange={onChangeTab}
                 renderTabBar={renderTabBar}
             />
         </View>

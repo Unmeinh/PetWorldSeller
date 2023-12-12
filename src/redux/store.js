@@ -1,4 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import layoutReducer from './reducers/layout/layoutReducer';
 import petReducer from './reducers/pet/petReducer';
 import shopReducer from './reducers/shop/shopReducer';
 import productReducer from './reducers/product/productReducer';
@@ -13,6 +14,7 @@ import billReducer from './reducers/bill/billReducer';
 // });
 
 const combinedReducer = combineReducers({
+  listLayout: layoutReducer,
   listShop: shopReducer,
   listPet: petReducer,
   listProduct: productReducer,

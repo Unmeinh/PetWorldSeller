@@ -45,7 +45,6 @@ const ProductScreen = () => {
         <View style={styles.container}>
             <HeaderLogo colorHeader={yellowWhite} />
             <TabView
-                style={{ top: -5 }}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}

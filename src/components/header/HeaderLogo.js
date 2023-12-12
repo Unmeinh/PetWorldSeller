@@ -2,13 +2,11 @@ import { TouchableOpacity, Text, View } from 'react-native';
 import React from 'react';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
-export default function HeaderLogo({ colorHeader }) {
+export default function HeaderLogo({ colorHeader, addonComponent }) {
     return (
         <View style={{
             backgroundColor: String(colorHeader),
             padding: 9,
-            paddingBottom: 10,
-            marginBottom: 3,
             shadowColor: '#000',
             // elevation: 5,
         }}>
@@ -29,6 +27,11 @@ export default function HeaderLogo({ colorHeader }) {
                     right: '75%', bottom: -18
                 }}>Seller</Text>
                 </View>
+                {
+                    (addonComponent)
+                    ? React.cloneElement(addonComponent)
+                    : ""
+                }
             </View>
         </View>
     );
