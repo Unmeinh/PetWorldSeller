@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Image, Animated, Easing, Text } from 'react-native';
+import { View, BackHandler, Dimensions, Image, Animated, Easing, Text } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -7,7 +7,9 @@ import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 import { onAxiosGet } from '../../api/axios.function';
+import { PermissionsAndroid, Linking } from "react-native";
 import LottieAnimation from '../../components/layout/LottieAnimation';
+import Toast from 'react-native-toast-message';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -31,6 +33,7 @@ export default function SplashScreen() {
   const [pawPositions, setPawPositions] = useState([]);
   const [nameVisible, setNameVisible] = useState(false);
   const [isFinishedOneTime, setisFinishedOneTime] = useState(false);
+  const [isGrantedNotice, setisGrantedNotice] = useState('false');
   const [nextScreen, setnextScreen] = useState('');
 
   useEffect(() => {
@@ -110,14 +113,81 @@ export default function SplashScreen() {
     }, 500);
   };
 
+  async function requestPostNotification() {
+    let result = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      // {
+      //   title: "Cool Photo App Camera Permission",
+      //   message:
+      //     "Cool Photo App needs access to your camera " +
+      //     "so you can take awesome pictures.",
+      //   buttonNeutral: "Ask Me Later",
+      //   buttonNegative: "Cancel",
+      //   buttonPositive: "OK"
+      // }
+    )
+    // if (result == 'denied') {
+    //   BackHandler.exitApp();
+    // }
+    setisGrantedNotice(result);
+  }
+
   React.useEffect(() => {
-    if (isFinishedOneTime && nextScreen != '') {
-      navigation.replace(nextScreen);
+    if (isFinishedOneTime && nextScreen != '' && isGrantedNotice != 'false') {
+      if (isGrantedNotice == 'granted') {
+        navigation.replace(nextScreen);
+      }
+      if (isGrantedNotice == 'denied') {
+        Toast.show({
+          type: 'alert',
+          text1: 'OurPet cần bạn cho phép quyền thông báo để sử dụng ứng dụng.\nCho phép bật quyền thông báo?',
+          position: 'top',
+          autoHide: false,
+          props: {
+            confirm: () => { Toast.hide(); setisGrantedNotice('false'); },
+            cancel: () => {
+              BackHandler.exitApp();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            }
+          }
+        })
+      }
+      if (isGrantedNotice == 'never_ask_again') {
+        Toast.show({
+          type: 'alert',
+          text1: 'OurPet cần bạn cho phép quyền thông báo để sử dụng ứng dụng.\nĐi đến cài đặt để cho phép?',
+          position: 'top',
+          autoHide: false,
+          props: {
+            confirm: () => {
+              Linking.openSettings();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            },
+            cancel: () => {
+              BackHandler.exitApp();
+              setTimeout(() => {
+                Toast.hide(); setisGrantedNotice('false');
+              }, 500);
+            }
+          }
+        })
+        // Linking.openSettings();
+      }
       if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
         storageMMKV.setValue('login.isFirstTime', false);
       }
     }
-  }, [isFinishedOneTime, nextScreen]);
+  }, [isFinishedOneTime, nextScreen, isGrantedNotice]);
+
+  React.useEffect(() => {
+    if (isGrantedNotice == 'false') {
+      requestPostNotification();
+    }
+  }, [isGrantedNotice]);
 
   React.useEffect(() => {
     const unsub = navigation.addListener('focus', () => {

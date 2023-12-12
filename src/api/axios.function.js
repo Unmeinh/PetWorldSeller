@@ -19,11 +19,19 @@ export async function onAxiosGet(url, isFeedback) {
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 500') >= 0) {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
-                });
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 404') >= 0) {
@@ -118,11 +126,19 @@ export async function onAxiosPost(url, body, typeBody, isFeedback) {
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 500') >= 0) {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
-                });
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 404') >= 0) {
@@ -219,11 +235,19 @@ export async function onAxiosPut(url, body, typeBody, isFeedback) {
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 500') >= 0) {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
-                });
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 404') >= 0) {
@@ -303,11 +327,19 @@ export async function onAxiosDelete(url, isFeedback) {
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 500') >= 0) {
-                Toast.show({
-                    type: 'error',
-                    position: 'top',
-                    text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
-                });
+                if (e.response.data.message) {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: e.response.data.message,
+                    });
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: "Máy chủ hoàn thành thao tác với lỗi!\nVui lòng thử lại sau!",
+                    });
+                }
                 return false;
             }
             if (String(e).indexOf('Request failed with status code 404') >= 0) {

@@ -135,6 +135,7 @@ export async function onSendOTPbyPhoneNumber(phone) {
             bottomOffset: 20,
             autoHide: false
         });
+        auth().settings.forceRecaptchaFlowForTesting = true;
         const confirmation = await auth().signInWithPhoneNumber(phone);
         Toast.show({
             type: 'success',

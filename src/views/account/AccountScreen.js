@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { listShopSelector, shopSelectStatus } from '../../redux/selectors/selector';
 import { fetchMyShops } from '../../redux/reducers/shop/shopReducer';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
+import { onAxiosGet } from '../../api/axios.function';
 
 const AccountScreen = () => {
     var navigation = useNavigation();
@@ -82,10 +83,19 @@ const AccountScreen = () => {
         onNavigate('EditPassword', { shop: accountShop });
     }
 
-    function onLogout() {
-        storageMMKV.setValue('login.isLogin', false);
-        storageMMKV.setValue('login.token', "");
-        navigation.replace('LoginScreen')
+    async function onLogout() {
+        let res = await onAxiosGet('shop/logout', true);
+        if (res) {
+            storageMMKV.setValue('login.isLogin', false);
+            storageMMKV.setValue('login.token', "");
+            navigation.replace('LoginScreen');
+        } else {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Có lỗi xảy ra khi đăng xuất!\nVui lòng thử lại sau!'
+            })
+        }
     }
 
     React.useEffect(() => {
@@ -117,7 +127,7 @@ const AccountScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <View style={[styles.container, {marginBottom: 65}]}>
+            <View style={[styles.container, { marginBottom: 65 }]}>
                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
                     colors={['#ace1e8', '#f582aecc']} locations={[0.6, 1]} useAngle={true} angle={0}
                     style={[styles.bgHeaderAccount, styles.bgLighBlue, styles.positionAbsolute]}>

@@ -1531,6 +1531,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@notifee/react-native@^7.8.0":
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-7.8.0.tgz#2990883753990f3585aa0cb5becc5cbdbcd87a43"
+  integrity sha512-sx8h62U4FrR4pqlbN1rkgPsdamDt9Tad0zgfO6VtP6rNJq/78k8nxUnh0xIX3WPDcCV8KAzdYCE7+UNvhF1CpQ==
+
 "@react-native-community/cli-clean@11.3.7":
   version "11.3.7"
   resolved "https://registry.npmjs.org/@react-native-community/cli-clean/-/cli-clean-11.3.7.tgz"
@@ -1709,6 +1714,16 @@
   integrity sha512-RGuqXVQWIRc0edomtS8JxsfEZD7PKUz95L5Q1t+kLI+4lULOFamKlYY5sadv+QnMkYmMmcbKpTeTWfnf+WvHcQ==
   dependencies:
     plist "^3.1.0"
+
+"@react-native-firebase/database@^18.7.2":
+  version "18.7.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-18.7.2.tgz#d2129b821f175a959c4bbd8c43e7811739666b31"
+  integrity sha512-TcCLjcNezxqR6OD0eo3T0qEaJRMJEoxxJJCmvP8qxCDGjYTC0qbutdGQHDBZN+5BzejH1RIVQRvaJNJ+mqdgiw==
+
+"@react-native-firebase/messaging@^18.7.2":
+  version "18.7.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-18.7.2.tgz#e56c66077584f12ecd0eb814de5ed166148b9ee7"
+  integrity sha512-0D6Rq8RY13+RhTm93AHJJvbZgTbWmuD4RcHJiv1uTIiee3urTsdn2nqH7aflaiT24i5XxantIzE9qUukOK9JbQ==
 
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
@@ -5926,6 +5941,11 @@ react-native-pager-view@^6.2.2:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.2.tgz#4c1c45d5f3f622c0922ef96ac114666392ebf5ec"
   integrity sha512-MLkJB7iP6v0Hd4/B4/R/gLCSE+YBtjxG/vHZYBDU+fI3U7HBYgKAg4o6ad8HxbKVcWWyRDNeeVRGISw1MUjlHw==
+
+react-native-permissions@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-4.0.0.tgz#64eb341993b0d317fb753104bc72f911d253d613"
+  integrity sha512-VWdETvRVf5WWLOKxle88UtB+LNQR99LvWOkg8C/azNTYLhuAqeSI+SYll+og/A0TIepeTsxnBrtX/YNB3hNQ0w==
 
 react-native-progress@oblador/react-native-progress#pull/258/head:
   version "5.0.0"

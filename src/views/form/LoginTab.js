@@ -11,6 +11,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { storageMMKV } from '../../storage/storageMMKV';
 import Toast from 'react-native-toast-message';
+import messaging from '@react-native-firebase/messaging';
+import database from '@react-native-firebase/database';
+import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { onAxiosPost } from '../../api/axios.function';
 
 export default function LoginTab(route) {
@@ -64,16 +67,11 @@ export default function LoginTab(route) {
     }
 
     async function onSignIn() {
-        var newShop = {
-            userName: inputUsername,
-            passWord: inputPassword
-        }
-
+        Keyboard.dismiss();
         if (checkValidate() == false) {
             return;
         }
 
-        Keyboard.dismiss();
         Toast.show({
             type: 'loading',
             position: 'top',
@@ -82,7 +80,18 @@ export default function LoginTab(route) {
             autoHide: false
         });
 
-        const response = await onAxiosPost('shop/login', newShop, "Json", true);
+        if (rememberMe) {
+            let onSendDeviceToken = await requestNotificationPermission();
+            if (onSendDeviceToken && onSendDeviceToken == "") {
+                return;
+            }
+        }
+
+        const response = await onAxiosPost('shop/login', {
+            userName: inputUsername,
+            passWord: inputPassword,
+            tokenDevice: onSendDeviceToken
+        }, "Json", true);
         if (response) {
             storageMMKV.setValue('login.token', String(response.token));
             if (rememberMe) {
@@ -100,6 +109,64 @@ export default function LoginTab(route) {
             }
         }
     }
+
+    const requestNotificationPermission = async () => {
+        try {
+            const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+            if (result === RESULTS.GRANTED) {
+                let token = await messaging().getToken();
+                if (token) {
+                    const hasSentToken = storageMMKV.getBoolean('hasSentToken');
+                    const tokenDevice = storageMMKV.getString('tokenDevice');
+                    if (!hasSentToken) {
+                        sendTokenToFirebase(token);
+                    } else {
+                        if (String(tokenDevice) != String(token)) {
+                            sendTokenToFirebase(token);
+                        }
+                    }
+                    return token;
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        position: 'top',
+                        text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+                    })
+                    return "";
+                }
+            } else {
+                console.log(result);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Vui lòng bật thông báo ứng dụng để tiếp tục!'
+                })
+                return "";
+            }
+        } catch (error) {
+            console.log(error);
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+            })
+            return "";
+        }
+    };
+
+    const sendTokenToFirebase = async (newToken) => {
+        try {
+            const databaseRef = database().ref('/tokens');
+            const tokenData = {
+                token: newToken,
+            };
+            await databaseRef.push(tokenData);
+            storageMMKV.setValue('hasSentToken', true);
+            storageMMKV.setValue('tokenDevice', newToken);
+        } catch (error) {
+            console.error('Lỗi khi gửi token đến Firebase:', error);
+        }
+    };
 
     return (
         <View style={[styles.container, styles.formContainer]}>
