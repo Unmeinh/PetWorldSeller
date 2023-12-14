@@ -73,7 +73,7 @@ const AllBillTab = (route) => {
 
     return (
         <View style={styles.container}>
-            <View style={{ position: 'absolute', bottom: 0, zIndex: 50, height: 57}}>
+            <View style={{ position: 'absolute', bottom: 0, zIndex: 50, height: (isLoading || (canAction != undefined && canAction[0])) ? 57 : 0}}>
                 <ViewActionBill canAction={canAction} isLoading={isLoading} fetchBills={onLoadingGetBills} />
             </View>
             {
@@ -89,7 +89,7 @@ const AllBillTab = (route) => {
                                 ? <FlatList
                                     data={bills}
                                     extraData={extraBills}
-                                    style={{marginBottom: 57}}
+                                    style={{marginBottom: (isLoading || (canAction != undefined && canAction[0])) ? 57 : 0}}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
                                             index={index} fetchBills={onGetBills} />}

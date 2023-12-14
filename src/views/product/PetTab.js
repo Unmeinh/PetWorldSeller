@@ -118,7 +118,7 @@ const PetTab = (route) => {
         }, [item])
 
         return (
-            <View style={{ marginBottom: (row.index == (pets.length - 1)) ? WindowHeight * 0.2 : 0 }}>
+            <View style={{ marginBottom: (row.index == ((statusPets) ? petsHide.length - 1 : pets.length - 1)) ? WindowHeight * 0.2 : 0 }}>
                 <View
                     style={{
                         marginHorizontal: 15,
@@ -334,8 +334,7 @@ const PetTab = (route) => {
                         <View style={{ display: (statusPets) ? 'none' : 'flex' }}>
                             {
                                 (pets.length > 0)
-                                    ?
-                                    <FlatList
+                                    ? <FlatList
                                         data={pets}
                                         extraData={extraPets}
                                         renderItem={({ item, index }) =>
@@ -361,8 +360,7 @@ const PetTab = (route) => {
                         <View style={{ display: (statusPets) ? 'flex' : 'none' }}>
                             {
                                 (petsHide.length > 0)
-                                    ?
-                                    <FlatList
+                                    ? <FlatList
                                         data={petsHide}
                                         extraData={extraPetsHide}
                                         renderItem={({ item, index }) =>

@@ -18,14 +18,20 @@ import { onAxiosPost } from '../../api/axios.function';
 
 const DetailBill = ({ route }) => {
     let item = route.params.bill;
-    let productInfo = [...item?.productInfo[0], ...item?.productInfo[0], ...item?.productInfo[0]];
-    let petInfo = item?.petInfo[0];
-    let userInfo = item?.userInfo[0];
+    let productInfo = (item?.productInfo) ? item?.productInfo[0] : null;
+    let petInfo = (item?.petInfo) ? item?.petInfo[0] : null;
+    let userInfo = (item?.userInfo) ? item?.userInfo[0] : null;
+    let shipperInfo = (item?.shipperInfo) ? item?.shipperInfo[0] : null;
     const [statusBill, setstatusBill] = useState(item?.statusBill)
     const [srcAvatar, setsrcAvatar] = useState(require('../../assets/images/loading.png'))
+    const [srcAvatarShipper, setsrcAvatarShipper] = useState(require('../../assets/images/loading.png'))
 
     function setErrorAvatar() {
         setsrcAvatar(require('../../assets/images/error.png'));
+    }
+
+    function setErrorAvatarShipper() {
+        setsrcAvatarShipper(require('../../assets/images/error.png'));
     }
 
     function onContactWithCustomer() {
@@ -204,6 +210,11 @@ const DetailBill = ({ route }) => {
                 setsrcAvatar({ uri: String(userInfo?.avatarUser) });
             }
         }
+        if (shipperInfo) {
+            if (shipperInfo?.avatarShipper) {
+                setsrcAvatarShipper({ uri: String(shipperInfo?.avatarShipper) });
+            }
+        }
     }, [item])
 
     return (
@@ -251,6 +262,7 @@ const DetailBill = ({ route }) => {
                 </>
                 <>
                     <View style={[{ width: "100%", paddingVertical: 12, paddingHorizontal: 15 }]} >
+                        {/* Thông tin thú cưng - sản phẩm */}
                         {
                             (productInfo.length > 0)
                                 ? <>
@@ -276,6 +288,7 @@ const DetailBill = ({ route }) => {
                                 : ""
                         }
                         <View style={{ width: '100%', height: 1, backgroundColor: '#D2D2D2', marginTop: 0 }} />
+                        {/* Thông tin khách hàng */}
                         <Text style={[styles.textDarkBlue, { fontSize: 17, fontWeight: 'bold', top: -5, marginBottom: 3, marginTop: 10 }]}>Khách hàng: </Text>
                         <View style={styles.flexRow}>
                             <View style={[{ width: 90, }, styles.itemsCenter]}>
@@ -298,6 +311,48 @@ const DetailBill = ({ route }) => {
                                 </View>
                             </View>
                         </View>
+                        <View style={{ width: '100%', height: 1, backgroundColor: '#D2D2D2', marginTop: 10 }} />
+                        {/* Thông tin người giao hàng */}
+                        <Text style={[styles.textDarkBlue, { fontSize: 17, fontWeight: 'bold', top: -5, marginBottom: 3, marginTop: 10 }]}>Người giao hàng: </Text>
+                        {
+                            (shipperInfo)
+                                ? <View style={styles.flexRow}>
+                                    <View style={[{ width: 90, }, styles.itemsCenter]}>
+                                        <Image
+                                            source={srcAvatarShipper} onError={setErrorAvatarShipper}
+                                            style={{ width: 75, height: 75, borderRadius: 45 }} />
+                                    </View>
+                                    <View style={[styles.justifyBetween, { marginLeft: 10, width: WindowWidth - 130 }]}>
+                                        <Text style={[styles.textDarkBlue, { fontSize: 17 }]}
+                                            numberOfLines={2}>
+                                            {(shipperInfo?.fullName) ? shipperInfo?.fullName : "Không có dữ liệu"}
+                                        </Text>
+                                        <View>
+                                            <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
+                                                Số điện thoại: +{(shipperInfo?.phoneNumber) ? shipperInfo?.phoneNumber : "Không có dữ liệu"}
+                                            </Text>
+                                            <Text style={[styles.textDarkBlue, { fontSize: 15 }]} numberOfLines={1}>
+                                                Email: {(shipperInfo?.email) ? shipperInfo?.email : "Không có dữ liệu"}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                : <View style={styles.flexRow}>
+                                    <View style={[{ width: 90 }, styles.itemsCenter]}>
+                                        <View style={{ backgroundColor: '#d1d1d1', borderRadius: 45, width: 75, overflow: 'hidden'}}>
+                                            <MaterialCommunityIcons name='account-question' color={darkBlue}
+                                                size={75} />
+                                        </View>
+                                    </View>
+                                    <View style={[styles.justifyBetween, { marginLeft: 10, width: WindowWidth - 130 }]}>
+                                        <Text style={[styles.textDarkBlue, { fontSize: 17 }]}
+                                            numberOfLines={2}>
+                                            Chưa có người giao hàng
+                                        </Text>
+                                    </View>
+                                </View>
+                        }
+                        {/* Liên hệ */}
                         <View style={{ width: '100%', height: 1, backgroundColor: '#D2D2D2', marginTop: 10 }} />
                         <TouchableOpacity style={[styles.flexRow, styles.itemsCenter, { paddingTop: 10 }]}
                             onPress={onContactWithCustomer}>
@@ -499,21 +554,19 @@ const DetailBill = ({ route }) => {
                                         </Text>
                                     </TouchableHighlight>
                                 </View>
-                                : <>
+                                : <View style={[styles.flexRow, styles.justifyFlexend]}>
                                     {
                                         (statusBill?.status == 1)
-                                            ? <View style={[styles.flexRow, styles.justifyFlexend]}>
-                                                <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555' }]}
-                                                    activeOpacity={0.5} underlayColor="#EE3F3F"
-                                                    onPress={onShowAlertCancel}>
-                                                    <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#001858', fontWeight: 'bold' }]}>
-                                                        Hủy đơn
-                                                    </Text>
-                                                </TouchableHighlight>
-                                            </View>
+                                            ? <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#F85555', backgroundColor: yellowWhite }]}
+                                                activeOpacity={0.5} underlayColor="#EE3F3F"
+                                                onPress={onShowAlertCancel}>
+                                                <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#F85555', fontWeight: 'bold' }]}>
+                                                    Hủy đơn
+                                                </Text>
+                                            </TouchableHighlight>
                                             : ""
                                     }
-                                </>
+                                </View>
                         }
                         <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#8E8E8E', backgroundColor: yellowWhite }]}
                             activeOpacity={0.5} underlayColor="#6D6D6D"

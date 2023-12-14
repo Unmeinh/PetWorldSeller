@@ -374,7 +374,7 @@ const EditAccount = ({ route }) => {
                                                                                 editable={false} />
                                                                         </Pressable>
                                                                         <TextInput style={styles.inputPhoneValueInfo} placeholder='Nhập dữ liệu...'
-                                                                            placeholderTextColor={'#A0A0A0'}
+                                                                            placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                                             keyboardType='number-pad' value={inputValue}
                                                                             onChangeText={onChangeInputValue}
                                                                         />
@@ -388,7 +388,7 @@ const EditAccount = ({ route }) => {
                                                             : <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                                                 <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
                                                                 <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
-                                                                    placeholderTextColor={'#A0A0A0'}
+                                                                    placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
                                                                     value={inputValue} onChangeText={onChangeInputValue}
                                                                     inputMode={(route.params.infoType == 0) ? 'numeric' : 'email'}
                                                                     onLayout={onLayoutPhoneSelect} editable={!isVerified} />

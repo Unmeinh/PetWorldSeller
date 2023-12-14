@@ -64,7 +64,7 @@ const ViewActionBill = (props) => {
             props.fetchBills();
         }
     }
-
+    
     return (
         <View style={[styles.bgLightBrown, {borderTopLeftRadius: 15, borderTopRightRadius: 15}]}>
             {
@@ -78,19 +78,21 @@ const ViewActionBill = (props) => {
                     </>
                     : <>
                         {
-                            (props.canAction && props.canAction.length > 1 && (props.canAction[0] || props.canAction[1]))
+                            (props.canAction && props.canAction.length > 1 && (props.canAction[0] 
+                                // || props.canAction[1] Hủy tất cả
+                                ))
                                 ? <>
                                     <View style={[styles.flexRow, styles.justifyFlexend, styles.itemsCenter, { width: '100%', padding: 10, paddingVertical: 13 }]}>
-                                        {
+                                        {/* {
                                             (props.canAction[1])
-                                                ? <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus, { backgroundColor: '#F85555', paddingVertical: 7 }]}
+                                                ? <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus, { backgroundColor: '#F85555', paddingVertical: 7, display: 'none' }]}
                                                     activeOpacity={0.5} underlayColor="#EE3F3F" onPress={onShowAlertCancel}>
                                                     <View style={[styles.flexRow, styles.itemsCenter]}>
                                                         <Text style={[styles.textButtonSmallPink, { color: '#FEF6E4' }]}>Hủy nhận tất cả</Text>
                                                     </View>
                                                 </TouchableHighlight>
                                                 : ""
-                                        }
+                                        } */}
                                         {
                                             (props.canAction[0])
                                                 ? <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus, { backgroundColor: '#55B938', paddingVertical: 7 }]}

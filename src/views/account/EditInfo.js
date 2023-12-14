@@ -3,6 +3,7 @@ import {
     Keyboard, View,
     Text, TextInput,
     TouchableHighlight,
+    Pressable,
 } from 'react-native';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +12,7 @@ import { onAxiosPut } from '../../api/axios.function';
 import Toast from 'react-native-toast-message';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 import { onGoBack } from '../../navigation/rootNavigation';
+import LocationPickerModal from '../../components/modals/LocationPickerModal';
 
 const infoKeys = ["nameShop", "locationShop", "description"];
 const infoTypes = ["tên cửa hàng", "địa chỉ", "giới thiệu"];
@@ -19,9 +21,12 @@ const infoNames = ["Tên cửa hàng", "Địa chỉ", "Giới thiệu"];
 const EditInfo = ({ route }) => {
     var navigation = useNavigation();
     const infoLogin = route.params.user;
-    const [inputValue, setinputValue] = useState("")
+    const [inputValue, setinputValue] = useState("");
+    const [inputLocation, setinputLocation] = useState("");
     const [oldValueDisplay, setoldValueDisplay] = useState("");
     const [isLoader, setisLoader] = useState(true);
+    const [isShowLocationPicker, setisShowLocationPicker] = useState(false);
+    const [numberLocationPicked, setnumberLocationPicked] = useState(0);
 
     function onChangeInputValue(input) {
         if (route.params.infoType == 0) {
@@ -51,14 +56,36 @@ const EditInfo = ({ route }) => {
         }
     }
 
+    function onShowLocationPicker() {
+        setisShowLocationPicker(!isShowLocationPicker);
+    }
+
     function onShowAlert() {
-        if (inputValue.trim() == "") {
+        if (route.params.infoType == 1 && (numberLocationPicked < 3 || inputLocation == ""
+            || (numberLocationPicked < 3 && inputLocation == ""))) {
             Toast.show({
                 type: 'error',
                 position: 'top',
-                text1: infoNames[route.params.infoType] + ' không được để trống!',
+                text1: 'Địa chỉ cần được chọn đầy đủ!',
             })
             return;
+        }
+        if (inputValue.trim() == "") {
+            if (route.params.infoType == 1) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Địa chỉ chi tiết không được để trống!',
+                })
+                return;
+            } else {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: infoNames[route.params.infoType] + ' không được để trống!',
+                })
+                return;
+            }
         }
         Toast.show({
             type: 'alert',
@@ -82,8 +109,13 @@ const EditInfo = ({ route }) => {
             autoHide: false,
             position: 'top'
         });
-        let res = await onAxiosPut('shop/updateInfo', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
-        if (res && res.success) {
+        let res = null;
+        if (route.params.infoType == 1) {
+            res = await onAxiosPut('shop/updateInfo', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue + ", " + inputLocation }, 'json', true);
+        } else {
+            res = await onAxiosPut('shop/updateInfo', { typeInfo: infoKeys[route.params.infoType], valueUpdate: inputValue }, 'json', true);
+        }
+        if (res && res?.success) {
             onGoBack();
         }
     }
@@ -173,21 +205,38 @@ const EditInfo = ({ route }) => {
                                         <Text style={styles.titleItemEditInfo}>
                                             {infoNames[route.params.infoType]} mới:
                                         </Text>
-                                        <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
-                                            <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
-                                            {
-                                                (route.params.infoType == 2)
-                                                    ?
-                                                    <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
-                                                        placeholderTextColor={'#A0A0A0'}
-                                                        value={inputValue} onChangeText={onChangeInputValue}
-                                                        multiline={true} textAlignVertical='top' />
-                                                    :
-                                                    <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
-                                                        placeholderTextColor={'#A0A0A0'}
-                                                        value={inputValue} onChangeText={onChangeInputValue} />
-                                            }
-                                        </View>
+                                        {
+                                            (route.params.infoType != 1)
+                                                ? <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
+                                                    <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
+                                                    {
+                                                        (route.params.infoType == 2)
+                                                            ? <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
+                                                                placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                                value={inputValue} onChangeText={onChangeInputValue}
+                                                                multiline={true} textAlignVertical='top' />
+                                                            : <TextInput style={styles.inputEditInfo} placeholder='Nhập dữ liệu...'
+                                                                placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                                value={inputValue} onChangeText={onChangeInputValue} />
+                                                    }
+                                                </View>
+                                                : <>
+                                                    <Pressable style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}
+                                                        onPress={onShowLocationPicker}>
+                                                        <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
+                                                        <TextInput style={styles.inputEditInfo}
+                                                            multiline placeholder='Chọn địa chỉ...'
+                                                            placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                            value={inputLocation} editable={false} />
+                                                    </Pressable>
+                                                    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 10, alignItems: 'center' }}>
+                                                        <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
+                                                        <TextInput style={styles.inputEditInfo} placeholder='Nhập địa chỉ chi tiết...'
+                                                            placeholderTextColor={'rgba(0, 0, 0, 0.35)'}
+                                                            value={inputValue} onChangeText={onChangeInputValue} />
+                                                    </View>
+                                                </>
+                                        }
                                     </View>
                                     <View style={{ width: '100%', justifyContent: 'flex-end', flexDirection: 'row', marginTop: 25 }}>
                                         <TouchableHighlight style={[styles.buttonFormSmall, { backgroundColor: '#8E8E8E' }]}
@@ -205,6 +254,9 @@ const EditInfo = ({ route }) => {
                                 : ""
                         }
                     </View>
+            }
+            {isShowLocationPicker &&
+                <LocationPickerModal isShow={isShowLocationPicker} callBack={onShowLocationPicker} callBackSetLocation={setinputLocation} onCallBackNumberPicked={setnumberLocationPicked} />
             }
         </View>
     );

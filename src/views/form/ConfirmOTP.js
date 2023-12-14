@@ -16,7 +16,7 @@ import { onSendOTPbyPhoneNumber, onSendOTPbyEmail, onVerifyOTPbyEmail } from '..
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
+    'Non-serializable values were found in the navigation state',
 ]);
 
 export default function ConfirmOTP({ route }) {
@@ -33,21 +33,19 @@ export default function ConfirmOTP({ route }) {
     const [isReadedMessage, setisReadedMessage] = useState(false);
 
     async function onSendAgain() {
-        if (auth().currentUser) {
-            await auth().signOut();
-        }
+        await auth().signOut();
         setconfirm(null);
         setuserAuth(null);
         setinputOTP('');
+        setisReadedMessage(false);
         if (otpRef) {
-            otpRef.setValue('');
+            await otpRef.setValue('');
         }
         setcdSendAgain(30);
         if (inputTypeVerify == "phoneNumber") {
             const response = await onSendOTPbyPhoneNumber(String(inputValueVerify));
             if (response != undefined && response.success) {
                 setconfirm(response.confirm);
-                setisReadedMessage(false);
             }
         } else {
             await onSendOTPbyEmail(inputValueVerify);
@@ -117,7 +115,7 @@ export default function ConfirmOTP({ route }) {
                         navigation.replace(route.params.navigate, { typeVerify: inputTypeVerify, valueVerify: inputValueVerify });
                     }
                 }, 500)
-            } 
+            }
         }
         // ToastAndroid.show('Tiếp tục', ToastAndroid.SHORT);
         // navigation.replace('ChangePassword');
@@ -265,7 +263,7 @@ export default function ConfirmOTP({ route }) {
                     />
                 </View>
 
-                <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter,{ marginTop: 75 }]}
+                <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 75 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
                     onPress={onContinue}>
                     <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Tiếp tục</Text>
