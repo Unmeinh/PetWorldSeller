@@ -18,6 +18,7 @@ const ItemBill = (row) => {
     const [product, setproduct] = useState({});
     const [pet, setpet] = useState({})
     const [user, setuser] = useState({});
+    const [shipper, setshipper] = useState(null);
 
     function setErrorImage() {
         setsrcImage(require('../../assets/images/error.png'));
@@ -51,6 +52,19 @@ const ItemBill = (row) => {
             position: 'top',
             props: {
                 confirm: () => onCancelBill(),
+                cancel: () => Toast.hide()
+            },
+            autoHide: false
+        })
+    }
+
+    function onShowAlertShipper() {
+        Toast.show({
+            type: 'alert',
+            text1: 'Xác nhận tìm người giao hàng?',
+            position: 'top',
+            props: {
+                confirm: () => onFindShipper(),
                 cancel: () => Toast.hide()
             },
             autoHide: false
@@ -91,6 +105,24 @@ const ItemBill = (row) => {
         }
     }
 
+    async function onFindShipper() {
+        Keyboard.dismiss();
+        Toast.show({
+            type: 'loading',
+            position: 'top',
+            autoHide: false,
+            text1: 'Đang tìm người giao hàng...'
+        })
+        let res = await onAxiosPost('shop/bill/findShipper', {
+            idBill: item._id,
+            location: item?.locationDetail?.location,
+            nameBill: (product) ? product?.idProduct[0]?.nameProduct : pet?.idPet[0]?.namePet
+        }, 'json', true);
+        if (res) {
+            row.fetchBills();
+        }
+    }
+
     React.useEffect(() => {
         if (item.productInfo) {
             let productInfo = item.productInfo[0];
@@ -125,6 +157,12 @@ const ItemBill = (row) => {
                 setErrorAvatar();
             }
         }
+        if (item.shipperInfo) {
+            let shipper = item.shipperInfo[0];
+            if (shipper) {
+                setshipper(shipper);
+            }
+        } 
     }, [item])
 
     React.useEffect(() => {
@@ -252,6 +290,17 @@ const ItemBill = (row) => {
                                                         Hủy đơn
                                                     </Text>
                                                 </TouchableHighlight>
+                                                {
+                                                    (!shipper)
+                                                        ? <TouchableHighlight style={[styles.buttonEditAccount, { borderColor: '#25D0E7', backgroundColor: yellowWhite }]}
+                                                            activeOpacity={0.5} underlayColor="#6ACCD9"
+                                                            onPress={onShowAlertShipper}>
+                                                            <Text style={[styles.textButtonFormSmall, { fontSize: 16, color: '#34C0D3', fontWeight: 'bold' }]}>
+                                                                Tìm người giao hàng
+                                                            </Text>
+                                                        </TouchableHighlight>
+                                                        : ""
+                                                }
                                             </View>
                                             : ""
                                     }

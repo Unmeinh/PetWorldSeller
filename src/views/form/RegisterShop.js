@@ -19,6 +19,7 @@ import RNFS from 'react-native-fs';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 import DatePickerModal from '../../components/modals/DatePickerModal';
 import moment from 'moment';
+import LocationPickerModal from '../../components/modals/LocationPickerModal';
 
 export default function RegisterShop({ route }) {
   const navigation = useNavigation();
@@ -42,6 +43,9 @@ export default function RegisterShop({ route }) {
   const [isOKBehindCard, setisOKBehindCard] = useState(false);
   const [isLoadingCard, setisLoadingCard] = useState(false);
   const [isShowPicker, setisShowPicker] = useState(false);
+  const [inputPickedLocation, setinputPickedLocation] = useState("");
+  const [isShowLocationPicker, setisShowLocationPicker] = useState(false);
+  const [numberLocationPicked, setnumberLocationPicked] = useState(0);
   const [inputDatePicker, setinputDatePicker] = useState(new Date(String((new Date().getFullYear() - 14) + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate())));
   let editable = false;
 
@@ -502,10 +506,20 @@ export default function RegisterShop({ route }) {
       return false;
     }
 
+    if ((numberLocationPicked < 3 || inputPickedLocation == ""
+      || (numberLocationPicked < 3 && inputPickedLocation == ""))) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Địa chỉ cần được chọn đầy đủ!',
+      })
+      return false;
+    }
+
     if (inputLocation.trim() == "") {
       Toast.show({
         type: 'error',
-        text1: 'Địa chỉ cửa hàng không được để trống!',
+        text1: 'Địa chỉ chi tiết không được để trống!',
         position: 'top'
       })
       return false;
@@ -552,7 +566,7 @@ export default function RegisterShop({ route }) {
     var formData = new FormData();
     formData.append("nameShop", objShop?.nameShop);
     formData.append("email", inputEmail);
-    formData.append("locationShop", inputLocation);
+    formData.append("locationShop", inputLocation + ", " + inputPickedLocation);
     formData.append("userName", objShop?.userName);
     formData.append("passWord", inputNewPassword);
     formData.append("hotline", objShop?.hotline);
@@ -620,6 +634,10 @@ export default function RegisterShop({ route }) {
 
   function onHideDatePicker() {
     setisShowPicker(false)
+  }
+
+  function onShowLocationPicker() {
+    setisShowLocationPicker(!isShowLocationPicker);
   }
 
   function onSetDatePicker(date) {
@@ -748,7 +766,7 @@ export default function RegisterShop({ route }) {
                     }} />
                     :
                     <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={numberCard}
-                      onChangeText={onChangeNumberCard} keyboardType='numeric'/>
+                      onChangeText={onChangeNumberCard} keyboardType='numeric' />
                 }
               </View>
             </View>
@@ -790,7 +808,7 @@ export default function RegisterShop({ route }) {
               <View>
                 <TextInput style={[[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown], { color: 'rgba(0, 24, 88, 0.80)' }]}
                   value={(objShop?.hotline != undefined) ? "+" + objShop?.hotline : ""}
-                  editable={false} keyboardType='number-pad'/>
+                  editable={false} keyboardType='number-pad' />
               </View>
             </View>
             <View>
@@ -828,10 +846,24 @@ export default function RegisterShop({ route }) {
 
           <View>
             <View style={{ backgroundColor: '#C7C5C5', height: 1.5, width: '100%', marginTop: 20 }}></View>
+            <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
+              Địa chỉ cửa hàng
+            </Text>
             <View>
               <Text style={[styles.titleInput, {
                 color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
-              }]}>Địa chỉ cửa hàng</Text>
+              }]}>Chọn địa chỉ</Text>
+              <View>
+                <Pressable onPress={onShowLocationPicker}>
+                  <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputPickedLocation}
+                    onChangeText={setinputPickedLocation} multiline editable={false} />
+                </Pressable>
+              </View>
+            </View>
+            <View>
+              <Text style={[styles.titleInput, {
+                color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
+              }]}>Địa chỉ chi tiết</Text>
               <View>
                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]} value={inputLocation}
                   onChangeText={setinputLocation} />
@@ -898,7 +930,12 @@ export default function RegisterShop({ route }) {
           </TouchableHighlight>
         </View>
       </ScrollView >
-      <DatePickerModal type={'datebirth'} isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={onHideDatePicker} callBackSetDate={onSetDatePicker} />
+      {isShowPicker &&
+        <DatePickerModal type={'datebirth'} isShow={isShowPicker} datePicked={inputDatePicker} callBackClose={onHideDatePicker} callBackSetDate={onSetDatePicker} />
+      }
+      {isShowLocationPicker &&
+        <LocationPickerModal isShow={isShowLocationPicker} callBack={onShowLocationPicker} callBackSetLocation={setinputPickedLocation} onCallBackNumberPicked={setnumberLocationPicked} />
+      }
     </View >
   )
 }

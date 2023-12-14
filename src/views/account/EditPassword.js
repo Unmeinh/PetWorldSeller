@@ -136,7 +136,7 @@ const EditPassword = ({ route }) => {
                                 <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                     <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
                                     <TextInput style={[styles.inputEditInfo, { paddingRight: 40 }]} placeholder='Nhập dữ liệu...'
-                                        placeholderTextColor={'#A0A0A0'} secureTextEntry={oldPassToggle}
+                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'} secureTextEntry={oldPassToggle}
                                         value={inputOldPassword} onChangeText={setinputOldPassword} />
                                     {
                                         (oldPassToggle)
@@ -160,7 +160,7 @@ const EditPassword = ({ route }) => {
                                 <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                     <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
                                     <TextInput style={[styles.inputEditInfo, { paddingRight: 40 }]} placeholder='Nhập dữ liệu...'
-                                        placeholderTextColor={'#A0A0A0'} secureTextEntry={newPassToggle}
+                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'} secureTextEntry={newPassToggle}
                                         value={inputNewPassword} onChangeText={setinputNewPassword} />
                                     {
                                         (newPassToggle)
@@ -184,7 +184,7 @@ const EditPassword = ({ route }) => {
                                 <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                                     <Text style={[styles.textItemEditInfo, { fontSize: 18 }]}>{'>'}</Text>
                                     <TextInput style={[styles.inputEditInfo, { paddingRight: 40 }]} placeholder='Nhập dữ liệu...'
-                                        placeholderTextColor={'#A0A0A0'} secureTextEntry={repeatPassToggle}
+                                        placeholderTextColor={'rgba(0, 0, 0, 0.35)'} secureTextEntry={repeatPassToggle}
                                         value={inputRepeatPassword} onChangeText={setinputRepeatPassword} />
                                     {
                                         (repeatPassToggle)

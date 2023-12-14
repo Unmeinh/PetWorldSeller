@@ -20,6 +20,7 @@ import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 import emptyBag from '../../assets/images/jsons/emptyBag.json';
 import LottieAnimation from '../../components/layout/LottieAnimation';
 import { RefreshControl } from 'react-native-gesture-handler';
+import MenuSort from './MenuSort';
 
 const ProductTab = (route) => {
     const dispatch = useDispatch();
@@ -118,7 +119,7 @@ const ProductTab = (route) => {
         }, [item])
 
         return (
-            <View style={{ marginBottom: (row.index == (products.length - 1)) ? WindowHeight * 0.2 : 0 }}>
+            <View style={{ marginBottom: (row.index == ((statusProducts) ? productsHide.length - 1 : products.length - 1)) ? WindowHeight * 0.2 : 0 }}>
                 <View
                     style={{
                         marginHorizontal: 15,
@@ -345,7 +346,7 @@ const ProductTab = (route) => {
                                             <ItemProduct key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} 
+                                        keyExtractor={(item, index) => index.toString()}
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                         } />
@@ -372,7 +373,7 @@ const ProductTab = (route) => {
                                             <ItemProduct key={index} item={item}
                                                 index={index} />}
                                         showsVerticalScrollIndicator={false}
-                                        keyExtractor={(item, index) => index.toString()} 
+                                        keyExtractor={(item, index) => index.toString()}
                                         refreshControl={
                                             <RefreshControl refreshing={isRefreshing} onRefresh={onReloadData} progressViewOffset={0} />
                                         } />
@@ -390,6 +391,7 @@ const ProductTab = (route) => {
                         </View>
                     </>
             }
+            <MenuSort isShow={false} />
         </View>
     );
 }

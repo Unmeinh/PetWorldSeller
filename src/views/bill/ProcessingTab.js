@@ -88,9 +88,10 @@ const ProcessingTab = (route) => {
                         {
                             (bills && bills.length > 0)
                                 ? <FlatList
+
                                     data={bills}
                                     extraData={extraBills}
-                                    style={{marginBottom: 57}}
+                                    style={{marginBottom: (isLoading || (canAction != undefined && canAction[0])) ? 57 : 0}}
                                     renderItem={({ item, index }) =>
                                         <ItemBill key={index} item={item}
                                             index={index} fetchBills={onGetBills} />}
