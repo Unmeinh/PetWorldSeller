@@ -229,18 +229,34 @@ export function decodeFromAscii(inputString) {
 }
 
 //Number
-export function convertInputToFloat(inputValue, integerLength, surplusLength, inputType) {
+export function convertInputToFloat(oldValue, inputValue, integerLength, surplusLength, inputType) {
     if (inputValue.indexOf(',') > -1) {
         let intValue = inputValue.substring(0, inputValue.indexOf(','));
         let surplus = inputValue.substring(inputValue.indexOf(',') + 1).replace(/\D/g, '');
         let value = intValue + "," + surplus;
+        if (intValue.length <= 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Phần số nguyên không được trống!',
+                position: 'top'
+            });
+            return null;
+        }
         if (intValue.length > integerLength) {
             Toast.show({
                 type: 'error',
                 text1: 'Phần số nguyên không dài quá 3 số!',
                 position: 'top'
             });
-            return false;
+            return null;
+        }
+        if (surplus.length <= 0 && oldValue.substring(inputValue.indexOf(',') + 1) > 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Phần số dư không được trống!',
+                position: 'top'
+            });
+            return null;
         }
         if (surplus.length > surplusLength) {
             Toast.show({
@@ -248,7 +264,7 @@ export function convertInputToFloat(inputValue, integerLength, surplusLength, in
                 text1: 'Phần số dư không dài quá 2 số!',
                 position: 'top'
             });
-            return false;
+            return null;
         }
         return value;
     } else {
@@ -259,7 +275,7 @@ export function convertInputToFloat(inputValue, integerLength, surplusLength, in
                 text1: (inputType) ? inputType + ' không dài quá 3 số!' : 'Số nhập không dài quá 3 số!',
                 position: 'top'
             });
-            return false;
+            return null;
         } else {
             return value;
         }

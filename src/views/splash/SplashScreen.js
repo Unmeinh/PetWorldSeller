@@ -146,18 +146,20 @@ export default function SplashScreen() {
       await databaseRef.push(tokenData);
       storageMMKV.setValue('hasSentToken', true);
       storageMMKV.setValue('tokenDevice', newToken);
-      let res = await onAxiosPost('shop/autoLogin', {
-        tokenDevice: newToken
-      }, 'json', true);
-      if (res) {
-        if (res?.data.isApproved == 1) {
-          setnextScreen('NaviTabScreen');
+      if (storageMMKV.getString('login.token')) {
+        let res = await onAxiosPost('shop/autoLogin', {
+          tokenDevice: newToken
+        }, 'json', true);
+        if (res) {
+          if (res?.data.isApproved == 1) {
+            setnextScreen('NaviTabScreen');
+          } else {
+            setnextScreen('ConfirmedShop');
+          }
         } else {
-          setnextScreen('ConfirmedShop');
+          storageMMKV.setValue('login.token', "");
+          setnextScreen('LoginScreen');
         }
-      } else {
-        storageMMKV.setValue('login.token', "");
-        setnextScreen('LoginScreen');
       }
     } catch (error) {
       console.error('Lỗi khi gửi token đến Firebase:', error);

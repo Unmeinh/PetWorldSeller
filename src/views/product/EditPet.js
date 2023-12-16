@@ -71,30 +71,26 @@ const EditPet = ({ route }) => {
         }
     }
 
-    function onChangeInputName(input) {
-        if (input.length > 50) {
-            Toast.show({
-                type: 'error',
-                text1: 'Tên thú cưng không dài quá 50 ký tự!',
-                position: 'top'
-            })
-        } else {
-            setinputNamePet(input);
-        }
-    }
-
     function onChangeInputWeight(input) {
-        let value = convertInputToFloat(input, 3, 2, "Cân nặng");
-        if (value) {
-            setinputWeight(value);
-        }
+        let value = input.replaceAll(/\D/g, '');
+        setinputWeight(Number(value).toLocaleString());
+        // let value = convertInputToFloat(inputWeight, input, 3, 2, "Cân nặng");
+        // if (value) {
+        //     setinputWeight(value);
+        // } else {
+        //     setinputWeight("0");
+        // }
     }
 
     function onChangeInputHeight(input) {
-        let value = convertInputToFloat(input, 3, 2, "Cân nặng");
-        if (value) {
-            setinputHeight(value);
-        }
+        let value = input.replaceAll(/\D/g, '');
+        setinputHeight(Number(value).toLocaleString());
+        // let value = convertInputToFloat(inputWeight, input, 3, 2, "Chiều cao");
+        // if (value) {
+        //     setinputHeight(value);
+        // } else {
+        //     setinputHeight("0");
+        // }
     }
 
     function onChangeInputPrice(input) {
@@ -112,41 +108,12 @@ const EditPet = ({ route }) => {
 
     function onChangeInputDiscount(input) {
         let value = input.replaceAll(/\D/g, '');
-        if (value.length > 3) {
-            Toast.show({
-                type: 'error',
-                text1: 'Giảm giá không dài quá 3 số!',
-                position: 'top'
-            })
-        } else {
-            setinputDiscount(value);
-        }
+        setinputDiscount(Number(value).toLocaleString());
     }
 
     function onChangeInputAmount(input) {
         let value = input.replaceAll(/\D/g, '');
-        if (value.length > 3) {
-            Toast.show({
-                type: 'error',
-                text1: 'Số lượng thêm không dài quá 3 số!',
-                position: 'top'
-            })
-        } else {
-            setinputAmount(value);
-        }
-    }
-
-    function onChangeInputDetail(input) {
-        if (input.length > 300) {
-            Toast.show({
-                type: 'error',
-                text1: 'Mô tả không được dài quá 300 ký tự!',
-                position: 'top'
-            })
-            return false;
-        } else {
-            setinputDetail(input);
-        }
+        setinputAmount(Number(value).toLocaleString());
     }
 
     function checkValidate() {
@@ -176,7 +143,7 @@ const EditPet = ({ route }) => {
             })
             return false;
         } else {
-            if (inputWeight <= 0) {
+            if (Number(inputWeight) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Cân nặng cần lớn hơn 0!',
@@ -184,7 +151,7 @@ const EditPet = ({ route }) => {
                 })
                 return false;
             }
-            if (inputWeight >= 1000) {
+            if (Number(inputWeight) >= 1000) {
                 Toast.show({
                     type: 'error',
                     text1: 'Cân nặng không quá 1000kg!',
@@ -202,7 +169,7 @@ const EditPet = ({ route }) => {
             })
             return false;
         } else {
-            if (inputHeight <= 0) {
+            if (Number(inputHeight) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Chiều cao cần lớn hơn 0!',
@@ -210,7 +177,7 @@ const EditPet = ({ route }) => {
                 })
                 return false;
             }
-            if (inputHeight >= 1000) {
+            if (Number(inputHeight) >= 1000) {
                 Toast.show({
                     type: 'error',
                     text1: 'Chiều cao không quá 1000cm!',
@@ -237,7 +204,7 @@ const EditPet = ({ route }) => {
             })
             return false;
         } else {
-            if (inputPrice <= 0) {
+            if (Number(inputPrice) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Giá bán cần lớn hơn 0!',
@@ -245,7 +212,7 @@ const EditPet = ({ route }) => {
                 })
                 return false;
             }
-            if (inputPrice >= 1000000000) {
+            if (Number(inputPrice) >= 1000000000) {
                 Toast.show({
                     type: 'error',
                     text1: 'Giá bán không quá 100 triệu!',
@@ -263,7 +230,7 @@ const EditPet = ({ route }) => {
             })
             return false;
         } else {
-            if (inputDiscount >= 100) {
+            if (Number(inputDiscount) >= 100) {
                 Toast.show({
                     type: 'error',
                     text1: 'Số giảm giá cần nhỏ hơn 100!',
@@ -281,7 +248,7 @@ const EditPet = ({ route }) => {
             })
             return false;
         } else {
-            if (inputAmount <= 0) {
+            if (Number(inputAmount) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Số lượng thêm cần lớn hơn 0!',
@@ -289,7 +256,7 @@ const EditPet = ({ route }) => {
                 })
                 return false;
             }
-            if (inputPrice >= 100) {
+            if (Number(inputAmount) >= 100) {
                 Toast.show({
                     type: 'error',
                     text1: 'Số lượng thêm không quá 100!',
@@ -318,7 +285,7 @@ const EditPet = ({ route }) => {
 
         Toast.show({
             type: 'alert',
-            text1: 'Xác nhận sửa sản phẩm?',
+            text1: 'Xác nhận sửa thú cưng?',
             position: 'top',
             props: {
                 confirm: () => onEditPet(),
@@ -496,8 +463,8 @@ const EditPet = ({ route }) => {
                         }]}>Tên thú cưng</Text>
                         <View>
                             <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
-                                value={inputNamePet}
-                                onChangeText={onChangeInputName} />
+                                value={inputNamePet} maxLength={50}
+                                onChangeText={setinputNamePet} />
                         </View>
                     </View>
                 </View>
@@ -511,7 +478,7 @@ const EditPet = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputWeight} keyboardType='number-pad'
-                                    onChangeText={onChangeInputWeight} />
+                                    maxLength={3} onChangeText={onChangeInputWeight} />
                             </View>
                         </View>
                         <View style={{ width: '47%', }}>
@@ -521,7 +488,7 @@ const EditPet = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputHeight} keyboardType='number-pad'
-                                    onChangeText={onChangeInputHeight} />
+                                    maxLength={3} onChangeText={onChangeInputHeight} />
                             </View>
                         </View>
                     </View>
@@ -590,7 +557,7 @@ const EditPet = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputPrice} keyboardType='number-pad'
-                                    onChangeText={onChangeInputPrice} />
+                                    maxLength={11} onChangeText={onChangeInputPrice} />
                             </View>
                         </View>
                         <View style={{ width: '47%', }}>
@@ -600,7 +567,7 @@ const EditPet = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputDiscount} keyboardType='number-pad'
-                                    onChangeText={onChangeInputDiscount} />
+                                    maxLength={2} onChangeText={onChangeInputDiscount} />
                             </View>
                         </View>
                     </View>
@@ -615,7 +582,7 @@ const EditPet = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputAmount} keyboardType='number-pad'
-                                    onChangeText={onChangeInputAmount} />
+                                    maxLength={3} onChangeText={onChangeInputAmount} />
                             </View>
                         </View>
                     </View>
@@ -628,8 +595,8 @@ const EditPet = ({ route }) => {
                         }]}>Mô tả thú cưng</Text>
                         <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown, { textAlignVertical: 'top', maxHeight: 100 }]}
                             multiline={true} numberOfLines={4}
-                            value={inputDetail}
-                            onChangeText={onChangeInputDetail} />
+                            value={inputDetail} maxLength={500}
+                            onChangeText={setinputDetail} />
                     </View>
                 </View>
                 <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 35, marginBottom: 25 }]}
