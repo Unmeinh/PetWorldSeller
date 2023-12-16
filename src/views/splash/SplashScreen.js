@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, BackHandler, Dimensions, Image, Animated, Easing, Text } from 'react-native';
+import { View, BackHandler, Dimensions, Animated, Easing, Text } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
-import { onAxiosGet } from '../../api/axios.function';
+import { onAxiosPost } from '../../api/axios.function';
+import messaging from '@react-native-firebase/messaging';
+import database from '@react-native-firebase/database';
 import { PermissionsAndroid, Linking } from "react-native";
 import LottieAnimation from '../../components/layout/LottieAnimation';
 import Toast from 'react-native-toast-message';
@@ -73,14 +75,7 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
-                let res = await onAxiosGet('shop/autoLogin', true)
-                if (res) {
-                  if (res.data == 1) {
-                    setnextScreen('NaviTabScreen');
-                  } else {
-                    setnextScreen('ConfirmedShop');
-                  }
-                }
+                await onCheckTokenDevice()
               } else {
                 storageMMKV.setValue('login.token', "");
                 setnextScreen('LoginScreen');
@@ -115,22 +110,59 @@ export default function SplashScreen() {
 
   async function requestPostNotification() {
     let result = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      // {
-      //   title: "Cool Photo App Camera Permission",
-      //   message:
-      //     "Cool Photo App needs access to your camera " +
-      //     "so you can take awesome pictures.",
-      //   buttonNeutral: "Ask Me Later",
-      //   buttonNegative: "Cancel",
-      //   buttonPositive: "OK"
-      // }
-    )
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+    );
     // if (result == 'denied') {
     //   BackHandler.exitApp();
     // }
     setisGrantedNotice(result);
   }
+
+  async function onCheckTokenDevice() {
+    if (isGrantedNotice != 'granted') {
+      return;
+    }
+    let token = await messaging().getToken();
+    if (token) {
+      // await onAxiosPost('shop/updateTokenDevice', {
+      //   tokenDevice: token
+      // });
+      await sendTokenToFirebase(token);
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+      });
+    }
+  }
+
+  const sendTokenToFirebase = async (newToken) => {
+    try {
+      const databaseRef = database().ref('/sellerTokens');
+      const tokenData = {
+        token: newToken,
+      };
+      await databaseRef.push(tokenData);
+      storageMMKV.setValue('hasSentToken', true);
+      storageMMKV.setValue('tokenDevice', newToken);
+      let res = await onAxiosPost('shop/autoLogin', {
+        tokenDevice: newToken
+      }, 'json', true);
+      if (res) {
+        if (res?.data.isApproved == 1) {
+          setnextScreen('NaviTabScreen');
+        } else {
+          setnextScreen('ConfirmedShop');
+        }
+      } else {
+        storageMMKV.setValue('login.token', "");
+        setnextScreen('LoginScreen');
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi token đến Firebase:', error);
+    }
+  };
 
   React.useEffect(() => {
     if (isFinishedOneTime && nextScreen != '' && isGrantedNotice != 'false') {
@@ -152,7 +184,7 @@ export default function SplashScreen() {
               }, 500);
             }
           }
-        })
+        });
       }
       if (isGrantedNotice == 'never_ask_again') {
         Toast.show({
@@ -174,7 +206,7 @@ export default function SplashScreen() {
               }, 500);
             }
           }
-        })
+        });
         // Linking.openSettings();
       }
       if (!storageMMKV.checkKey('login.isFirstTime') || storageMMKV.getBoolean('login.isFirstTime')) {
@@ -187,6 +219,10 @@ export default function SplashScreen() {
     if (isGrantedNotice == 'false') {
       requestPostNotification();
     }
+    async function onDoing() {
+      await onCheckTokenDevice();
+    }
+    onDoing();
   }, [isGrantedNotice]);
 
   React.useEffect(() => {

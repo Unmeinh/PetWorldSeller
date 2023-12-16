@@ -1,7 +1,7 @@
 import axios from "axios";
 import { storageMMKV } from "../storage/storageMMKV";
 
-const apiURL = "https://server-pet-world.onrender.com/api";
+const apiURL = "https://4711-116-96-44-25.ngrok-free.app/api";
 
 // axiosAPi.defaults.withCredentials = true;
 let axiosAPi = axios.create();

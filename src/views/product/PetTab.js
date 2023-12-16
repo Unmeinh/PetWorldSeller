@@ -118,7 +118,7 @@ const PetTab = (route) => {
         }, [item])
 
         return (
-            <View style={{ marginBottom: (row.index == ((statusPets) ? petsHide.length - 1 : pets.length - 1)) ? WindowHeight * 0.2 : 0 }}>
+            <View style={{ marginBottom: (row.index == ((statusPets) ? petsHide.length - 1 : pets.length - 1)) ? WindowHeight * 0.17 : 0 }}>
                 <View
                     style={{
                         marginHorizontal: 15,
@@ -275,7 +275,7 @@ const PetTab = (route) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', padding: 10 }]}>
+            <View style={[styles.flexRow, styles.justifyBetween, styles.itemsCenter, { width: '100%', padding: 10, paddingVertical: 13 }]}>
                 <View style={{ width: '70%', }}>
                     <View style={[styles.flexRow, styles.itemsCenter]}>
                         <View style={{ width: "35%", }}>
@@ -299,7 +299,7 @@ const PetTab = (route) => {
                                 </TouchableHighlight>
                         }
                     </View>
-                    <View style={[styles.flexRow, styles.itemsCenter, { marginTop: 7 }]}>
+                    {/* <View style={[styles.flexRow, styles.itemsCenter, { marginTop: 7 }]}>
                         <View style={{ width: "35%", }}>
                             <Text style={styles.textDarkBlue}>Sắp xếp theo: </Text>
                         </View>
@@ -310,7 +310,7 @@ const PetTab = (route) => {
                                 <Entypo name="arrow-long-down" color={darkBlue} size={12} />
                             </View>
                         </TouchableHighlight>
-                    </View>
+                    </View> */}
                 </View>
                 <View>
                     <TouchableHighlight style={[styles.buttonSmallPink, styles.bgPinkLotus]}
