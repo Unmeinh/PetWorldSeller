@@ -88,6 +88,8 @@ const AccountScreen = () => {
         if (res) {
             storageMMKV.setValue('login.isLogin', false);
             storageMMKV.setValue('login.token', "");
+            storageMMKV.setValue('hasSentToken', false);
+            storageMMKV.setValue('tokenDevice', "");
             navigation.replace('LoginScreen');
         } else {
             Toast.show({

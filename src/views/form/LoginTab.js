@@ -154,7 +154,7 @@ export default function LoginTab(route) {
 
     const sendTokenToFirebase = async (newToken) => {
         try {
-            const databaseRef = database().ref('/tokens');
+            const databaseRef = database().ref('/sellerTokens');
             const tokenData = {
                 token: newToken,
             };
