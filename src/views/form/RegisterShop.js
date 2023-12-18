@@ -512,14 +512,13 @@ export default function RegisterShop({ route }) {
       return false;
     }
 
-    if (!isSelectMomo || !isSelectZalo
-      || (!isSelectMomo && !isSelectZalo)) {
-        Toast.show({
-          type: 'error',
-          text1: 'Thông tin thanh toán cần được chọn!',
-          position: 'top'
-        })
-        return false;
+    if (!isSelectMomo && !isSelectZalo) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông tin thanh toán cần được chọn!',
+        position: 'top'
+      })
+      return false;
     }
 
     if (isSelectZalo && inputSTKZalo.trim() == "") {
