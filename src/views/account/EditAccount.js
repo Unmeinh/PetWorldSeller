@@ -194,7 +194,7 @@ const EditAccount = ({ route }) => {
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputValue);
             if (response != undefined && response.success) {
                 setTimeout(() => {
-                    onNavigate('ConfirmOTP', { function: () => updatePhoneNumber(), typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: response.confirm })
+                    onNavigate('ConfirmOTP', { function: () => updatePhoneNumber(), typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputValue, authConfirm: (code) => response.confirm.confirm(code) })
                 }, 500)
             } else {
                 // setisDisableRequest(false);

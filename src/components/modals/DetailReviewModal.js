@@ -154,7 +154,7 @@ const DetailReviewModal = (route) => {
             isVisible={route.isShow}
             swipeDirection="down"
             propagateSwipe={true}
-            onSwipeComplete={route.callBackHide}
+            onSwipeComplete={route?.onCallbackHide}
             onBackdropPress={route?.onCallbackHide}
             onBackButtonPress={route?.onCallbackHide}>
             <View style={{

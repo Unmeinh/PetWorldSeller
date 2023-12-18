@@ -21,7 +21,6 @@ export default function RegisterTab(route) {
     const [inputPhoneNumber, setinputPhoneNumber] = useState("");
     const [isShowPhoneSelect, setisShowPhoneSelect] = useState(false);
     const [widthPhoneSelect, setwidthPhoneSelect] = useState(0);
-    const [isDisableRequest, setisDisableRequest] = useState(false);
 
     function onChangeTab() {
         route.callback(inputUsername);
@@ -63,7 +62,6 @@ export default function RegisterTab(route) {
         if (checkValidate() == false) {
             return;
         }
-        setisDisableRequest(true);
         Keyboard.dismiss();
         Toast.show({
             type: 'loading',
@@ -84,16 +82,15 @@ export default function RegisterTab(route) {
         if (res) {
             const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
             if (response != undefined && response.success) {
-                setTimeout(() => {
-                    navigation.navigate('ConfirmOTP', { navigate: "RegisterShop", objShop: newShop, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
-                }, 500)
-                setisDisableRequest(false);
-            } else {
-                setisDisableRequest(false);
-            }
-        } else {
-            setisDisableRequest(false);
-        }
+                try {
+                    setTimeout(() => {
+                        navigation.navigate('ConfirmOTP', { navigate: "RegisterShop", objShop: newShop, typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: (code) => response.confirm.confirm(code) })
+                    }, 500)
+                } catch (error) {
+                    console.log(error);
+                }
+            } 
+        } 
     }
 
     function onInputPhoneNumber(input) {
@@ -179,7 +176,7 @@ export default function RegisterTab(route) {
 
                 <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 45 }]}
                     activeOpacity={0.5} underlayColor="#DC749C"
-                    onPress={onSignUp} disabled={isDisableRequest}>
+                    onPress={onSignUp}>
                     <Text style={[styles.textButtonConfirmFullPink, styles.textYellowWhite]}>Đăng ký</Text>
                 </TouchableHighlight>
 

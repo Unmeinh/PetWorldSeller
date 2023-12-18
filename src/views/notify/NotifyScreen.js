@@ -69,6 +69,9 @@ const NotifyScreen = () => {
                 onIndexChange={setIndex}
                 renderTabBar={renderTabBar}
             />
+            {/* <View style={{ flex: 1, marginBottom: 50 }}>
+                <NotifyAll index={0} isFocused={true} />
+            </View> */}
         </View>
     );
 }

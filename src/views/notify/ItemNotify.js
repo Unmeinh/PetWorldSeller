@@ -12,27 +12,28 @@ import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modal';
 import { getDateTimeVietnamese } from '../../utils/functionSupport';
 const { width, height } = Dimensions.get('window');
-const ItemNotify = ({ item, callBack }) => {
+const ItemNotify = ({ index, item, callBack }) => {
   return (
-    <TouchableOpacity onPress={() => callBack(item, true)}>
+    <TouchableOpacity onPress={() => callBack(index, item, true)}
+      style={{ opacity: (item?.status && item?.status == 2) ? 0.65 : 1 }}>
       <View style={styles.container}>
         <View style={styles.leftContainer}>
           <Image
-            source={item?.image[0] ?? require('../../assets/ic_launcher.png')}
+            source={(item?.image && item?.image.length > 0) ? item?.image[0] : require('../../assets/ic_launcher.png')}
             style={styles.image}
           />
         </View>
         <View style={styles.middleContainer}>
           {/* <View style={styles.header}>
           </View> */}
-            <Text style={styles.title} numberOfLines={1}>{item?.content}</Text>
+          <Text style={styles.title} numberOfLines={1}>{item?.content}{(item?.status && item?.status == 2) ? "" : " •"}</Text>
           <Text style={styles.content} numberOfLines={2}>
             {item?.detail}
           </Text>
           <View style={styles.timeContainer}>
             <Feather name="clock" size={13} color={'rgba(0, 0, 0, 0.65)'} />
             <Text style={styles.time} numberOfLines={1}>
-              {getDateTimeVietnamese(item?.createdAt)} 
+              {getDateTimeVietnamese(item?.createdAt)}
             </Text>
           </View>
         </View>
