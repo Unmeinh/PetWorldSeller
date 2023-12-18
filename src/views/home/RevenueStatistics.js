@@ -173,8 +173,8 @@ const RevenueStatistics = () => {
                                 Chi tiết doanh thu theo năm
                             </Text>
                             <View style={[styles.flexRow, styles.itemsCenter, { top: -7, right: 7 }]}>
-                                <Text style={styles.textDarkBlue}>2023</Text>
-                                <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} />
+                                <Text style={styles.textDarkBlue}>{new Date().getFullYear()}</Text>
+                                {/* <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} /> */}
                             </View>
                         </View>
                         <View style={{ paddingHorizontal: 15 }}>
@@ -201,7 +201,7 @@ const RevenueStatistics = () => {
                             {
                                 (!isLoadingList && totals.length > 0)
                                     ? <Text style={[styles.textDarkBlue, { fontWeight: 'bold' }]}>
-                                        Tổng doanh thu: {(fullTotal) ? fullTotal : "Lỗi dữ liệu"}
+                                        Tổng doanh thu: {(fullTotal) ? fullTotal : "0"}
                                     </Text>
                                     : ""
                             }

@@ -103,7 +103,7 @@ export default function ForgetPassword({ navigation }) {
         const response = await onSendOTPbyPhoneNumber(inputPhoneCountry + inputPhoneNumber);
         if (response && response.success) {
           setTimeout(() => {
-            navigation.replace('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: response.confirm })
+            navigation.replace('ConfirmOTP', { navigate: "ChangePassword", typeVerify: 'phoneNumber', valueVerify: inputPhoneCountry + inputPhoneNumber, authConfirm: (code) => response.confirm.confirm(code) })
           }, 500)
         } 
       } 

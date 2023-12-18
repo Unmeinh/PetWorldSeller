@@ -10,6 +10,8 @@ import React, { useState } from 'react'
 import styles from '../../styles/all.style';
 import HeaderTitle from '../../components/header/HeaderTitle';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { openPicker } from '@baronha/react-native-multiple-image-picker';
@@ -30,6 +32,8 @@ export default function RegisterShop({ route }) {
   const [inputEmail, setinputEmail] = useState("");
   const [inputOTP, setinputOTP] = useState("");
   const [isVerified, setisVerified] = useState(false);
+  const [inputSTKZalo, setinputSTKZalo] = useState("");
+  const [inputSTKMomo, setinputSTKMomo] = useState("");
   const [inputLocation, setinputLocation] = useState("");
   const [inputNewPassword, setinputNewPassword] = useState('');
   const [inputConfirmPassword, setinputConfirmPassword] = useState('');
@@ -43,6 +47,8 @@ export default function RegisterShop({ route }) {
   const [isOKBehindCard, setisOKBehindCard] = useState(false);
   const [isLoadingCard, setisLoadingCard] = useState(false);
   const [isShowPicker, setisShowPicker] = useState(false);
+  const [isSelectZalo, setisSelectZalo] = useState(false);
+  const [isSelectMomo, setisSelectMomo] = useState(false)
   const [inputPickedLocation, setinputPickedLocation] = useState("");
   const [isShowLocationPicker, setisShowLocationPicker] = useState(false);
   const [numberLocationPicked, setnumberLocationPicked] = useState(0);
@@ -506,6 +512,33 @@ export default function RegisterShop({ route }) {
       return false;
     }
 
+    if (!isSelectMomo && !isSelectZalo) {
+      Toast.show({
+        type: 'error',
+        text1: 'Thông tin thanh toán cần được chọn!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (isSelectZalo && inputSTKZalo.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Số tài khoản không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
+    if (isSelectMomo && inputSTKMomo.trim() == "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Số tài khoản không được để trống!',
+        position: 'top'
+      })
+      return false;
+    }
+
     if ((numberLocationPicked < 3 || inputPickedLocation == ""
       || (numberLocationPicked < 3 && inputPickedLocation == ""))) {
       Toast.show({
@@ -573,6 +606,8 @@ export default function RegisterShop({ route }) {
     formData.append("nameIdentity", fullNameCard);
     formData.append("numberIdentity", numberCard);
     formData.append("dateIdentity", birthCard);
+    formData.append("paymentMethod", (isSelectZalo) ? "Zalo Pay" : "Momo");
+    formData.append("stkPayment", (isSelectZalo) ? inputSTKZalo : inputSTKMomo);
 
     let arr_Image = [pickedAvatar, pickedFrontCard, pickedBehindCard]
     if (arr_Image.length > 0) {
@@ -594,6 +629,8 @@ export default function RegisterShop({ route }) {
         fullName: fullNameCard,
         numberCard: numberCard,
         dateBirth: birthCard,
+        paymentMethod: (isSelectZalo) ? "Zalo Pay" : "Momo",
+        stkPayment: (isSelectZalo) ? inputSTKZalo : inputSTKMomo,
       }
     })
   }
@@ -610,6 +647,28 @@ export default function RegisterShop({ route }) {
   function onChangeOTP(input) {
     var number = input.replace(/\D/g, '');
     setinputOTP(number);
+  }
+
+  function onSelectZalo() {
+    if (isSelectZalo == false && isSelectMomo == false) {
+      setisSelectZalo(true);
+    } else {
+      if (isSelectMomo == true) {
+        setisSelectZalo(true);
+        setisSelectMomo(false);
+      }
+    }
+  }
+
+  function onSelectMomo() {
+    if (isSelectZalo == false && isSelectMomo == false) {
+      setisSelectMomo(true);
+    } else {
+      if (isSelectZalo == true) {
+        setisSelectMomo(true);
+        setisSelectZalo(false);
+      }
+    }
   }
 
   function onChangePassToggle() {
@@ -841,6 +900,53 @@ export default function RegisterShop({ route }) {
                 onPress={onVerifyCode}>
                 <Text style={{ fontSize: 15, color: '#FEF6E4', fontFamily: 'ProductSans' }}>Xác minh</Text>
               </TouchableHighlight>
+            </View>
+          </View>
+
+          <View>
+            <View style={{ backgroundColor: '#C7C5C5', height: 1.5, width: '100%', marginTop: 20 }}></View>
+            <Text style={[styles.titleDetailForm, styles.textDarkBlue]}>
+              Thông tin thanh toán
+            </Text>
+            <View>
+              <Text style={[styles.titleInput, {
+                color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
+              }]}>Số tài khoản Zalopay</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={onSelectZalo}>
+                  {
+                    (isSelectZalo)
+                      ?
+                      <View>
+                        <Feather name='circle' size={25} color={'rgba(0, 24, 88, 0.69)'} />
+                        <FontAwesome name='circle' color={'#53BF2D'} style={styles.isSelectOption} size={11} />
+                      </View>
+                      : <Feather name='circle' size={25} color={'rgba(0, 24, 88, 0.69)'} />
+                  }
+                </TouchableOpacity>
+                <TextInput style={[styles.textInputSelect, styles.textDarkBlue, styles.bgLightBrown]} value={inputSTKZalo}
+                  onChangeText={setinputSTKZalo} editable={isSelectZalo} keyboardType='number-pad' />
+              </View>
+            </View>
+            <View>
+              <Text style={[styles.titleInput, {
+                color: 'rgba(0, 24, 88, 0.80)', marginTop: 10
+              }]}>Số tài khoản Momo</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={onSelectMomo}>
+                  {
+                    (isSelectMomo)
+                      ?
+                      <View>
+                        <Feather name='circle' size={25} color={'rgba(0, 24, 88, 0.69)'} />
+                        <FontAwesome name='circle' color={'#53BF2D'} style={styles.isSelectOption} size={11} />
+                      </View>
+                      : <Feather name='circle' size={25} color={'rgba(0, 24, 88, 0.69)'} />
+                  }
+                </TouchableOpacity>
+                <TextInput style={[styles.textInputSelect, styles.textDarkBlue, styles.bgLightBrown]} value={inputSTKMomo}
+                  onChangeText={setinputSTKMomo} editable={isSelectMomo} keyboardType='number-pad' />
+              </View>
             </View>
           </View>
 

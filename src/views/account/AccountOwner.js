@@ -207,7 +207,7 @@ const AccountOwner = ({ route }) => {
                     </Text>
                     <View style={[styles.flexRow, styles.justifyBetween]}>
                         <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Tên trên thẻ: </Text>
+                            <Text style={styles.titleDetail}>Phương thức thanh toán: </Text>
                             {
                                 (isLoading)
                                     ? <ShimmerPlaceHolder
@@ -221,12 +221,12 @@ const AccountOwner = ({ route }) => {
                                             fontSize: 16, fontWeight: 'bold',
                                             width: '100%',
                                         }]}>
-                                        {(owner?.nameCard != undefined) ? owner?.nameCard : "Lỗi dữ liệu"}
+                                        {(owner?.paymentMethod != undefined) ? owner?.paymentMethod : "Lỗi dữ liệu"}
                                     </Text>
                             }
                         </View>
                         <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Số thẻ: </Text>
+                            <Text style={styles.titleDetail}>Số tài khoản: </Text>
                             {
                                 (isLoading)
                                     ? <ShimmerPlaceHolder
@@ -240,49 +240,7 @@ const AccountOwner = ({ route }) => {
                                             fontSize: 16, fontWeight: 'bold',
                                             width: '100%',
                                         }]}>
-                                        {(owner?.numberCard != undefined) ? owner?.numberCard : "Lỗi dữ liệu"}
-                                    </Text>
-                            }
-                        </View>
-                    </View>
-                </View>
-                <View style={{ paddingBottom: 20 }}>
-                    <View style={[styles.flexRow, styles.justifyBetween]}>
-                        <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Tên ngân hàng: </Text>
-                            {
-                                (isLoading)
-                                    ? <ShimmerPlaceHolder
-                                        shimmerStyle={[styles.textDarkBlue, {
-                                            height: 20, borderRadius: 5,
-                                            width: '70%', marginTop: 3
-                                        }]} />
-                                    : <Text
-                                        numberOfLines={2}
-                                        style={[styles.textDarkBlue, {
-                                            fontSize: 16, fontWeight: 'bold',
-                                            width: '100%',
-                                        }]}>
-                                        {(owner?.nameBank != undefined) ? owner?.nameBank : "Lỗi dữ liệu"}
-                                    </Text>
-                            }
-                        </View>
-                        <View style={{ width: '47%', }}>
-                            <Text style={styles.titleDetail}>Ngày hết hạn: </Text>
-                            {
-                                (isLoading)
-                                    ? <ShimmerPlaceHolder
-                                        shimmerStyle={[styles.textDarkBlue, {
-                                            height: 20, borderRadius: 5,
-                                            width: '70%', marginTop: 3
-                                        }]} />
-                                    : <Text
-                                        numberOfLines={2}
-                                        style={[styles.textDarkBlue, {
-                                            fontSize: 16, fontWeight: 'bold',
-                                            width: '100%',
-                                        }]}>
-                                        {(owner?.expirationDate != undefined) ? owner?.expirationDate : "Lỗi dữ liệu"}
+                                        {(owner?.stkPayment != undefined) ? owner?.stkPayment : "Lỗi dữ liệu"}
                                     </Text>
                             }
                         </View>

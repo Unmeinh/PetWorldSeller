@@ -67,68 +67,19 @@ const EditProduct = ({ route }) => {
         }
     }
 
-    function onChangeInputName(input) {
-        if (input.length > 50) {
-            Toast.show({
-                type: 'error',
-                text1: 'Tên sản phẩm không dài quá 50 ký tự!',
-                position: 'top'
-            })
-        } else {
-            setinputNameProduct(input);
-        }
-    }
-
     function onChangeInputPrice(input) {
-        let value = input.replace(/\D/g, '');
-        if (value.length > 9) {
-            Toast.show({
-                type: 'error',
-                text1: 'Giá bán không dài quá 9 số!',
-                position: 'top'
-            })
-        } else {
-            setinputPrice(Number(value).toLocaleString());
-        }
+        let value = input.replaceAll(/\D/g, '');
+        setinputPrice(Number(value).toLocaleString());
     }
 
     function onChangeInputDiscount(input) {
-        let value = input.replace(/\D/g, '');
-        if (value.length > 3) {
-            Toast.show({
-                type: 'error',
-                text1: 'Giảm giá không dài quá 3 số!',
-                position: 'top'
-            })
-        } else {
-            setinputDiscount(value);
-        }
+        let value = input.replaceAll(/\D/g, '');
+        setinputDiscount(Number(value).toLocaleString());
     }
 
     function onChangeInputAmount(input) {
-        let value = input.replace(/\D/g, '');
-        if (value.length > 3) {
-            Toast.show({
-                type: 'error',
-                text1: 'Số lượng thêm không dài quá 3 số!',
-                position: 'top'
-            })
-        } else {
-            setinputAmount(value);
-        }
-    }
-
-    function onChangeInputDetail(input) {
-        if (input.length > 300) {
-            Toast.show({
-                type: 'error',
-                text1: 'Mô tả không được dài quá 300 ký tự!',
-                position: 'top'
-            })
-            return false;
-        } else {
-            setinputDetail(input);
-        }
+        let value = input.replaceAll(/\D/g, '');
+        setinputAmount(Number(value).toLocaleString());
     }
 
     function checkValidate() {
@@ -158,7 +109,7 @@ const EditProduct = ({ route }) => {
             })
             return false;
         } else {
-            if (inputPrice <= 0) {
+            if (Number(inputPrice) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Giá bán cần lớn hơn 0!',
@@ -176,7 +127,7 @@ const EditProduct = ({ route }) => {
             })
             return false;
         } else {
-            if (inputDiscount >= 100) {
+            if (Number(inputDiscount) >= 100) {
                 Toast.show({
                     type: 'error',
                     text1: 'Số giảm giá cần nhỏ hơn 100!',
@@ -194,7 +145,7 @@ const EditProduct = ({ route }) => {
             })
             return false;
         } else {
-            if (inputAmount <= 0) {
+            if (Number(inputAmount) <= 0) {
                 Toast.show({
                     type: 'error',
                     text1: 'Số lượng thêm cần lớn hơn 0!',
@@ -387,8 +338,8 @@ const EditProduct = ({ route }) => {
                         }]}>Tên sản phẩm</Text>
                         <View>
                             <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
-                                value={inputNameProduct}
-                                onChangeText={onChangeInputName} />
+                                value={inputNameProduct} maxLength={50}
+                                onChangeText={setinputNameProduct} />
                         </View>
                     </View>
                 </View>
@@ -402,7 +353,7 @@ const EditProduct = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputPrice} keyboardType='number-pad'
-                                    onChangeText={onChangeInputPrice} />
+                                    maxLength={11} onChangeText={onChangeInputPrice} />
                             </View>
                         </View>
                         <View style={{ width: '47%', }}>
@@ -412,7 +363,7 @@ const EditProduct = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputDiscount} keyboardType='number-pad'
-                                    onChangeText={onChangeInputDiscount} />
+                                    maxLength={2} onChangeText={onChangeInputDiscount} />
                             </View>
                         </View>
                     </View>
@@ -427,7 +378,7 @@ const EditProduct = ({ route }) => {
                             <View>
                                 <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown]}
                                     value={inputAmount} keyboardType='number-pad'
-                                    onChangeText={onChangeInputAmount} />
+                                    maxLength={3} onChangeText={onChangeInputAmount} />
                             </View>
                         </View>
                         <View style={{ width: '47%', }}>
@@ -466,7 +417,7 @@ const EditProduct = ({ route }) => {
                         <TextInput style={[styles.textInputLogin, styles.textDarkBlue, styles.bgLightBrown, { textAlignVertical: 'top', maxHeight: 100 }]}
                             multiline={true} numberOfLines={4}
                             value={inputDetail}
-                            onChangeText={onChangeInputDetail} />
+                            maxLength={500} onChangeText={setinputDetail} />
                     </View>
                 </View>
                 <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 35, marginBottom: 25 }]}

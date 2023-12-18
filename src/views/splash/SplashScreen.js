@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, BackHandler, Dimensions, Animated, Easing, Text } from 'react-native';
+import { View, BackHandler, Dimensions, Animated, Easing, Text, Platform } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Foundation from 'react-native-vector-icons/Foundation';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -75,6 +75,7 @@ export default function SplashScreen() {
           if (storageMMKV.getBoolean('login.isLogin')) {
             if (storageMMKV.checkKey('login.token')) {
               if (storageMMKV.getString('login.token')) {
+                setnextScreen('waiting');
                 await onCheckTokenDevice()
               } else {
                 storageMMKV.setValue('login.token', "");
@@ -139,25 +140,29 @@ export default function SplashScreen() {
 
   const sendTokenToFirebase = async (newToken) => {
     try {
-      const databaseRef = database().ref('/sellerTokens');
-      const tokenData = {
-        token: newToken,
-      };
-      await databaseRef.push(tokenData);
-      storageMMKV.setValue('hasSentToken', true);
-      storageMMKV.setValue('tokenDevice', newToken);
-      let res = await onAxiosPost('shop/autoLogin', {
-        tokenDevice: newToken
-      }, 'json', true);
-      if (res) {
-        if (res?.data.isApproved == 1) {
-          setnextScreen('NaviTabScreen');
-        } else {
-          setnextScreen('ConfirmedShop');
+      if (nextScreen == 'waiting') {
+        const databaseRef = database().ref('/sellerTokens');
+        const tokenData = {
+          token: newToken,
+        };
+        await databaseRef.push(tokenData);
+        storageMMKV.setValue('hasSentToken', true);
+        storageMMKV.setValue('tokenDevice', newToken);
+        if (storageMMKV.getString('login.token')) {
+          let res = await onAxiosPost('shop/autoLogin', {
+            tokenDevice: newToken
+          }, 'json', true);
+          if (res) {
+            if (res?.data.isApproved == 1) {
+              setnextScreen('NaviTabScreen');
+            } else {
+              setnextScreen('ConfirmedShop');
+            }
+          } else {
+            storageMMKV.setValue('login.token', "");
+            setnextScreen('LoginScreen');
+          }
         }
-      } else {
-        storageMMKV.setValue('login.token', "");
-        setnextScreen('LoginScreen');
       }
     } catch (error) {
       console.error('Lỗi khi gửi token đến Firebase:', error);
@@ -165,7 +170,7 @@ export default function SplashScreen() {
   };
 
   React.useEffect(() => {
-    if (isFinishedOneTime && nextScreen != '' && isGrantedNotice != 'false') {
+    if (isFinishedOneTime && nextScreen != '' && nextScreen != 'waiting' && isGrantedNotice != 'false') {
       if (isGrantedNotice == 'granted') {
         navigation.replace(nextScreen);
       }
@@ -217,7 +222,11 @@ export default function SplashScreen() {
 
   React.useEffect(() => {
     if (isGrantedNotice == 'false') {
-      requestPostNotification();
+      if (Platform.constants['Version'] < 33) {
+        setisGrantedNotice('granted');
+      } else {
+        requestPostNotification();
+      }
     }
     async function onDoing() {
       await onCheckTokenDevice();

@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchEvaluatedBills } from '../../redux/reducers/bill/billReducer';
 import { selectEvaluatedBills } from '../../redux/selectors/selector';
-import ItemBill from '../../components/items/ItemBill';
+import ItemBill from '../../components/items/ItemBillReview';
 import ItemBillLoading from '../../components/items/ItemBillLoading';
 import LottieAnimation from '../../components/layout/LottieAnimation';
 import { RefreshControl } from "react-native-gesture-handler";
