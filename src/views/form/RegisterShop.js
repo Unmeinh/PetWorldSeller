@@ -629,6 +629,8 @@ export default function RegisterShop({ route }) {
         fullName: fullNameCard,
         numberCard: numberCard,
         dateBirth: birthCard,
+        paymentMethod: (isSelectZalo) ? "Zalo Pay" : "Momo",
+        stkPayment: (isSelectZalo) ? inputSTKZalo : inputSTKMomo,
       }
     })
   }

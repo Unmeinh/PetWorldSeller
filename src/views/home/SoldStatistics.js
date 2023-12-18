@@ -241,8 +241,8 @@ const SoldStatistics = () => {
                                         Chi tiết thú cưng đã bán theo năm
                                     </Text>
                                     <View style={[styles.flexRow, styles.itemsCenter, { top: -7, right: 7 }]}>
-                                        <Text style={styles.textDarkBlue}>2023</Text>
-                                        <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} />
+                                        <Text style={styles.textDarkBlue}>{new Date().getFullYear()}</Text>
+                                        {/* <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} /> */}
                                     </View>
                                 </View>
                                 <View style={{ paddingHorizontal: 15 }}>
@@ -360,8 +360,8 @@ const SoldStatistics = () => {
                                         Chi tiết sản phẩm đã bán theo năm
                                     </Text>
                                     <View style={[styles.flexRow, styles.itemsCenter, { top: -7, right: 7 }]}>
-                                        <Text style={styles.textDarkBlue}>2023</Text>
-                                        <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} />
+                                        <Text style={styles.textDarkBlue}>{new Date().getFullYear()}</Text>
+                                        {/* <Ionicons name='chevron-down' color={darkBlue} style={{ marginLeft: 3, top: 1 }} /> */}
                                     </View>
                                 </View>
                                 <View style={{ paddingHorizontal: 15 }}>
