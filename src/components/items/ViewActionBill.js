@@ -71,7 +71,7 @@ const ViewActionBill = (props) => {
                 (props.isLoading)
                     ? <>
                         <View style={[styles.flexRow, styles.justifyFlexend, styles.itemsCenter, { width: '100%', padding: 10, paddingVertical: 13 }]}>
-                            <ShimmerPlaceHolder shimmerStyle={{height: 30, width: '27%', borderRadius: 5}}/>
+                            {/* <ShimmerPlaceHolder shimmerStyle={{height: 30, width: '27%', borderRadius: 5}}/> */}
                             <ShimmerPlaceHolder shimmerStyle={{height: 30, width: '27%', borderRadius: 5, marginLeft: 10,}}/>
                         </View>
                         {/* <View style={{ height: 3, width: '100%', backgroundColor: '#CCCCCC80' }}></View> */}

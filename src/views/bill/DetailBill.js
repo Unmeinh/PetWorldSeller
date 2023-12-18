@@ -453,6 +453,14 @@ const DetailBill = ({ route }) => {
                         </Text>
                         <View style={[styles.flexRow, { marginTop: 5 }]}>
                             <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
+                                Mã đơn hàng
+                            </Text>
+                            <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >
+                                {(item?._id) ? item?._id : "Không có dữ liệu"}
+                            </Text>
+                        </View>
+                        <View style={[styles.flexRow, { marginTop: 5 }]}>
+                            <Text style={[styles.textDetailFade, { width: '50%', fontSize: 15 }]} >
                                 Ngày đặt hàng
                             </Text>
                             <Text style={[styles.textDarkBlue, { width: '50%', fontSize: 15, textAlign: 'right' }]} >

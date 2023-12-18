@@ -3,7 +3,7 @@ import {
     Text, View,
     TouchableOpacity
 } from 'react-native';
-import styles, { darkBlue, yellowWhite } from '../../styles/all.style';
+import styles, { WindowHeight, WindowWidth, darkBlue, yellowWhite } from '../../styles/all.style';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NotifyAll from './NotifyAll';
@@ -51,18 +51,19 @@ const NotifyScreen = () => {
     return (
         <View style={styles.container}>
             <HeaderLogo colorHeader={yellowWhite}
-                // addonComponent={<View style={{position: 'absolute', top: '25%', right: 0,}}>
-                //     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-                //         <TouchableOpacity onPress={() => {}}>
-                //             <Ionicons name='checkmark-done' size={24} color={'#001858'} style={{ marginRight: 5 }} />
-                //         </TouchableOpacity>
-                //         <TouchableOpacity onPress={() => {}}>
-                //             <Ionicons name='settings-outline' size={24} color={'#001858'} style={{ marginLeft: 5 }} />
-                //         </TouchableOpacity>
-                //     </View>
-                // </View>} 
-                />
+            // addonComponent={<View style={{position: 'absolute', top: '25%', right: 0,}}>
+            //     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+            //         <TouchableOpacity onPress={() => {}}>
+            //             <Ionicons name='checkmark-done' size={24} color={'#001858'} style={{ marginRight: 5 }} />
+            //         </TouchableOpacity>
+            //         <TouchableOpacity onPress={() => {}}>
+            //             <Ionicons name='settings-outline' size={24} color={'#001858'} style={{ marginLeft: 5 }} />
+            //         </TouchableOpacity>
+            //     </View>
+            // </View>} 
+            />
             <TabView
+                style={{ marginBottom: 50 }}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}

@@ -201,7 +201,7 @@ const RevenueStatistics = () => {
                             {
                                 (!isLoadingList && totals.length > 0)
                                     ? <Text style={[styles.textDarkBlue, { fontWeight: 'bold' }]}>
-                                        Tổng doanh thu: {(fullTotal) ? fullTotal : "Lỗi dữ liệu"}
+                                        Tổng doanh thu: {(fullTotal) ? fullTotal : "0"}
                                     </Text>
                                     : ""
                             }
