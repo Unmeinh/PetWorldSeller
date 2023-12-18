@@ -100,6 +100,8 @@ export default function LoginTab(route) {
                 Toast.hide();
                 if (response.data.shopStatus == 0) {
                     navigation.replace('ConfirmedShop');
+                } if (response.data.shopStatus == -1) {
+                    navigation.replace('DeniedShop');
                 } else {
                     navigation.replace('NaviTabScreen');
                 }

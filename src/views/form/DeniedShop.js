@@ -8,7 +8,7 @@ import styles from '../../styles/all.style';
 import { storageMMKV } from '../../storage/storageMMKV';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ConfirmedShop() {
+export default function DeniedShop() {
     const navigation = useNavigation();
 
     function onGoToLogin() {
@@ -17,20 +17,30 @@ export default function ConfirmedShop() {
         navigation.replace('LoginScreen');
     }
 
+    React.useEffect(() => {
+        const unsub = navigation.addListener('focus', () => {
+            return () => {
+                unsub.remove();
+            };
+        });
+
+        return unsub;
+    }, [navigation]);
+
     return (
         <View style={{ backgroundColor: '#FEF6E4', flex: 1 }}>
             <View style={[styles.container, styles.formContainer]}>
                 <View style={{ width: '100%', alignItems: 'center' }}>
                     <Image
-                        source={require('../../assets/images/gifs/catWaiting.gif')}
+                        source={require('../../assets/images/gifs/sad_cat.gif')}
                         style={{ width: '30%', aspectRatio: 1 / 1 }}
                     />
                 </View>
 
                 <Text style={[styles.titleDetailForm, styles.textDarkBlue, { fontWeight: 'bold', marginBottom: 15, marginTop: 0 }]}>
-                    Đơn đăng ký của bạn đã được gửi và chờ được phê duyệt.{'\n\n'}
-                    Chúng tôi sẽ phản hồi đơn đăng ký của bạn trong thời gian sớm nhất có thể.{'\n\n'}
-                    Cảm ơn bạn đã tin tưởng ứng dụng của chúng tôi!
+                    Đơn đăng ký của bạn đã bị từ chối.{'\n\n'}
+                    Chúng tôi rất tiếc nhưng có một số lí do khiến chúng tôi từ chối đơn của bạn.{'\n\n'}
+                    Mong bạn thông cảm cho chúng tôi!
                 </Text>
 
                 <TouchableHighlight style={[styles.buttonConfirmFullPink, styles.bgPinkLotus, styles.itemsCenter, { marginTop: 35 }]}

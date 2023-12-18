@@ -21,6 +21,8 @@ import RNFS from 'react-native-fs';
 import ShimmerPlaceHolder from '../../components/layout/ShimmerPlaceHolder';
 import DatePickerModal from '../../components/modals/DatePickerModal';
 import moment from 'moment';
+import messaging from '@react-native-firebase/messaging';
+import database from '@react-native-firebase/database';
 import LocationPickerModal from '../../components/modals/LocationPickerModal';
 
 export default function RegisterShop({ route }) {
@@ -597,6 +599,7 @@ export default function RegisterShop({ route }) {
     }
 
     var formData = new FormData();
+    let tokenDevice = await getToken();
     formData.append("nameShop", objShop?.nameShop);
     formData.append("email", inputEmail);
     formData.append("locationShop", inputLocation + ", " + inputPickedLocation);
@@ -608,6 +611,7 @@ export default function RegisterShop({ route }) {
     formData.append("dateIdentity", birthCard);
     formData.append("paymentMethod", (isSelectZalo) ? "Zalo Pay" : "Momo");
     formData.append("stkPayment", (isSelectZalo) ? inputSTKZalo : inputSTKMomo);
+    formData.append("tokenDevice", tokenDevice);
 
     let arr_Image = [pickedAvatar, pickedFrontCard, pickedBehindCard]
     if (arr_Image.length > 0) {
@@ -634,6 +638,35 @@ export default function RegisterShop({ route }) {
       }
     })
   }
+
+  async function getToken() {
+    let token = await messaging().getToken();
+    if (token) {
+      await sendTokenToFirebase(token);
+      return token;
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Có lỗi xảy ra trong lúc gửi yêu cầu!\nVui lòng thử lại sau!'
+      });
+      return "";
+    }
+  }
+
+  const sendTokenToFirebase = async (newToken) => {
+    try {
+      const databaseRef = database().ref('/sellerTokens');
+      const tokenData = {
+        token: newToken,
+      };
+      await databaseRef.push(tokenData);
+      storageMMKV.setValue('hasSentToken', true);
+      storageMMKV.setValue('tokenDevice', newToken);
+    } catch (error) {
+      console.error('Lỗi khi gửi token đến Firebase:', error);
+    }
+  };
 
   function onChangeTextEmail(input) {
     setinputEmail(input.replace(" ", ""));
