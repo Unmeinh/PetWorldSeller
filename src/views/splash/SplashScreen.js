@@ -155,6 +155,8 @@ export default function SplashScreen() {
           if (res) {
             if (res?.data.isApproved == 1) {
               setnextScreen('NaviTabScreen');
+            } else if (res?.data.isApproved == -1) {
+              setnextScreen('DeniedShop');
             } else {
               setnextScreen('ConfirmedShop');
             }

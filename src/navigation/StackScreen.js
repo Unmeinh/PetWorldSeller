@@ -33,6 +33,7 @@ import DetailBill from '../views/bill/DetailBill';
 import Test from '../views/splash/Test';
 import pushNotification from '../services/pushNotification';
 import notifee, { EventType } from '@notifee/react-native';
+import DeniedShop from '../views/form/DeniedShop';
 const Stack = createStackNavigator();
 
 export default function StackScreen() {
@@ -76,6 +77,7 @@ export default function StackScreen() {
         <Stack.Screen name="RegisterShop" component={RegisterShop} />
         <Stack.Screen name="ConfirmRegister" component={ConfirmRegister} />
         <Stack.Screen name="ConfirmedShop" component={ConfirmedShop} />
+        <Stack.Screen name="DeniedShop" component={DeniedShop} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="ConfirmOTP" component={ConfirmOTP} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
